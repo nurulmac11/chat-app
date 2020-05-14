@@ -5,30 +5,34 @@
 
 
         <div class="row" v-if="loginStatus">
-            <div class="col-4">
+
+            <div class="col-3">
+                <h3>Chat List</h3>
                 <ul class="list-group">
                     <li
                             class="list-group-item"
-                            v-for="user of userList"
+                            v-for="user of activeChatUsers"
                             :key="user.socketId"
-                            v-on:click="selectUser(user.socketId)"
+                            v-on:click="selectUser(user.socketId, user.username)"
                     >
                         {{ user.username }}
+                        <span v-if="msgNotify.includes(user.username)" class="dot"></span>
                     </li>
                 </ul>
             </div>
-            <div class="col-8">
+
+
+            <div class="col-6" v-if="activeChatUsers.length">
                 <div class="card">
                     <div id="messages" class="card-block">
-                            <div v-for="message of messages" :key="message.username" id="message_div"
-                                 v-bind:class="[message.username == username ? 'pull-right': 'pull-left']"
-                                 style="width: 100%"
-                                 >
-                                {{ message.username }}: {{ message.text }}
-                            </div>
+                        <div v-for="(message, index) in activeChatMessages" :key="index" id="message_div"
+                             v-bind:class="[message.username == username ? 'pull-right': 'pull-left']"
+                             style="width: 100%"
+                        >
+                            {{ message.username }}: {{ message.text }}
+                        </div>
                     </div>
                 </div>
-
 
                 <textarea
                         id="textarea"
@@ -36,17 +40,28 @@
                         v-model="message"
                         placeholder="Enter message..."
                 ></textarea>
-                <br />
-                <button
-                        id="send"
-                        class="btn"
-                        @click.prevent="sendMessage"
-                >
-                    Send
-                </button>
-
+                <br/>
+                <button id="send" class="btn" @click.prevent="sendMessage">Send</button>
             </div>
+
+
+            <div class="col-3">
+                <h3>User List</h3>
+                <ul class="list-group">
+                    <li
+                            class="list-group-item"
+                            v-for="user of userList"
+                            :key="user.socketId"
+                            v-on:click="selectUser(user.socketId, user.username)"
+                    >
+                        {{ user.username }}
+                    </li>
+                </ul>
+            </div>
+
         </div>
+
+
         <div id="login_container" v-else>
             <input
                     type="text"
@@ -65,84 +80,117 @@
 </template>
 
 <script>
-import Swal from 'sweetalert2';
-import * as io from 'socket.io-client'
+    import Swal from 'sweetalert2';
+    import * as io from 'socket.io-client'
 
-export default {
-    name: 'ChatApp',
-    props: {
-        msg: String,
-    },
-    data() {
-        return {
-            title: 'Nestjs Websockets Chat',
-            message: '',
-            username: '',
-            loginStatus: false,
-            messages: [],
-            userList: [],
-            myId: null,
-            socket: null,
-            sendTo: -1,
-        };
-    },
-    created() {
-        this.socket = io('http://localhost:81');
-
-        // Instant message receiver
-        let vuethis = this;
-        this.socket.on('chat', function(msg) {
-            console.log(msg);
-            vuethis.messages.push(msg);
-        });
-    },
-    mounted() {
-        // Get user list
-        this.socket.on('activeUsers', userList => {
-            this.userList = userList;
-            this.userList = userList.filter(
-                item => item.socketId !== this.myId,
-            );
-        });
-    },
-    methods: {
-        selectUser(userId) {
-            this.sendTo = userId;
-            Swal.fire('OK', 'User selected' + userId, 'info');
+    export default {
+        name: 'ChatApp',
+        props: {
+            msg: String,
         },
-        loginMe() {
-            this.myId = this.socket.io.engine.id;
-            this.socket.emit('loginMe', this.username);
-            this.loginStatus = true;
+        data() {
+            return {
+                title: 'Nestjs Websockets Chat',
+                message: '',
+                username: '',
+                loginStatus: false,
+                messages: [],
+                userList: [],
+                myId: null,
+                socket: null,
+                sendToID: -1, // ID
+                sendToUsername: null,
+                currentChatUsers: [], // Username
+                msgNotify: [],
+            };
         },
-        sendMessage() {
-            if (this.sendTo === -1) {
-                Swal.fire('Oops', 'Select a user to chat!', 'error');
-                return;
-            }
-            if (this.validateInput()) {
-                const message = {
-                    username: this.username,
-                    text: this.message,
-                    to: this.sendTo
-                };
-                this.message = ''
-                this.messages.push(message)
-                this.socket.emit('msgToServer', message)
+        computed: {
+            activeChatMessages: function () {
+                return this.messages.filter((u) => {
+                    return u.senderId === this.sendToID || u.to == this.sendToID
+                })
+            },
+            activeChatUsers: function () {
+                return this.userList.filter((u) => {
+                    return this.currentChatUsers.includes(u.username)
+                })
             }
         },
-        validateInput() {
-            return this.username.length > 0 && this.message.length > 0;
+        created() {
+            this.socket = io('http://localhost:81');
+
+            // Instant message receiver
+            let vthis = this
+            this.socket.on('chat', function (msg) {
+                if (!(vthis.currentChatUsers.includes(msg.username)))
+                    vthis.currentChatUsers.push(msg.username)
+                vthis.messages.push(msg)
+                console.log(vthis.sendToID, msg.senderId, vthis)
+                if(vthis.sendToID !== msg.senderId)
+                    vthis.msgNotify.push(msg.username)
+            });
         },
-    },
-};
+        mounted() {
+            // Get user list
+            this.socket.on('activeUsers', userList => {
+                this.userList = userList.filter(
+                    item => item.socketId !== this.myId,
+                );
+            });
+        },
+        methods: {
+            selectUser(userId, username) {
+                this.sendToID = userId
+                this.sendToUsername = username
+                if (!(this.currentChatUsers.includes(username)))
+                    this.currentChatUsers.push(username)
+                this.msgNotify.splice(this.msgNotify.indexOf(username), 1);
+            },
+            loginMe() {
+                this.myId = this.socket.io.engine.id;
+                this.socket.emit('loginMe', this.username);
+                this.loginStatus = true;
+            },
+            sendMessage() {
+                if (this.sendToID === -1) {
+                    Swal.fire('Oops', 'Select a user to chat!', 'error')
+                    return;
+                }
+                if (this.validateInput()) {
+                    const message = {
+                        username: this.username,
+                        text: this.message,
+                        to: this.sendToID,
+                        senderId: this.myId,
+                    };
+                    this.message = ''
+                    this.messages.push(message)
+                    this.socket.emit('msgToServer', message)
+                    if (!(this.currentChatUsers.includes(this.sendToUsername)))
+                        this.currentChatUsers.push(this.sendToUsername)
+
+                }
+            },
+            validateInput() {
+                return this.username.length > 0 && this.message.length > 0
+            },
+        },
+    };
 </script>
 
 <style scoped>
     .pull-left {
         text-align: left;
     }
+
     .pull-right {
         text-align: right;
+    }
+    .dot {
+        height: 25px;
+        width: 25px;
+        background-color: red;
+        border-radius: 50%;
+        display: inline-block;
     }
 </style>
