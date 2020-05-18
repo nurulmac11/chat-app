@@ -4,7 +4,7 @@
         <h1 class="text-center">{{ title }}</h1>
 
 
-        <div class="row" v-if="loginStatus">
+        <div class="row" v-if="currentForm == 1">
 
             <div class="col-3 border">
                 <h3>Chat List</h3>
@@ -62,7 +62,8 @@
 
         </div>
 
-        <div id="login_container" class="border col-4 offset-md-4" v-else>
+        <div id="login_container" class="border col-4 offset-md-4" v-else-if="currentForm == 0">
+            <h2>Login Form</h2>
             <input
                     type="text"
                     v-model="username"
@@ -72,7 +73,7 @@
             />
             <br/>
             <input
-                    type="text"
+                    type="password"
                     v-model="password"
                     id="password"
                     class="form-control"
@@ -83,6 +84,41 @@
             <button id="login" class="btn" @click.prevent="loginMe">
                 Login
             </button>
+            <a @click.prevent="formSwitch(-1)">Register</a>
+        </div>
+
+
+        <div id="register_container" class="border col-4 offset-md-4" v-else>
+            <h2>Register Form</h2>
+            <input
+                    type="text"
+                    v-model="username"
+                    id="username"
+                    class="form-control"
+                    placeholder="Enter username..."
+            />
+            <br/>
+            <input
+                    type="password"
+                    v-model="password"
+                    id="password"
+                    class="form-control"
+                    placeholder="Enter password..."
+            />
+            <br/>
+            <input
+                    type="text"
+                    v-model="email"
+                    id="email"
+                    class="form-control"
+                    placeholder="Enter email..."
+                    v-on:keyup.enter.exact="registerMe"
+            />
+            <br/>
+            <button id="register" class="btn" @click.prevent="registerMe">
+                Register
+            </button>
+            <a @click.prevent="formSwitch(0)">Login</a>
         </div>
 
     </div>
@@ -91,6 +127,8 @@
 <script>
     import Swal from 'sweetalert2';
     import * as io from 'socket.io-client'
+    import Axios from 'axios'
+    import md5 from 'md5'
 
     export default {
         name: 'ChatApp',
@@ -100,10 +138,11 @@
         data() {
             return {
                 title: 'Chat App',
-                message: '',
                 username: '',
                 password: '',
-                loginStatus: false,
+                email: '',
+                message: '',
+                currentForm: 0,
                 messages: [],
                 userList: [],
                 myId: null,
@@ -112,6 +151,7 @@
                 sendToUsername: null,
                 currentChatUsers: [], // Username
                 msgNotify: [],
+                baseUrl: "http://localhost:3000",
             };
         },
         computed: {
@@ -149,6 +189,25 @@
             });
         },
         methods: {
+            registerMe() {
+                let userData = {
+                    'username': this.username,
+                    'password': md5(this.password),
+                    'email': this.email
+                }
+                Axios.post(this.baseUrl + '/users/create', userData)
+                    .then(function (response) {
+                        Swal.fire('Successful', 'Your account created.', 'success')
+                        this.currentForm = 1;
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            formSwitch(switchTo) {
+                this.currentForm = switchTo;
+            },
             selectUser(userId, username) {
                 this.sendToID = userId
                 this.sendToUsername = username
@@ -157,9 +216,22 @@
                 this.msgNotify.splice(this.msgNotify.indexOf(username), 1);
             },
             loginMe() {
-                this.myId = this.socket.io.engine.id;
-                this.socket.emit('loginMe', this.username);
-                this.loginStatus = true;
+                let userData = {
+                    'username': this.username,
+                    'password': md5(this.password),
+                }
+                Axios.post(this.baseUrl + '/users/login', userData)
+                    .then(function (response) {
+                        Swal.fire('Successful', 'You logged in!', 'success')
+                        this.currentForm = 1;
+                        console.log(response);
+                        this.myId = this.socket.io.engine.id;
+                        this.socket.emit('loginMe', this.username);
+                        this.currentForm = true;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             },
             sendMessage() {
 

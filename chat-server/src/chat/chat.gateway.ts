@@ -19,9 +19,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('msgToServer')
     handleMessage(client: Socket, payload: any): void {
-        let sendTo = payload.to;
-        let msg = payload.text;
-        let from = payload.username;
+        const sendTo = payload.to;
+        const msg = payload.text;
+        const from = payload.username;
         this.server.to(sendTo).emit('chat', payload);
     }
 

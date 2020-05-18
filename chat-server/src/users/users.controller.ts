@@ -36,10 +36,19 @@ export class UsersController {
 
     @Post('create')
     createUser(
-        @Body('first_name') firstName: string,
-        @Body('last_name') lastName: string,
+        @Body('username') username: string,
+        @Body('password') password: string,
+        @Body('email') email: string,
     ): any {
-        return this.usersService.create(firstName, lastName);
+        return this.usersService.create(username, password, email);
+    }
+
+    @Post('login')
+    loginUser(
+        @Body('username') username: string,
+        @Body('password') password: string,
+    ): any {
+        return this.usersService.login(username, password);
     }
 
 }
