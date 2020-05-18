@@ -6,7 +6,7 @@
 
         <div class="row" v-if="loginStatus">
 
-            <div class="col-3">
+            <div class="col-3 border">
                 <h3>Chat List</h3>
                 <ul class="list-group">
                     <li
@@ -22,7 +22,7 @@
             </div>
 
 
-            <div class="col-6" v-if="activeChatUsers.length">
+            <div class="col-6 border" v-if="activeChatUsers.length">
                 <div class="card">
                     <div id="messages" class="card-block">
                         <div v-for="(message, index) in activeChatMessages" :key="index" id="message_div"
@@ -35,6 +35,7 @@
                 </div>
 
                 <textarea
+                        @keyup.enter="sendMessage()"
                         id="textarea"
                         class="form-control"
                         v-model="message"
@@ -45,7 +46,7 @@
             </div>
 
 
-            <div class="col-3">
+            <div class="col-3 border">
                 <h3>User List</h3>
                 <ul class="list-group">
                     <li
@@ -61,16 +62,24 @@
 
         </div>
 
-
-        <div id="login_container" v-else>
+        <div id="login_container" class="border col-4 offset-md-4" v-else>
             <input
                     type="text"
                     v-model="username"
                     id="username"
                     class="form-control"
                     placeholder="Enter username..."
-                    v-on:keyup.enter="loginMe"
             />
+            <br/>
+            <input
+                    type="text"
+                    v-model="password"
+                    id="password"
+                    class="form-control"
+                    placeholder="Enter password..."
+                    v-on:keyup.enter.exact="loginMe"
+            />
+            <br/>
             <button id="login" class="btn" @click.prevent="loginMe">
                 Login
             </button>
@@ -90,9 +99,10 @@
         },
         data() {
             return {
-                title: 'Nestjs Websockets Chat',
+                title: 'Chat App',
                 message: '',
                 username: '',
+                password: '',
                 loginStatus: false,
                 messages: [],
                 userList: [],
@@ -152,6 +162,7 @@
                 this.loginStatus = true;
             },
             sendMessage() {
+
                 if (this.sendToID === -1) {
                     Swal.fire('Oops', 'Select a user to chat!', 'error')
                     return;
@@ -192,5 +203,9 @@
         background-color: red;
         border-radius: 50%;
         display: inline-block;
+    }
+
+    .border {
+        border: 1px solid #fd0000 !important;
     }
 </style>
