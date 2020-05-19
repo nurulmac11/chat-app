@@ -5,6 +5,7 @@ import { User } from "./user.entity";
 import { Message } from "../messages/messages.entity";
 import { JwtService } from './jwt/jwt.service';
 import {UserSchema} from "./jwt/user.schema";
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -21,10 +22,10 @@ export class UsersService {
 
     // JWT METHODS
     async validate(username: string, password: string): Promise<any> {
-        return await createQueryBuilder('User')
-            .where('User.username = :username', { username })
-            .where('User.password = :password', { password })
-            .getOne();
+        const user = await this.findByUsername(username);
+        const pass = await bcrypt.hash(password, user.password);
+        if(pass)
+            return user;
     }
 
     public async login(username: string, password:string): Promise< any | { status: number }>{
@@ -82,6 +83,13 @@ export class UsersService {
         clientSchema.username = user.username;
         clientSchema.email = user.email;
         return clientSchema;
+    }
+
+
+    async findByUsername(username: string): Promise<any> {
+        return await createQueryBuilder('User')
+            .where('User.username = :username', { username })
+            .getOne();
     }
 
     async create(username: string, password: string, email:string): Promise<User> {

@@ -1,7 +1,7 @@
 import {Entity, Column, PrimaryGeneratedColumn, BaseEntity, OneToMany, JoinTable, BeforeInsert} from "typeorm";
 import { TableNames } from '../TableNames';
 import { Message } from "../messages/messages.entity";
-import bcrypt from "bcrypt";
+import * as bcrypt from 'bcrypt';
 
 @Entity({name: TableNames.User})
 export class User extends BaseEntity {
@@ -15,8 +15,8 @@ export class User extends BaseEntity {
     password: string;
 
     @BeforeInsert()
-    hashPassword() {
-        this.password = bcrypt(this.password, "verytopsecrethash").digest('hex');
+    async hashPassword() {
+        this.password = await bcrypt.hash(this.password, 10);
     }
 
     @Column()

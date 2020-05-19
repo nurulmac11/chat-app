@@ -22,7 +22,7 @@
             </div>
 
 
-            <div class="col-6 border" v-if="activeChatUsers.length">
+            <div class="col-6 border" >
                 <div class="card">
                     <div id="messages" class="card-block">
                         <div v-for="(message, index) in activeChatMessages" :key="index" id="message_div"
@@ -42,7 +42,9 @@
                         placeholder="Enter message..."
                 ></textarea>
                 <br/>
-                <button id="send" class="btn" @click.prevent="sendMessage">Send</button>
+                <button id="send" class="btn" @click.prevent="sendMessage"
+                        v-if="activeChatUsers.length"
+                >Send</button>
             </div>
 
 
@@ -51,7 +53,7 @@
                 <ul class="list-group">
                     <li
                             class="list-group-item"
-                            v-for="user of userList"
+                            v-for="user of activeChatUsers"
                             :key="user.socketId"
                             v-on:click="selectUser(user.socketId, user.username)"
                     >
@@ -124,7 +126,6 @@
             <br/>
             <a @click.prevent="formSwitch(0)">Login</a>
         </div>
-
     </div>
 </template>
 

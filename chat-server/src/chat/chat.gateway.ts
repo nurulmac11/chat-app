@@ -68,7 +68,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             true
         ).then((user) => {
             userC = user;
-            console.log(client);
             this.logger.log(`Client connected: ${client.id}`);
         }).catch(() => {
             this.logger.error('Where is the token?');
