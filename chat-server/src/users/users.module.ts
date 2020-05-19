@@ -4,7 +4,7 @@ import { UsersService } from "./users.service";
 import { UsersController } from "./users.controller";
 import { User } from "./user.entity";
 import { Message } from "../messages/messages.entity";
-import {JwtModule} from '@nestjs/jwt';
+import {JwtService} from "./jwt/jwt.service";
 
 @Module({
     imports: [
@@ -12,12 +12,10 @@ import {JwtModule} from '@nestjs/jwt';
             User,
             Message,
         ]),
-        JwtModule.register({
-            secretOrPrivateKey: 'secret12356789'
-        })
     ],
-    providers: [UsersService],
-    controllers: [UsersController]
+    providers: [UsersService, JwtService],
+    controllers: [UsersController],
+    exports: [JwtService]
 })
 export class UsersModule {
 }

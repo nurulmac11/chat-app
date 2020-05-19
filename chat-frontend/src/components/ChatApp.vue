@@ -81,9 +81,11 @@
                     v-on:keyup.enter.exact="loginMe"
             />
             <br/>
-            <button id="login" class="btn" @click.prevent="loginMe">
+            <button id="login" class="btn btn-primary" @click.prevent="loginMe">
                 Login
             </button>
+            <br/>
+            <br/>
             <a @click.prevent="formSwitch(-1)">Register</a>
         </div>
 
@@ -115,9 +117,11 @@
                     v-on:keyup.enter.exact="registerMe"
             />
             <br/>
-            <button id="register" class="btn" @click.prevent="registerMe">
+            <button id="register" class="btn btn btn-primary" @click.prevent="registerMe">
                 Register
             </button>
+            <br/>
+            <br/>
             <a @click.prevent="formSwitch(0)">Login</a>
         </div>
 
@@ -138,6 +142,7 @@
         data() {
             return {
                 title: 'Chat App',
+                accessToken: '',
                 username: '',
                 password: '',
                 email: '',
@@ -167,28 +172,45 @@
             }
         },
         created() {
-            this.socket = io('http://localhost:81');
 
-            // Instant message receiver
-            let vthis = this
-            this.socket.on('chat', function (msg) {
-                if (!(vthis.currentChatUsers.includes(msg.username)))
-                    vthis.currentChatUsers.push(msg.username)
-                vthis.messages.push(msg)
-                console.log(vthis.sendToID, msg.senderId, vthis)
-                if(vthis.sendToID !== msg.senderId)
-                    vthis.msgNotify.push(msg.username)
-            });
         },
         mounted() {
-            // Get user list
-            this.socket.on('activeUsers', userList => {
-                this.userList = userList.filter(
-                    item => item.socketId !== this.myId,
-                );
-            });
+
         },
         methods: {
+            initSocket() {
+                // this.socketOptions = {
+                //     transportOptions: {
+                //         polling: {
+                //             extraHeaders: {
+                //                 Authorization: 'Bearer ' + this.accessToken, //'Bearer h93t4293t49jt34j9rferek...'
+                //             }
+                //         }
+                //     }
+                // };
+                this.socket = io('http://localhost:81', {"query" : 'token=' + this.accessToken});
+
+                // Instant message receiver
+                let vthis = this
+                this.socket.on('chat', function (msg) {
+                    if (!(vthis.currentChatUsers.includes(msg.username)))
+                        vthis.currentChatUsers.push(msg.username)
+                    vthis.messages.push(msg)
+                    console.log(vthis.sendToID, msg.senderId, vthis)
+                    if(vthis.sendToID !== msg.senderId)
+                        vthis.msgNotify.push(msg.username)
+                });
+                this.socket.emit('loginMe', this.username);
+                vthis.myId = vthis.socket.io.engine.id;
+            },
+            getUsers() {
+                // Get user list
+                this.socket.on('activeUsers', userList => {
+                    this.userList = userList.filter(
+                        item => item.socketId !== this.myId,
+                    );
+                });
+            },
             registerMe() {
                 let userData = {
                     'username': this.username,
@@ -220,17 +242,17 @@
                     'username': this.username,
                     'password': md5(this.password),
                 }
+                let vthis = this;
                 Axios.post(this.baseUrl + '/users/login', userData)
                     .then(function (response) {
                         Swal.fire('Successful', 'You logged in!', 'success')
-                        this.currentForm = 1;
-                        console.log(response);
-                        this.myId = this.socket.io.engine.id;
-                        this.socket.emit('loginMe', this.username);
-                        this.currentForm = true;
+                        vthis.currentForm = 1;
+                        vthis.accessToken = response['data']['tokens']['accessToken'];
+                        vthis.initSocket();
+                        vthis.getUsers();
                     })
                     .catch(function (error) {
-                        console.log(error);
+                        Swal.fire('Oops', error['message'], 'error')
                     });
             },
             sendMessage() {

@@ -1,10 +1,13 @@
-import { Body, Controller, Get, Logger, Param, Post } from "@nestjs/common";
+import {Body, Controller, Get, Logger, Param, Post, UseGuards} from "@nestjs/common";
 import { UsersService } from "./users.service";
 
 @Controller("users")
 export class UsersController {
     constructor(private readonly usersService: UsersService) {
     }
+
+
+    private logger: Logger = new Logger('UsersController');
 
     @Get()
     getHello(): {} {
@@ -18,7 +21,7 @@ export class UsersController {
 
     @Get("user/:id")
     getUser(@Param('id') id): any {
-        return this.usersService.findOne(id);
+        return this.usersService.findById(id);
     }
 
     @Get("messages/:id")

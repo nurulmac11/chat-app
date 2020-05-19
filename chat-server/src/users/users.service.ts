@@ -1,9 +1,10 @@
-import { Injectable, Logger } from "@nestjs/common";
+import {BadRequestException, Injectable, Logger} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Brackets, createQueryBuilder, Repository } from "typeorm";
 import { User } from "./user.entity";
 import { Message } from "../messages/messages.entity";
-import { JwtService } from  '@nestjs/jwt';
+import { JwtService } from './jwt/jwt.service';
+import {UserSchema} from "./jwt/user.schema";
 
 @Injectable()
 export class UsersService {
@@ -16,6 +17,8 @@ export class UsersService {
     ) {
     }
 
+    private logger: Logger = new Logger('UserService');
+
     // JWT METHODS
     async validate(username: string, password: string): Promise<any> {
         return await createQueryBuilder('User')
@@ -25,24 +28,25 @@ export class UsersService {
     }
 
     public async login(username: string, password:string): Promise< any | { status: number }>{
-        return this.validate(username, password).then((userData)=>{
-            if(!userData){
-                return { status: 404 };
-            }
-            const payload = `${userData.username}${userData.id}`;
-            const accessToken = this.jwtService.sign(payload);
+        const user = await this.validate(username, password);
+        if(!user){
+            this.logger.log('usr not found');
+            throw new BadRequestException('Invalid user');
+        } else {
+            this.logger.log('usr found!');
 
-            return {
-                // eslint-disable-next-line @typescript-eslint/camelcase
-                expires_in: 3600,
-                // eslint-disable-next-line @typescript-eslint/camelcase
-                access_token: accessToken,
-                // eslint-disable-next-line @typescript-eslint/camelcase
-                user_id: payload,
-                status: 200
-            };
+        }
+        const tokens = await this.jwtService.generateToken(user);
 
-        });
+        return {
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            expires_in: 3600,
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            tokens,
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            user_id: user.id,
+            status: 200
+        };
     }
 
 
@@ -71,8 +75,13 @@ export class UsersService {
             .getMany();
     }
 
-    async findOne(id: number): Promise<User> {
-        return await this.usersRepository.findOne(id);
+    async findById(id: number): Promise<UserSchema> {
+        const user = await this.usersRepository.findOne(id);
+        const clientSchema = new UserSchema;
+        clientSchema.id = user.id;
+        clientSchema.username = user.username;
+        clientSchema.email = user.email;
+        return clientSchema;
     }
 
     async create(username: string, password: string, email:string): Promise<User> {
