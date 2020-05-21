@@ -19,7 +19,7 @@ export class MessagesService {
     }
 
     async sendMsg(sender: number, receiver: number, message: string): Promise<Message> {
-        let msg = new Message();
+        const msg = new Message();
         await User.findOne(sender).then(result => {
             msg.sender = result;
         });

@@ -11,7 +11,7 @@
                 <ul class="list-group">
                     <li
                             class="list-group-item"
-                            v-for="(user, index) in activeChatUsers"
+                            v-for="(user, index) in currentChatUsers"
                             :key="index"
                             v-on:click="selectUser(user)"
                     >
@@ -162,12 +162,6 @@
                 return this.messages.filter((u) => {
                     return u.from === this.sendToUsername || u.to === this.sendToUsername
                 })
-            },
-            activeChatUsers: function () {
-                return this.currentChatUsers;
-                // return this.userList.filter((u) => {
-                //     return this.currentChatUsers.includes(u.username)
-                // })
             }
         },
         created() {
@@ -183,7 +177,6 @@
                 // Instant private message receiver
                 let vthis = this
                 this.socket.on('chat', function (msg) {
-                    console.log("Receiver", msg);
                     if (!(vthis.currentChatUsers.includes(msg.username)))
                         vthis.currentChatUsers.push(msg.username)
 

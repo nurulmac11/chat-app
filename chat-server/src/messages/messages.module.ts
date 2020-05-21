@@ -8,7 +8,8 @@ import { User } from "../users/user.entity";
 @Module({
     imports: [TypeOrmModule.forFeature([Message, User])],
     providers: [MessagesService],
-    controllers: [MessagesController]
+    controllers: [MessagesController],
+    exports: [MessagesService]
 })
 export class MessagesModule {
 }

@@ -9,7 +9,8 @@ import {
 import {BadRequestException, Logger, UseGuards} from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import {JwtService} from "../users/jwt/jwt.service";
-import {UserSchema} from "../users/jwt/user.schema";
+import {MessagesService} from "../messages/messages.service";
+import {UsersService} from "../users/users.service";
 
 @WebSocketGateway(81)
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -19,13 +20,15 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     constructor(
         private jwtService: JwtService,
+        private readonly messagesService: MessagesService,
+        private readonly usersService: UsersService
     ) {}
 
     @WebSocketServer() server: Server;
     private logger: Logger = new Logger('ChatGateway');
 
     @SubscribeMessage('msgToServer')
-    handleMessage(client: Socket, payload: any): void {
+    async handleMessage(client: Socket, payload: any): Promise<any> {
         this.logger.log("Message received");
         this.logger.log(payload);
         const sendTo = this.currentUsers[payload.to];
@@ -33,6 +36,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
          * Payload:
          *  username, text, to, from
          */
+        const sender = await this.usersService.findByUsername(payload.from);
+        const receiver = await this.usersService.findByUsername(payload.to);
+        await this.messagesService.sendMsg(sender.id, receiver.id, payload.text);
         this.server.to(sendTo).emit('chat', payload);
     }
 
