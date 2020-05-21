@@ -11,12 +11,12 @@
                 <ul class="list-group">
                     <li
                             class="list-group-item"
-                            v-for="user of activeChatUsers"
-                            :key="user.socketId"
-                            v-on:click="selectUser(user.socketId, user.username)"
+                            v-for="(user, index) in activeChatUsers"
+                            :key="index"
+                            v-on:click="selectUser(user)"
                     >
-                        {{ user.username }}
-                        <span v-if="msgNotify.includes(user.username)" class="dot"></span>
+                        {{ user }}
+                        <span v-if="msgNotify.includes(user)" class="dot"></span>
                     </li>
                 </ul>
             </div>
@@ -43,7 +43,6 @@
                 ></textarea>
                 <br/>
                 <button id="send" class="btn" @click.prevent="sendMessage"
-                        v-if="activeChatUsers.length"
                 >Send</button>
             </div>
 
@@ -53,11 +52,11 @@
                 <ul class="list-group">
                     <li
                             class="list-group-item"
-                            v-for="user of activeChatUsers"
-                            :key="user.socketId"
-                            v-on:click="selectUser(user.socketId, user.username)"
+                            v-for="(user, index) in userList"
+                            :key="index"
+                            v-on:click="selectUser(user)"
                     >
-                        {{ user.username }}
+                        {{ user }}
                     </li>
                 </ul>
             </div>
@@ -151,9 +150,7 @@
                 currentForm: 0,
                 messages: [],
                 userList: [],
-                myId: null,
                 socket: null,
-                sendToID: -1, // ID
                 sendToUsername: null,
                 currentChatUsers: [], // Username
                 msgNotify: [],
@@ -163,13 +160,14 @@
         computed: {
             activeChatMessages: function () {
                 return this.messages.filter((u) => {
-                    return u.senderId === this.sendToID || u.to == this.sendToID
+                    return u.from === this.sendToUsername || u.to === this.sendToUsername
                 })
             },
             activeChatUsers: function () {
-                return this.userList.filter((u) => {
-                    return this.currentChatUsers.includes(u.username)
-                })
+                return this.currentChatUsers;
+                // return this.userList.filter((u) => {
+                //     return this.currentChatUsers.includes(u.username)
+                // })
             }
         },
         created() {
@@ -180,35 +178,28 @@
         },
         methods: {
             initSocket() {
-                // this.socketOptions = {
-                //     transportOptions: {
-                //         polling: {
-                //             extraHeaders: {
-                //                 Authorization: 'Bearer ' + this.accessToken, //'Bearer h93t4293t49jt34j9rferek...'
-                //             }
-                //         }
-                //     }
-                // };
                 this.socket = io('http://localhost:81', {"query" : 'token=' + this.accessToken});
 
-                // Instant message receiver
+                // Instant private message receiver
                 let vthis = this
                 this.socket.on('chat', function (msg) {
+                    console.log("Receiver", msg);
                     if (!(vthis.currentChatUsers.includes(msg.username)))
                         vthis.currentChatUsers.push(msg.username)
+
                     vthis.messages.push(msg)
-                    console.log(vthis.sendToID, msg.senderId, vthis)
-                    if(vthis.sendToID !== msg.senderId)
+
+                    if(vthis.sendToUsername !== msg.from)
                         vthis.msgNotify.push(msg.username)
+
                 });
                 this.socket.emit('loginMe', this.username);
-                vthis.myId = vthis.socket.io.engine.id;
             },
             getUsers() {
                 // Get user list
                 this.socket.on('activeUsers', userList => {
                     this.userList = userList.filter(
-                        item => item.socketId !== this.myId,
+                        item => item !== this.username,
                     );
                 });
             },
@@ -231,8 +222,7 @@
             formSwitch(switchTo) {
                 this.currentForm = switchTo;
             },
-            selectUser(userId, username) {
-                this.sendToID = userId
+            selectUser(username) {
                 this.sendToUsername = username
                 if (!(this.currentChatUsers.includes(username)))
                     this.currentChatUsers.push(username)
@@ -257,17 +247,17 @@
                     });
             },
             sendMessage() {
-
-                if (this.sendToID === -1) {
+                if (this.sendToUsername === -1) {
                     Swal.fire('Oops', 'Select a user to chat!', 'error')
                     return;
                 }
+
                 if (this.validateInput()) {
                     const message = {
                         username: this.username,
                         text: this.message,
-                        to: this.sendToID,
-                        senderId: this.myId,
+                        to: this.sendToUsername,
+                        from: this.username,
                     };
                     this.message = ''
                     this.messages.push(message)

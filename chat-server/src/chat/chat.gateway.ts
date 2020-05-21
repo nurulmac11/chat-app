@@ -14,7 +14,8 @@ import {UserSchema} from "../users/jwt/user.schema";
 @WebSocketGateway(81)
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
-    private currentUsers = [];
+    private currentUsers = {};
+    private idToUsername = {};
 
     constructor(
         private jwtService: JwtService,
@@ -25,24 +26,23 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('msgToServer')
     handleMessage(client: Socket, payload: any): void {
-        let authToken = client.handshake.headers.authorization;
-        // get the token itself without "Bearer"
-        authToken = authToken.split(' ')[1];
-
-        const sendTo = payload.to;
-        const msg = payload.text;
-        const from = payload.username;
+        this.logger.log("Message received");
+        this.logger.log(payload);
+        const sendTo = this.currentUsers[payload.to];
+        /**
+         * Payload:
+         *  username, text, to, from
+         */
         this.server.to(sendTo).emit('chat', payload);
     }
 
     @SubscribeMessage('loginMe')
-    loginMe(client: Socket, payload: string): void {
+    loginMe(client: Socket, username: string): void {
         this.logger.log('LoginMe');
-        // payload contains user for now.
-        this.currentUsers.push({
-            username: payload,
-            socketId: client.id
-        })
+
+        this.currentUsers[username] = client.id
+        this.idToUsername[client.id] = username
+
         // join user to private room
         client.join(client.id);
     }
@@ -50,17 +50,22 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     afterInit(server: Server) {
         this.logger.log('Init');
         this.logger.log(this.currentUsers)
-        // this.server.emit('activeUsers', this.currentUsers);
+
+        // send user list continuously
         setInterval(() => {
-            server.emit('activeUsers', this.currentUsers);
+            server.emit('activeUsers', Object.keys(this.currentUsers));
         }, 2000);
     }
 
     handleDisconnect(client: Socket) {
         this.logger.log(`Client disconnected: ${client.id}`);
-        this.currentUsers = this.currentUsers.filter(item => item.socketId === client.id)
+
+        const username = this.idToUsername[client.id];
+        delete this.currentUsers[username];
+        delete this.idToUsername[client.id];
     }
 
+    // Handshake with jwt
     async handleConnection(client: Socket, ...args: any[]) {
         let userC;
         await this.jwtService.verify(
