@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_socket_io/flutter_socket_io.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:provider/provider.dart';
 
+import 'models/Messages.dart';
 import 'storage.dart';
 
 class OnlineUsers extends StatefulWidget {
@@ -53,14 +56,29 @@ class _OnlineUsersState extends State<OnlineUsers> {
 
       // Save socket to storage use it afterwards.
       storage.socket = socket;
+      receiveMessage(socket);
     });
-
     super.initState();
   }
 
-  void _setState(fn) {
+  void receiveMessage(socket) async {
+    // Start to listen chat messages
+    // TODO
+    // Move to initialization and save messages to storage ?
+    final msgs = Provider.of<Messages>(context, listen: false);
+    socket.on(
+        'chat',
+            (data) =>
+        {
+          print('msg received? '),
+          msgs.addMessage(
+              new Message(data['from'], data['to'], data['text'])),
+        });
+  }
+
+  void setState(fn) {
     if (mounted) {
-      setState(fn);
+      super.setState(fn);
     }
   }
 

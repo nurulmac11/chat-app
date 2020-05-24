@@ -8,6 +8,7 @@ import 'package:hex/hex.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'OnlineUsers.dart';
+import 'storage.dart';
 
 const base_url =  "http://10.0.2.2:3000";
 
@@ -46,6 +47,7 @@ class LoginScreen extends StatelessWidget {
         await prefs.setString(
             'accessToken', token_data['tokens']['accessToken']);
         await prefs.setString('username', data.name);
+        storage.username = data.name;
         return null;
       } catch (Exception){
         return "false";
