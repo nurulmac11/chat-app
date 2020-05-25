@@ -35,22 +35,21 @@ class LoginScreen extends StatelessWidget {
               'password': generateMd5(data.password),
             });
       } catch (Exception) {
-        return "Server has gone!";
+          return "Server has gone!";
       }
 
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-
-      final Map token_data = json.decode(response.body);
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final Map resp = json.decode(response.body);
       try {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString(
-            'accessToken', token_data['tokens']['accessToken']);
+            'accessToken', resp['tokens']['accessToken']);
         await prefs.setString('username', data.name);
         storage.username = data.name;
         return null;
       } catch (Exception){
-        return "false";
+        print(resp['message']);
+        return resp['message'];
+//        return response.body['message'].toString();
       }
     });
   }

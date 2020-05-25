@@ -23,16 +23,17 @@ export class UsersService {
     // JWT METHODS
     async validate(username: string, password: string): Promise<any> {
         const user = await this.findByUsername(username);
-        const pass = await bcrypt.hash(password, user.password);
+        const pass = await bcrypt.compare(password, user.password);
         if(pass)
             return user;
+        return false;
     }
 
     public async login(username: string, password:string): Promise< any | { status: number }>{
         const user = await this.validate(username, password);
         if(!user){
             this.logger.log('usr not found');
-            throw new BadRequestException('Invalid user');
+            return false;
         } else {
             this.logger.log('usr found!');
 

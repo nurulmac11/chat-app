@@ -62,7 +62,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         // send user list continuously
         setInterval(() => {
             server.emit('activeUsers', Object.keys(this.currentUsers));
-        }, 3000);
+        }, 1000);
     }
 
     handleDisconnect(client: Socket) {

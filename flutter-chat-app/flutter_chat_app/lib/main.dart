@@ -3,10 +3,14 @@ import './OnlineUsers.dart';
 import './LoginScreen.dart';
 import 'ChatScreen.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'models/Messages.dart';
 
-void main() => runApp(MyMaterial());
+
+void main() async {
+  runApp(MyMaterial());
+}
 
 class MyMaterial extends StatelessWidget {
   @override

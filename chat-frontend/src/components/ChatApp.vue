@@ -236,7 +236,8 @@
                         vthis.getUsers();
                     })
                     .catch(function (error) {
-                        Swal.fire('Oops', error['message'], 'error')
+                        console.log(error.response);
+                        Swal.fire('Oops', error.response.data.message, 'error')
                     });
             },
             sendMessage() {

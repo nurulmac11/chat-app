@@ -68,12 +68,11 @@ class _OnlineUsersState extends State<OnlineUsers> {
     final msgs = Provider.of<Messages>(context, listen: false);
     socket.on(
         'chat',
-            (data) =>
-        {
-          print('msg received? '),
-          msgs.addMessage(
-              new Message(data['from'], data['to'], data['text'])),
-        });
+        (data) => {
+              print('msg received? '),
+              msgs.addMessage(
+                  new Message(data['from'], data['to'], data['text'])),
+            });
   }
 
   void setState(fn) {
@@ -87,21 +86,66 @@ class _OnlineUsersState extends State<OnlineUsers> {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(title: Text('Chat App')),
-      body: ListView(
-        children: userList
-                .where((x) => x != username)
-                .map((user) => ListTile(
-                      leading: Icon(Icons.person),
-                      title: Text(user),
-                      onTap: () {
-                        Navigator.of(context)
-                            .pushNamed('/chat', arguments: {'chatTo': user});
-                      },
-                    ))
-                .toList() ??
-            [],
+      body: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: AppBar(
+            bottom: TabBar(
+              tabs: [
+                Tab(icon: Icon(Icons.chat)),
+                Tab(icon: Icon(Icons.people)),
+              ],
+            ),
+            title: Text('Chat App'),
+          ),
+          body: TabBarView(
+            children: [
+              Consumer<Messages>(builder: (context, myModel, child) {
+                return UserList(
+                    userList: myModel.getChatUsers(),
+                    username: username,
+                    unread: myModel.unread);
+              }),
+              UserList(userList: userList, username: username, unread: {}),
+            ],
+          ),
+        ),
       ),
+    );
+  }
+}
+
+class UserList extends StatelessWidget {
+  const UserList({
+    Key key,
+    @required this.userList,
+    @required this.username,
+    this.unread,
+  }) : super(key: key);
+
+  final List userList;
+  final String username;
+  final Map<String, int> unread;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: userList
+              .where((x) => x != username)
+              .map((user) => ListTile(
+                    leading: Icon(Icons.person),
+                    title: Text(user),
+                    trailing: unread.containsKey(user) && unread[user] > 0
+                        ? Text(unread[user].toString(),
+                    style: TextStyle(color: Colors.red), textScaleFactor: 1.2,)
+                        : Text(''),
+                    onTap: () {
+                      Navigator.of(context)
+                          .pushNamed('/chat', arguments: {'chatTo': user});
+                    },
+                  ))
+              .toList() ??
+          [],
     );
   }
 }

@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Logger, Param, Post, UseGuards} from "@nestjs/common";
+import {BadRequestException, Body, Controller, Get, Logger, Param, Post, UseGuards} from "@nestjs/common";
 import { UsersService } from "./users.service";
 
 @Controller("users")
@@ -47,14 +47,14 @@ export class UsersController {
     }
 
     @Post('login')
-    loginUser(
+    async loginUser(
         @Body('username') username: string,
         @Body('password') password: string,
-    ): any {
-        console.log("login request")
-        console.log(username)
-        console.log(password)
-        return this.usersService.login(username, password);
+    ): Promise<any> {
+        const result = await this.usersService.login(username, password);
+        if(!result)
+            throw new BadRequestException('Invalid user or password!');
+        return result;
     }
 
 }
