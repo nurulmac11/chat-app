@@ -26,6 +26,7 @@ class Messages with ChangeNotifier {
     if (!chatUsers.contains(msg.from) && msg.from != username) {
       // Incoming message
       this.addChatUser(msg.from);
+      storage.sendNotification(msg.from, msg.message, msg.from);
     } else if (msg.from == username && !chatUsers.contains(msg.to)) {
       // Outgoing message
       this.addChatUser(msg.to);

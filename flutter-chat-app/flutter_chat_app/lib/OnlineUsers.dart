@@ -69,7 +69,6 @@ class _OnlineUsersState extends State<OnlineUsers> {
     socket.on(
         'chat',
         (data) => {
-              print('msg received? '),
               msgs.addMessage(
                   new Message(data['from'], data['to'], data['text'])),
             });
