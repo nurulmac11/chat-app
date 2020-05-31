@@ -17,7 +17,8 @@ const state = {
     msgNotify: [],
     userList: [],
     sendToUsername: '',
-    socket: null
+    socket: null,
+    screen: 'userList'
 }
 
 export default new Vuex.Store({

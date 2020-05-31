@@ -1,8 +1,5 @@
 import * as api from '../api'
 import * as io from 'socket.io-client'
-import md5 from "md5";
-import Axios from "axios";
-import Swal from "sweetalert2";
 
 export const loginAction = ({ commit }, payload) => {
     return new Promise((resolve, reject) => {
@@ -40,21 +37,20 @@ export const getUsers = ({commit, state}) => {
         commit('updateUserList', userList);
     });
 }
-export const registerMe = () => {
-    let userData = {
-        'username': this.username,
-        'password': md5(this.password),
-        'email': this.email
-    }
-    Axios.post(this.baseUrl + '/users/create', userData)
-        .then(function (response) {
-            Swal.fire('Successful', 'Your account created.', 'success')
-            this.currentForm = 1;
-            console.log(response);
+export const registerMe = ({ dispatch }, payload) => {
+    return new Promise((resolve, reject) => {
+        api.registerApi(payload).then(response => {
+            let loginPayload = {
+                'username': payload.username,
+                'password': payload.password
+            }
+            dispatch('loginAction', loginPayload);
+            resolve(response)
+        }).catch(error => {
+            reject(error);
         })
-        .catch(function (error) {
-            console.log(error);
-        });
+    })
+
 }
 
 

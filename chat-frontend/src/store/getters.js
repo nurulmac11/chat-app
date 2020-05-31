@@ -1,5 +1,3 @@
-export const threads = state => state.threads
-
 export const isLoggedIn = state => {
     return !!state.accessToken
 }
@@ -7,7 +5,6 @@ export const isLoggedIn = state => {
 export const username = state => {
     return state.username
 }
-
 
 export const sendToUsername = state => {
     return state.sendToUsername
@@ -25,6 +22,12 @@ export const messages = state => {
     return state.messages
 }
 
+export const activeChatMessages = state => {
+    return state.messages.filter((u) => {
+        return u.from === state.sendToUsername || u.to === state.sendToUsername
+    })
+}
+
 export const userList = state => {
     return state.userList
 }
@@ -39,4 +42,8 @@ export const message = state => {
 
 export const msgNotify = state => {
     return state.msgNotify
+}
+
+export const screen = state => {
+    return state.screen
 }

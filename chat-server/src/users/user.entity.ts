@@ -8,7 +8,7 @@ export class User extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({unique: true})
     username: string;
 
     @Column()
@@ -22,10 +22,10 @@ export class User extends BaseEntity {
     @Column()
     age: number;
 
-    @Column("text")
+    @Column({type: "text", default: ''})
     biography: string;
 
-    @Column()
+    @Column({type: "text", default: ''})
     pp_url: string;
 
     @Column({type: "timestamp", default: () => "CURRENT_TIMESTAMP", name: "created_at"})
@@ -34,7 +34,7 @@ export class User extends BaseEntity {
     @Column({type: "timestamp", default: () => "CURRENT_TIMESTAMP", name: "last_online"})
     lastOnline: string;
 
-    @Column()
+    @Column({default: 0})
     conversations: number;
 
     @BeforeInsert()
@@ -42,7 +42,7 @@ export class User extends BaseEntity {
         this.password = await bcrypt.hash(this.password, 10);
     }
 
-    @Column()
+    @Column({unique: true})
     email: string;
 
     @OneToMany(type => Message, message => message.sender)

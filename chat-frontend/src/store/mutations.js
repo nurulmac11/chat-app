@@ -11,6 +11,10 @@ export default {
         state.sendToUsername = username;
     },
 
+    setScreen(state, screen) {
+        state.screen = screen;
+    },
+
     setMessage(state, message) {
         state.message = message;
     },
@@ -38,7 +42,7 @@ export default {
 
     updateUserList(state, userList) {
         state.userList = userList.filter(
-            item => item !== state.username,
+            item => item && item !== state.username,
         );
     },
 

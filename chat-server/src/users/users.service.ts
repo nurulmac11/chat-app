@@ -103,12 +103,18 @@ export class UsersService {
     }
 
 
-    async create(username: string, password: string, email:string): Promise<User> {
+    async create(username: string, password: string, email:string, gender:string, age:number): Promise<any> {
         const user = new User();
         user.username = username;
         user.password = password;
         user.email = email;
-        await user.save();
+        user.gender = gender;
+        user.age = age;
+        try {
+            await user.save();
+        } catch(Exception) {
+            return false;
+        }
         return user;
     }
 

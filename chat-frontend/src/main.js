@@ -4,12 +4,19 @@ import store from './store'
 import Vuex from 'vuex';
 import VueRouter from 'vue-router'
 import LoginPage from "./components/LoginPage";
-import ChatApp from "./components/ChatApp";
+import ChatApp from "./components/Main";
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faCogs, faUsers, faComments } from '@fortawesome/free-solid-svg-icons'
 
 Vue.config.productionTip = false
 
 Vue.use(Vuex);
 Vue.use(VueRouter);
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+library.add(faCogs);
+library.add(faUsers);
+library.add(faComments);
 
 const routes = [
   { path: '/', component: LoginPage, name: 'login' },

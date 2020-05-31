@@ -38,12 +38,17 @@ export class UsersController {
     }
 
     @Post('create')
-    createUser(
+    async createUser(
         @Body('username') username: string,
         @Body('password') password: string,
         @Body('email') email: string,
-    ): any {
-        return this.usersService.create(username, password, email);
+        @Body('gender') gender: string,
+        @Body('age') age: number,
+    ): Promise<any> {
+        const result = await this.usersService.create(username, password, email, gender, age);
+        if(!result)
+            throw new BadRequestException("This username has taken.");
+        return result;
     }
 
     @Post('login')

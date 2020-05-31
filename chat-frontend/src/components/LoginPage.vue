@@ -2,15 +2,44 @@
     <form class="form-signin">
         <h1 class="h3 mb-3 font-weight-normal">Chat App System</h1>
 
-        <label for="inputUsername" class="sr-only">Username</label>
-        <input type="text" id="inputUsername" v-model="username" class="form-control" placeholder="Username" required
-               autofocus>
+        <div class="form-group">
+            <label for="inputUsername" class="sr-only">Username</label>
+            <input type="text" id="inputUsername" v-model="username" class="form-control" placeholder="Username" required
+                   autofocus>
+        </div>
 
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" v-model="password" v-on:keyup.enter.exact="loginMe"
-               class="form-control" placeholder="Password" required>
+        <div class="form-group">
+            <label for="inputPassword" class="sr-only">Password</label>
+            <input type="password" id="inputPassword" v-model="password" v-on:keyup.enter.exact="loginMe"
+                   class="form-control" placeholder="Password" required>
+        </div>
 
-        <button class="btn btn-lg btn-primary btn-block" type="submit" @click.prevent="loginMe">Sign in</button>
+        <div v-if="register">
+            <div class="form-group">
+                <label for="inputEmail" class="sr-only">Password</label>
+                <input type="email" id="inputEmail" v-model="email"
+                       class="form-control" placeholder="example@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="inputGender" class="sr-only">Gender</label>
+                <select class="form-control" id="inputGender" v-model="gender">
+                    <option value="">Please select your gender</option>
+                    <option value="m">Male</option>
+                    <option value="f">Female</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="inputAge" class="sr-only">Age</label>
+                <input type="text" name="inputAge" id="inputAge" class="form-control" v-model="age" placeholder="Age">
+            </div>
+
+        </div>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit" @click.prevent="loginMe" v-if="!register">Sign in</button>
+
+        <button class="btn btn-lg btn-secondary btn-block" type="submit" @click.prevent="registerMe">Create Account</button>
         <p class="mt-5 mb-3 text-muted">&copy; 2020-2021</p>
     </form>
 </template>
@@ -24,6 +53,10 @@
         data() {
             return {
                 password: '',
+                register: false,
+                email: '',
+                gender: '',
+                age: 0,
             };
         },
         computed: {
@@ -49,6 +82,32 @@
                     Swal.fire('Fail', error.response.data.message, 'error');
                 });
             },
+            registerMe() {
+                if(this.register)
+                {
+                    // Validation
+                    if(this.age < 18) {
+                        Swal.fire('Fail', 'You have to be older than 18.', 'error');
+                        return;
+                    }
+
+                    let payload = {
+                        'username': this.username,
+                        'password': md5(this.password),
+                        'email': this.email,
+                        'gender': this.gender,
+                        'age': this.age
+                    }
+                    this.$store.dispatch('registerMe', payload).then(() => {
+                        Swal.fire('Successful', 'Your account created.', 'success')
+                    }).catch(error => {
+                        Swal.fire('Fail', error.response.data.message, 'error');
+                    });
+                } else {
+
+                    this.register = true;
+                }
+            }
         }
     }
 </script>
