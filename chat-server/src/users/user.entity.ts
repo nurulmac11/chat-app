@@ -14,6 +14,29 @@ export class User extends BaseEntity {
     @Column()
     password: string;
 
+    @Column({
+        length: 1
+    })
+    gender: string; // M/F
+
+    @Column()
+    age: number;
+
+    @Column("text")
+    biography: string;
+
+    @Column()
+    pp_url: string;
+
+    @Column({type: "timestamp", default: () => "CURRENT_TIMESTAMP", name: "created_at"})
+    createdAt: string;
+
+    @Column({type: "timestamp", default: () => "CURRENT_TIMESTAMP", name: "last_online"})
+    lastOnline: string;
+
+    @Column()
+    conversations: number;
+
     @BeforeInsert()
     async hashPassword() {
         this.password = await bcrypt.hash(this.password, 10);
@@ -21,12 +44,6 @@ export class User extends BaseEntity {
 
     @Column()
     email: string;
-
-    @Column({name: 'first_name', default: ''})
-    firstName: string;
-
-    @Column({name: 'last_name', default: ''})
-    lastName: string;
 
     @OneToMany(type => Message, message => message.sender)
     @JoinTable()

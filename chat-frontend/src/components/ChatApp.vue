@@ -90,41 +90,6 @@
             <a @click.prevent="formSwitch(-1)">Register</a>
         </div>
 
-
-        <div id="register_container" class="border col-4 offset-md-4" v-else>
-            <h2>Register Form</h2>
-            <input
-                    type="text"
-                    v-model="username"
-                    id="username"
-                    class="form-control"
-                    placeholder="Enter username..."
-            />
-            <br/>
-            <input
-                    type="password"
-                    v-model="password"
-                    id="password"
-                    class="form-control"
-                    placeholder="Enter password..."
-            />
-            <br/>
-            <input
-                    type="text"
-                    v-model="email"
-                    id="email"
-                    class="form-control"
-                    placeholder="Enter email..."
-                    v-on:keyup.enter.exact="registerMe"
-            />
-            <br/>
-            <button id="register" class="btn btn btn-primary" @click.prevent="registerMe">
-                Register
-            </button>
-            <br/>
-            <br/>
-            <a @click.prevent="formSwitch(0)">Login</a>
-        </div>
     </div>
 </template>
 
@@ -133,6 +98,7 @@
     import * as io from 'socket.io-client'
     import Axios from 'axios'
     import md5 from 'md5'
+    import {mapGetters} from "vuex";
 
     export default {
         name: 'ChatApp',
@@ -142,15 +108,9 @@
         data() {
             return {
                 title: 'Chat App',
-                accessToken: '',
-                username: '',
-                password: '',
                 email: '',
                 message: '',
                 currentForm: 0,
-                messages: [],
-                userList: [],
-                socket: null,
                 sendToUsername: null,
                 currentChatUsers: [], // Username
                 msgNotify: [],
@@ -162,12 +122,16 @@
                 return this.messages.filter((u) => {
                     return u.from === this.sendToUsername || u.to === this.sendToUsername
                 })
-            }
+            },
+            ...mapGetters(['accessToken', 'username', 'socket', 'messages', 'userList'])
         },
         created() {
 
         },
         mounted() {
+            this.currentForm = 1;
+            this.$store.dispatch('initSocket');
+            this.getUsers();
 
         },
         methods: {
@@ -221,25 +185,6 @@
                     this.currentChatUsers.push(username)
                 this.msgNotify.splice(this.msgNotify.indexOf(username), 1);
             },
-            loginMe() {
-                let userData = {
-                    'username': this.username,
-                    'password': md5(this.password),
-                }
-                let vthis = this;
-                Axios.post(this.baseUrl + '/users/login', userData)
-                    .then(function (response) {
-                        Swal.fire('Successful', 'You logged in!', 'success')
-                        vthis.currentForm = 1;
-                        vthis.accessToken = response['data']['tokens']['accessToken'];
-                        vthis.initSocket();
-                        vthis.getUsers();
-                    })
-                    .catch(function (error) {
-                        console.log(error.response);
-                        Swal.fire('Oops', error.response.data.message, 'error')
-                    });
-            },
             sendMessage() {
                 if (this.sendToUsername === -1) {
                     Swal.fire('Oops', 'Select a user to chat!', 'error')
@@ -287,4 +232,9 @@
     .border {
         border: 1px solid #fd0000 !important;
     }
+
+    .list-group-item, .card {
+        background: none;
+    }
+
 </style>

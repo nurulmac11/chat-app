@@ -47,9 +47,7 @@ class LoginScreen extends StatelessWidget {
         storage.username = data.name;
         return null;
       } catch (Exception){
-        print(resp['message']);
         return resp['message'];
-//        return response.body['message'].toString();
       }
     });
   }

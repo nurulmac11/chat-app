@@ -79,35 +79,51 @@ class _OnlineUsersState extends State<OnlineUsers> {
       super.setState(fn);
     }
   }
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
+
+    final List<Widget> _children = [
+      Consumer<Messages>(builder: (context, myModel, child) {
+        return UserList(
+            userList: myModel.getChatUsers(),
+            username: username,
+            unread: myModel.unread);
+      }),
+      UserList(userList: userList, username: username, unread: {}),
+    ];
+
+    void onTabTapped(int index) {
+      setState(() {
+        _currentIndex = index;
+      });
+    }
+
     return Scaffold(
       body: DefaultTabController(
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-            bottom: TabBar(
-              tabs: [
-                Tab(icon: Icon(Icons.chat)),
-                Tab(icon: Icon(Icons.people)),
-              ],
-            ),
             title: Text('Chat App'),
           ),
-          body: TabBarView(
-            children: [
-              Consumer<Messages>(builder: (context, myModel, child) {
-                return UserList(
-                    userList: myModel.getChatUsers(),
-                    username: username,
-                    unread: myModel.unread);
-              }),
-              UserList(userList: userList, username: username, unread: {}),
+          bottomNavigationBar: BottomNavigationBar(
+            onTap: onTabTapped, // new
+            currentIndex: _currentIndex, // new
+            items: [
+              BottomNavigationBarItem(
+                icon: new Icon(Icons.message),
+                title: new Text('Chat'),
+              ),
+              BottomNavigationBarItem(
+                icon: new Icon(Icons.people),
+                title: new Text('Users'),
+              ),
             ],
           ),
+          body: _children[_currentIndex],
         ),
       ),
     );

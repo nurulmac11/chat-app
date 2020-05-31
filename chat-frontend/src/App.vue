@@ -1,16 +1,13 @@
 <template>
     <div id="app">
-        <ChatApp />
+        <router-view></router-view>
     </div>
 </template>
 
 <script>
-import ChatApp from './components/ChatApp.vue';
-
 export default {
     name: 'App',
     components: {
-        ChatApp,
     },
 };
 </script>
@@ -21,7 +18,6 @@ export default {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    color: #2c3e50;
     margin-top: 60px;
 }
 </style>
