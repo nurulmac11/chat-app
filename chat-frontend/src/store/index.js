@@ -8,11 +8,13 @@ Vue.use(Vuex)
 
 const state = {
     username: '',
+    email: '',
     accessToken: '',
     refreshToken: '',
-    curentChatUsers: [],
+    currentChatUsers: [],
     messages: [],
-    notifications: [],
+    message: '',
+    msgNotify: [],
     userList: [],
     sendToUsername: '',
     socket: null
