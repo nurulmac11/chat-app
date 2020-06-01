@@ -1,24 +1,20 @@
 <template>
-    <div id="app">
-
-        <h1 class="text-center">{{ title }}</h1>
-
-
+    <div id="inner-app">
         <div v-if="screen === 'chatList'">
-            <UserList :userList="currentChatUsers"/>
+            <UserListPage :userList="currentChatUsers"/>
         </div>
 
 
         <div v-if="screen === 'chat'">
-            <Chat/>
+            <ChatPage/>
         </div>
 
 
         <div v-if="screen === 'userList'">
-            <UserList :userList="userList"/>
+            <UserListPage :userList="userList"/>
         </div>
 
-        <ul class="nav nav-pills nav-fill">
+        <ul class="nav nav-pills nav-fill fixed-bottom">
             <li class="nav-item">
                 <a class="nav-link" :class="{ active: screen === 'chatList' }" href="#"
                    @click.prevent="screen = 'chatList'"><font-awesome-icon icon="comments" /></a>
@@ -38,15 +34,15 @@
 
 <script>
     import {mapGetters} from "vuex";
-    import UserList from "./UserList";
-    import Chat from "./Chat";
+    import ChatPage from "./ChatPage";
+    import UserListPage from "./UserListPage";
 
     export default {
         name: 'Main',
         props: {},
         components: {
-            UserList,
-            Chat
+            UserListPage,
+            ChatPage
         },
         data() {
             return {
@@ -79,6 +75,26 @@
     };
 </script>
 
-<style scoped>
+<style>
+    html, body {
+        height: 100%; margin: 0px; padding: 0px;
+    }
+    .container {
+        height: 100%;
+    }
+    body {
+        background: url("../assets/backgrounds/c2.jpg") no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        color: white;
+    }
 
+    #app {
+        background-color: rgba(0, 0, 0, 0.2);
+        height: 100%;
+        padding-top: 50px;
+        padding-bottom: 50px
+    }
 </style>

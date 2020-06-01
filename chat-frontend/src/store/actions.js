@@ -23,7 +23,7 @@ export const initSocket = ({ commit, state }) => {
 
         commit('addMessage', msg);
 
-        if(state.sendToUsername !== msg.from)
+        if(state.sendToUsername !== msg.from || state.screen !== 'chat')
             commit('addNotification', msg.username);
 
     });
@@ -53,6 +53,13 @@ export const registerMe = ({ dispatch }, payload) => {
 
 }
 
+const currentTime = () => {
+    const today = new Date();
+    const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    const dateTime = date +' '+ time;
+    return dateTime;
+}
 
 export const sendMessage = ({commit, state}) => {
     const message = {
@@ -60,6 +67,7 @@ export const sendMessage = ({commit, state}) => {
         text: state.message,
         to: state.sendToUsername,
         from: state.username,
+        time: currentTime()
     };
     commit('resetMessage');
     commit('addMessage', message)

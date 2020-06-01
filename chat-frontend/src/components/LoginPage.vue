@@ -112,9 +112,8 @@
     }
 </script>
 
-<style>
+<style scoped>
     body {
-        background: url("../assets/backgrounds/c2.jpg") no-repeat center center fixed;
         -webkit-background-size: cover;
         -moz-background-size: cover;
         -o-background-size: cover;
@@ -130,12 +129,6 @@
         justify-content: center;
         padding-top: 40px;
         padding-bottom: 40px;
-        background-color: #f5f5f5;
-        color: white;
-    }
-
-    #app {
-        background-color: rgba(0, 0, 0, 0.2);
     }
 
     .form-signin {

@@ -29,7 +29,8 @@ export default {
     },
 
     addNotification(state, user) {
-        state.msgNotify.push(user);
+        if(!state.msgNotify.includes(user))
+            state.msgNotify.push(user);
     },
 
     clearNotification(state, username) {
