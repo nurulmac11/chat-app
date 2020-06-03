@@ -9,6 +9,7 @@ Vue.use(Vuex)
 const state = {
     username: '',
     email: '',
+    profile: {},
     accessToken: '',
     refreshToken: '',
     currentChatUsers: [],

@@ -76,7 +76,6 @@
                     'password': md5(this.password)
                 }
                 this.$store.dispatch('loginAction', userData).then(() => {
-                    Swal.fire('Successful', 'Logged in succesfully.', 'success');
                     this.$router.replace({ name: 'chat' });
                 }).catch(error => {
                     Swal.fire('Fail', error.response.data.message, 'error');

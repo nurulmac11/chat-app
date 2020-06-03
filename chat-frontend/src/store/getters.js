@@ -6,6 +6,10 @@ export const username = state => {
     return state.username
 }
 
+export const profile = state => {
+    return state.profile
+}
+
 export const sendToUsername = state => {
     return state.sendToUsername
 }

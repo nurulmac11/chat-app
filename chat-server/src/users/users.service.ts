@@ -29,6 +29,22 @@ export class UsersService {
         return false;
     }
 
+    public userSerializer(user: User): Object {
+        return {
+            id: user.id,
+            username: user.username,
+            gender: user.gender,
+            age: user.age,
+            biography: user.biography,
+            ppUrl: user.pp_url,
+            createdAt: user.createdAt,
+            lastOnline: user.lastOnline,
+            conversations: user.conversations,
+            email: user.email,
+            isActive: user.isActive
+        }
+    }
+
     public async login(username: string, password:string): Promise< any | { status: number }>{
         const user = await this.validate(username, password);
         if(!user){
@@ -47,6 +63,7 @@ export class UsersService {
             tokens,
             // eslint-disable-next-line @typescript-eslint/camelcase
             user_id: user.id,
+            profile: this.userSerializer(user),
             status: 200
         };
     }

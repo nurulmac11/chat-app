@@ -1,5 +1,6 @@
 export default {
     loginMutation(state, response) {
+        state.profile = response.data.profile;
         state.accessToken = response.data.tokens.accessToken;
     },
 

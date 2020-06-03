@@ -14,6 +14,10 @@
             <UserListPage :userList="userList"/>
         </div>
 
+        <div v-if="screen === 'settings'">
+            <SettingsPage />
+        </div>
+
         <ul class="nav nav-pills nav-fill fixed-bottom">
             <li class="nav-item">
                 <a class="nav-link" :class="{ active: screen === 'chatList' }" href="#"
@@ -36,13 +40,15 @@
     import {mapGetters} from "vuex";
     import ChatPage from "./ChatPage";
     import UserListPage from "./UserListPage";
+    import SettingsPage from "./SettingsPage";
 
     export default {
         name: 'Main',
         props: {},
         components: {
             UserListPage,
-            ChatPage
+            ChatPage,
+            SettingsPage
         },
         data() {
             return {
