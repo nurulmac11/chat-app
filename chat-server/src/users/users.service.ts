@@ -103,6 +103,24 @@ export class UsersService {
         return clientSchema;
     }
 
+    async findUserById(id: number): Promise<User> {
+        return await this.usersRepository.findOne(id);
+    }
+
+    async updateBio(id: number, bio: string): Promise<Record<string, any>> {
+        const isUpdated = await createQueryBuilder()
+            .update(User)
+            .set({ biography: bio })
+            .where("id = :id", { id: id })
+            .execute();
+        if(isUpdated) {
+            const user = await this.findUserById(id);
+            return this.userSerializer(user);
+        }
+    }
+
+    a
+
 
     async findByUsername(username: string): Promise<any> {
         const user = await createQueryBuilder('User')

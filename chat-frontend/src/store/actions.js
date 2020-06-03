@@ -15,7 +15,7 @@ export const loginAction = ({commit}, payload) => {
 export const updateBio = ({commit}, payload) => {
     return new Promise((resolve, reject) => {
         api.updateBio(payload).then(response => {
-            commit('setBio', response);
+            commit('setProfile', response);
             resolve(response);
         }).catch(error => {
             reject(error);

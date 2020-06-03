@@ -1,6 +1,6 @@
-import {BadRequestException, Body, Controller, Get, Logger, Param, Post, UseGuards, Request} from "@nestjs/common";
-import { UsersService } from "./users.service";
-import { AuthGuard } from '@nestjs/passport';
+import {BadRequestException, Body, Controller, Get, Logger, Param, Post, Request, UseGuards} from "@nestjs/common";
+import {UsersService} from "./users.service";
+import {AuthGuard} from '@nestjs/passport';
 
 @Controller("users")
 export class UsersController {
@@ -56,11 +56,9 @@ export class UsersController {
     @UseGuards(AuthGuard('jwt'))
     async updateBio(
         @Request() req,
-        @Body('biography') bio: string,
+        @Body('bio') bio: string,
     ): Promise<any> {
-        console.log(req.user,'xddd');
-        // const result = await this.usersService.create(username, password, email, gender, age);
-        return '';
+        return await this.usersService.updateBio(req.user.id, bio);
     }
 
     @Post('login')

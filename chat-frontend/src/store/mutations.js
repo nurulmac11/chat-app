@@ -12,6 +12,10 @@ export default {
         state.profile.biography = response.data.biography;
     },
 
+    setProfile(state, response) {
+        state.profile = response.data
+    },
+
     setSendTo(state, username) {
         state.sendToUsername = username;
     },
