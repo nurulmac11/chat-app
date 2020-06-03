@@ -29,7 +29,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" :class="{ active: screen === 'settings' }" href="#"
-                   @click.prevent="screen = 'settings'"><font-awesome-icon icon="cogs" /> </a>
+                   @click.prevent="screen = 'settings'"><font-awesome-icon icon="user" /> </a>
             </li>
         </ul>
 

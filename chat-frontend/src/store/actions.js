@@ -1,7 +1,7 @@
 import * as api from '../api'
 import * as io from 'socket.io-client'
 
-export const loginAction = ({ commit }, payload) => {
+export const loginAction = ({commit}, payload) => {
     return new Promise((resolve, reject) => {
         api.loginApi(payload).then(response => {
             commit('loginMutation', response);
@@ -12,9 +12,19 @@ export const loginAction = ({ commit }, payload) => {
     })
 }
 
+export const updateBio = ({commit}, payload) => {
+    return new Promise((resolve, reject) => {
+        api.updateBio(payload).then(response => {
+            commit('setBio', response);
+            resolve(response);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
 
-export const initSocket = ({ commit, state }) => {
-    let socket = io('http://localhost:81', {"query" : 'token=' + state.accessToken});
+export const initSocket = ({commit, state}) => {
+    let socket = io('http://localhost:81', {"query": 'token=' + state.accessToken});
 
     // Instant private message receiver
     socket.on('chat', function (msg) {
@@ -23,7 +33,7 @@ export const initSocket = ({ commit, state }) => {
 
         commit('addMessage', msg);
 
-        if(state.sendToUsername !== msg.from || state.screen !== 'chat')
+        if (state.sendToUsername !== msg.from || state.screen !== 'chat')
             commit('addNotification', msg.username);
 
     });
@@ -37,7 +47,8 @@ export const getUsers = ({commit, state}) => {
         commit('updateUserList', userList);
     });
 }
-export const registerMe = ({ dispatch }, payload) => {
+
+export const registerMe = ({dispatch}, payload) => {
     return new Promise((resolve, reject) => {
         api.registerApi(payload).then(response => {
             let loginPayload = {
@@ -55,9 +66,9 @@ export const registerMe = ({ dispatch }, payload) => {
 
 const currentTime = () => {
     const today = new Date();
-    const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
     const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    const dateTime = date +' '+ time;
+    const dateTime = date + ' ' + time;
     return dateTime;
 }
 

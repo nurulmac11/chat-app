@@ -2,15 +2,52 @@
     <div class="container-fluid h-100">
         <div class="row justify-content-center h-100">
             <div class="col-md-12 col-xl-9">
-                <div class="card mb-sm-3 mb-md-0 contacts_card profile">
-                    <div class="avatar">
-                        <img src="https://www.biography.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cg_face%2Cq_auto:good%2Cw_300/MTU0NjQzOTk4OTQ4OTkyMzQy/ansel-elgort-poses-for-a-portrait-during-the-baby-driver-premiere-2017-sxsw-conference-and-festivals-on-march-11-2017-in-austin-texas-photo-by-matt-winkelmeyer_getty-imagesfor-sxsw-square.jpg" alt="Circle Image" class="img-raised rounded-circle img-fluid">
-                    </div>
-                    <div class="name">
-                        <h3 class="title">{{ username }}</h3>
+                <div class="card mb-sm-3 mb-md-0 profile">
+                    <div class="header">
+                        <div class="avatar">
+                            <img src="https://www.biography.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cg_face%2Cq_auto:good%2Cw_300/MTU0NjQzOTk4OTQ4OTkyMzQy/ansel-elgort-poses-for-a-portrait-during-the-baby-driver-premiere-2017-sxsw-conference-and-festivals-on-march-11-2017-in-austin-texas-photo-by-matt-winkelmeyer_getty-imagesfor-sxsw-square.jpg"
+                                 alt="Circle Image" class="img-raised rounded-circle img-fluid">
+                        </div>
+                        <div class="name">
+                            <h3 class="title">{{ profile.username }}</h3>
+                            <p v-if="mode === 'view'">{{ profile.biography }}</p>
+                            <input type="text" class="form-control" v-model="newBio" v-else/>
+                            <div class="icons">
+                                <div class="left">
+                                    <font-awesome-icon :icon="['fas', 'birthday-cake']"/>
+                                    <br/>{{ profile.age}}
+                                </div>
+                                <div class="left">
+                                    <font-awesome-icon :icon="['fas', 'comments']"/>
+                                    <br/>{{ profile.conversations }}
+                                </div>
+                                <div class="left">
+                                    <font-awesome-icon :icon="['fas', 'venus-mars']"/>
+                                    <br/>{{ profile.gender }}
+                                </div>
+                                <div class="left edit" v-if="mode === 'view'" @click.prevent="mode = 'edit'">
+                                    <font-awesome-icon :icon="['fas', 'cogs']"/>
+                                    <br/>Edit
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
+                    <div class="row body">
+                        <div class="col-md-4">
+                            <p>Email:</p>
+                        </div>
+                        <div class="col-md-8">
+                            <p>{{ profile.email }}</p>
+                        </div>
+
+                    </div>
+                    <button type="button" class="btn btn-success" v-if="mode==='edit'" @click.prevent="updateBio">
+                        Save
+                    </button>
                 </div>
+
+
             </div>
         </div>
     </div>
@@ -21,46 +58,75 @@
 
     export default {
         name: "SettingsPage",
-        props: {
-            userList: Array,
+        data() {
+            return {
+                mode: 'view',
+                newBio: ''
+            }
         },
         computed: {
-            ...mapGetters(['msgNotify', 'username'])
+            ...mapGetters(['profile']),
+        },
+        mounted() {
+            this.newBio = this.profile.biography;
         },
         methods: {
-
+            updateBio () {
+                this.mode = 'view';
+                this.$store.dispatch('updateBio', this.newBio);
+            }
         }
     }
 </script>
 
 <style scoped>
-    .profile {
+    .edit {
+        cursor: pointer;
+    }
+
+    .profile .header {
         text-align: center;
+    }
+
+    .left {
+        float: left;
+        width: 100px;
+    }
+
+    .icons {
+        margin: 0 auto;
+        display: table;
+    }
+
+    .profile .body {
+        margin-left: 50px;
+        margin-top: 50px
     }
 
     .profile img {
         max-width: 100px;
         width: 100%;
         margin: 0 auto;
-        -webkit-transform: translate3d(0,-50%,0);
-        -moz-transform: translate3d(0,-50%,0);
-        -o-transform: translate3d(0,-50%,0);
-        -ms-transform: translate3d(0,-50%,0);
-        transform: translate3d(0,-10%,0);
+        -webkit-transform: translate3d(0, -50%, 0);
+        -moz-transform: translate3d(0, -50%, 0);
+        -o-transform: translate3d(0, -50%, 0);
+        -ms-transform: translate3d(0, -50%, 0);
+        transform: translate3d(0, -10%, 0);
     }
 
     .img-raised {
-        box-shadow: 0 5px 15px -8px rgba(0,0,0,.24), 0 8px 10px -5px rgba(0,0,0,.2);
+        box-shadow: 0 5px 15px -8px rgba(0, 0, 0, .24), 0 8px 10px -5px rgba(0, 0, 0, .2);
     }
 
     .rounded-circle {
-        border-radius: 50%!important;
+        border-radius: 50% !important;
     }
 
     .img-fluid, .img-thumbnail {
         max-width: 100%;
         height: auto;
     }
+
     body, html {
         height: 100%;
         margin: 0;

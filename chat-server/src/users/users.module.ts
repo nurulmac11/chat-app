@@ -5,6 +5,7 @@ import { UsersController } from "./users.controller";
 import { User } from "./user.entity";
 import { Message } from "../messages/messages.entity";
 import {JwtService} from "./jwt/jwt.service";
+import {JwtStrategy} from "./jwt/jwt.strategy";
 
 @Module({
     imports: [
@@ -13,7 +14,7 @@ import {JwtService} from "./jwt/jwt.service";
             Message,
         ]),
     ],
-    providers: [UsersService, JwtService],
+    providers: [UsersService, JwtService, JwtStrategy],
     controllers: [UsersController],
     exports: [JwtService, UsersService]
 })

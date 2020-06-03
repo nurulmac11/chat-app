@@ -8,6 +8,10 @@ export default {
         state.username = username;
     },
 
+    setBio(state, response) {
+        state.profile.biography = response.data.biography;
+    },
+
     setSendTo(state, username) {
         state.sendToUsername = username;
     },

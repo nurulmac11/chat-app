@@ -29,7 +29,7 @@ export class UsersService {
         return false;
     }
 
-    public userSerializer(user: User): Object {
+    public userSerializer(user: User): Record<string, any> {
         return {
             id: user.id,
             username: user.username,

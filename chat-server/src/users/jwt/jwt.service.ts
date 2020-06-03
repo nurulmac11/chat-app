@@ -39,6 +39,10 @@ export class JwtService {
         return { accessToken, refreshToken };
     }
 
+    async validate(payload: any): Promise<any> {
+        return await this.usersService.findById((payload.sub._id));
+    }
+
     /**
      * Validates the token
      *
