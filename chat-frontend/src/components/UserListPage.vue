@@ -12,7 +12,7 @@
                         </div>
                     </div>
                     <div class="card-body contacts_body">
-                        <ui class="contacts">
+                        <ul class="contacts">
                             <li
                                 v-for="(user, index) in userList"
                                 :key="index"
@@ -31,7 +31,7 @@
                                 </div>
                             </li>
 
-                        </ui>
+                        </ul>
                     </div>
                     <div class="card-footer"></div>
                 </div>
@@ -44,9 +44,12 @@
     import {mapGetters} from "vuex";
 
     export default {
-        name: "UserList",
+        name: "UserListPage",
         props: {
-            userList: Array,
+            userList: {
+                type: Array,
+                default: () => []
+            }
         },
         computed: {
             screen: {

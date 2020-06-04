@@ -24,7 +24,7 @@ export const updateBio = ({commit}, payload) => {
 }
 
 export const initSocket = ({commit, state}) => {
-    let socket = io('http://localhost:81', {"query": 'token=' + state.accessToken});
+    let socket = io('http://192.168.0.12:81', {"query": 'token=' + state.accessToken});
 
     // Instant private message receiver
     socket.on('chat', function (msg) {

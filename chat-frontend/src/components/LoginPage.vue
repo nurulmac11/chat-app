@@ -78,6 +78,7 @@
                 this.$store.dispatch('loginAction', userData).then(() => {
                     this.$router.replace({ name: 'chat' });
                 }).catch(error => {
+                    console.log(error);
                     Swal.fire('Fail', error.response.data.message, 'error');
                 });
             },

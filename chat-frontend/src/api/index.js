@@ -1,7 +1,7 @@
 import Axios from "axios"
 import store from '../store/index'
 
-const baseURL = "http://localhost:3000"
+const baseURL = "http://192.168.0.12:3000"
 
 export function loginApi(userData) {
     return Axios.post(baseURL + '/users/login', userData)
