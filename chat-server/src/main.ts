@@ -1,5 +1,6 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
+import { WsAdapter } from '@nestjs/platform-ws';
 import { ChatGateway } from './chat/chat.gateway';
 import {NestExpressApplication} from "@nestjs/platform-express";
 
@@ -11,8 +12,8 @@ async function bootstrap() {
         cors: true
     });
 
-
     app.enableCors();
+
     app.use((req, res, next) => {
         res.header('Access-Control-Allow-Origin', '*');
         res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');

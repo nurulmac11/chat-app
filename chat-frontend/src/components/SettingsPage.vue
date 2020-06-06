@@ -5,8 +5,22 @@
                 <div class="card mb-sm-3 mb-md-0 profile">
                     <div class="header">
                         <div class="avatar">
-                            <img src="https://www.biography.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cg_face%2Cq_auto:good%2Cw_300/MTU0NjQzOTk4OTQ4OTkyMzQy/ansel-elgort-poses-for-a-portrait-during-the-baby-driver-premiere-2017-sxsw-conference-and-festivals-on-march-11-2017-in-austin-texas-photo-by-matt-winkelmeyer_getty-imagesfor-sxsw-square.jpg"
+                            <img :src="imgPath"
                                  alt="Circle Image" class="img-raised rounded-circle img-fluid">
+                            <br/>
+                            <a class="btn" @click="toggleShow">set avatar</a>
+                            <my-upload field="avatar"
+                                       @crop-success="cropSuccess"
+                                       @crop-upload-success="cropUploadSuccess"
+                                       @crop-upload-fail="cropUploadFail"
+                                       v-model="show"
+                                       langType="en"
+                                       :width="300"
+                                       :height="300"
+                                       :url="server + '/users/update-avatar'"
+                                       :params="params"
+                                       :headers="headers"
+                                       img-format="png"></my-upload>
                         </div>
                         <div class="name">
                             <h3 class="title">{{ profile.username }}</h3>
@@ -55,22 +69,47 @@
 
 <script>
     import {mapGetters} from "vuex";
+    import myUpload from 'vue-image-crop-upload';
 
     export default {
         name: "SettingsPage",
+        components: {
+            'my-upload': myUpload
+        },
         data() {
             return {
                 mode: 'view',
-                newBio: ''
+                newBio: '',
+                show: false,
+                params: {
+                },
+                headers: {
+                    Authorization: 'Bearer ' + this.$store.state.accessToken
+                },
             }
         },
         computed: {
-            ...mapGetters(['profile']),
+            ...mapGetters(['profile', 'server', 'accessToken', 'imgPath']),
         },
         mounted() {
             this.newBio = this.profile.biography;
         },
         methods: {
+            toggleShow() {
+                this.show = !this.show;
+            },
+            cropSuccess(imgDataUrl, field){
+                console.log('-------- crop success --------',field, imgDataUrl);
+            },
+            cropUploadSuccess(jsonData, field){
+                console.log(field);
+                this.$store.commit('setProfileRaw', jsonData);
+                this.show = false;
+            },
+
+            cropUploadFail(status, field){
+                console.log(status, field);
+            },
             updateBio () {
                 this.mode = 'view';
                 this.$store.dispatch('updateBio', this.newBio);

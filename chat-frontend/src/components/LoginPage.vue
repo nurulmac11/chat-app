@@ -76,6 +76,8 @@
                     'password': md5(this.password)
                 }
                 this.$store.dispatch('loginAction', userData).then(() => {
+                    this.$store.dispatch('initSocket');
+                    this.$store.dispatch('randomUsers');
                     this.$router.replace({ name: 'chat' });
                 }).catch(error => {
                     console.log(error);

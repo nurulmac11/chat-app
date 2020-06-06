@@ -1,7 +1,7 @@
 <template>
     <div id="inner-app">
         <div v-if="screen === 'chatList'">
-            <UserListPage :userList="currentChatUsers"/>
+            <UserListPage :userList="currentChatUsers" mode="chat"/>
         </div>
 
 
@@ -11,7 +11,7 @@
 
 
         <div v-if="screen === 'userList'">
-            <UserListPage :userList="userList"/>
+            <UserListPage :userList="randomUserList" mode="users"/>
         </div>
 
         <div v-if="screen === 'settings'">
@@ -66,7 +66,7 @@
                 }
             },
             ...mapGetters(['accessToken', 'username', 'socket', 'messages',
-                'userList', 'currentChatUsers', 'msgNotify', 'sendToUsername'])
+                'randomUserList', 'currentChatUsers', 'msgNotify'])
         },
         created() {
 
@@ -74,8 +74,6 @@
         mounted() {
             if (!this.accessToken)
                 this.$router.replace({name: 'login'});
-            this.$store.dispatch('initSocket');
-            this.$store.dispatch('getUsers');
         },
         methods: {},
     };

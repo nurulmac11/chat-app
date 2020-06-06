@@ -5,6 +5,11 @@
                 <div class="card mb-sm-3 mb-md-0 contacts_card">
                     <div class="card-header">
                         <div class="input-group">
+                            <button type="button" class="btn btn-success"
+                                    v-on:click="refresh()"
+                                    v-if="mode === 'users'"
+                            >Refresh
+                            </button>
                             <input type="text" placeholder="Search..." name="" class="form-control search">
                             <div class="input-group-prepend">
                                 <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
@@ -14,19 +19,20 @@
                     <div class="card-body contacts_body">
                         <ul class="contacts">
                             <li
-                                v-for="(user, index) in userList"
-                                :key="index"
-                                v-on:click="selectUser(user)"
+                                    v-for="user in userList"
+                                    :key="user.id + mode"
+                                    v-on:click="selectUser(user)"
                             >
                                 <div class="d-flex bd-highlight contact-li">
                                     <div class="img_cont">
-                                        <img src="https://2.bp.blogspot.com/-8ytYF7cfPkQ/WkPe1-rtrcI/AAAAAAAAGqU/FGfTDVgkcIwmOTtjLka51vineFBExJuSACLcBGAs/s320/31.jpg"
+                                        <img :src="server + '/users/avatar/' + user.ppUrl"
                                              class="rounded-circle user_img">
-                                        <span class="online_icon offline" v-if="msgNotify.includes(user)"></span>
+                                        <span class="online_icon offline"
+                                              v-if="msgNotify.includes(user.username)"></span>
                                     </div>
                                     <div class="user_info">
-                                        <span>{{ user }}</span>
-                                        <p>{{ user }} left 7 mins ago</p>
+                                        <span>{{ user.username }}</span>
+                                        <p><time-ago :datetime="user.lastOnline" long></time-ago></p>
                                     </div>
                                 </div>
                             </li>
@@ -42,13 +48,21 @@
 
 <script>
     import {mapGetters} from "vuex";
+    import TimeAgo from 'vue2-timeago'
 
     export default {
         name: "UserListPage",
+        components: {
+            TimeAgo,
+        },
         props: {
             userList: {
                 type: Array,
                 default: () => []
+            },
+            mode: {
+                type: String,
+                default: ''
             }
         },
         computed: {
@@ -60,16 +74,19 @@
                     this.$store.commit('setScreen', value);
                 }
             },
-            ...mapGetters(['msgNotify'])
+            ...mapGetters(['msgNotify', 'server'])
         },
         methods: {
-            selectUser(username) {
+            selectUser(profile) {
                 // Writing to username
-                this.$store.commit('setSendTo', username);
-                this.$store.commit('addChatUser', username);
-                this.$store.commit('clearNotification', username);
+                this.$store.commit('setCurrentChat', profile);
+                this.$store.commit('addChatUser', profile);
+                this.$store.commit('clearNotification', profile);
                 this.$store.commit('setScreen', 'chat');
             },
+            refresh() {
+                this.$store.dispatch('randomUsers');
+            }
         }
     }
 </script>
@@ -338,10 +355,12 @@
             margin-bottom: 15px !important;
         }
     }
+
     .contact-li {
         background-color: rgba(19, 93, 94, 0.3);
         background-clip: padding-box;
     }
+
     .contact-li:hover {
         background-color: rgba(19, 93, 94, 0.8);
     }

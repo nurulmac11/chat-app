@@ -10,6 +10,7 @@ const state = {
     username: '',
     email: '',
     profile: {},
+    randomUserList: [],
     accessToken: '',
     refreshToken: '',
     currentChatUsers: [],
@@ -17,9 +18,10 @@ const state = {
     message: '',
     msgNotify: [],
     userList: [],
-    sendToUsername: '',
+    chattingWith: {},
     socket: null,
-    screen: 'userList'
+    screen: 'userList',
+    server: 'http://localhost:3000',
 }
 
 export default new Vuex.Store({

@@ -6,6 +6,7 @@ import { User } from "./user.entity";
 import { Message } from "../messages/messages.entity";
 import {JwtService} from "./jwt/jwt.service";
 import {JwtStrategy} from "./jwt/jwt.strategy";
+import {MulterModule} from "@nestjs/platform-express";
 
 @Module({
     imports: [
@@ -13,6 +14,9 @@ import {JwtStrategy} from "./jwt/jwt.strategy";
             User,
             Message,
         ]),
+        MulterModule.register({
+            dest: './uploads/avatar',
+        })
     ],
     providers: [UsersService, JwtService, JwtStrategy],
     controllers: [UsersController],

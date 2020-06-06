@@ -23,29 +23,32 @@ export const updateBio = ({commit}, payload) => {
     })
 }
 
+export const randomUsers = ({commit}) => {
+    return new Promise((resolve, reject) => {
+        api.userList().then(response => {
+            commit('setRandomUserList', response);
+            resolve(response);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
 export const initSocket = ({commit, state}) => {
-    let socket = io('http://192.168.0.12:81', {"query": 'token=' + state.accessToken});
+    let socket = io('http://localhost:81', {"query": 'token=' + state.accessToken});
 
     // Instant private message receiver
     socket.on('chat', function (msg) {
-        if (!(state.currentChatUsers.includes(msg.username)))
-            commit('addChatUser', msg.username);
-
+        if (!(state.currentChatUsers.includes(msg.from)))
+            commit('addChatUser', msg.from);
         commit('addMessage', msg);
 
-        if (state.sendToUsername !== msg.from || state.screen !== 'chat')
-            commit('addNotification', msg.username);
+        if (state.chattingWith.username !== msg.from.username || state.screen !== 'chat')
+            commit('addNotification', msg.from.username);
 
     });
     socket.emit('loginMe', state.username);
     commit('saveSocket', socket);
-}
-
-export const getUsers = ({commit, state}) => {
-    // Get user list
-    state.socket.on('activeUsers', userList => {
-        commit('updateUserList', userList);
-    });
 }
 
 export const registerMe = ({dispatch}, payload) => {
@@ -74,15 +77,14 @@ const currentTime = () => {
 
 export const sendMessage = ({commit, state}) => {
     const message = {
-        username: state.username,
         text: state.message,
-        to: state.sendToUsername,
-        from: state.username,
+        to: state.chattingWith,
+        from: state.profile,
         time: currentTime()
     };
     commit('resetMessage');
     commit('addMessage', message)
     state.socket.emit('msgToServer', message)
-    if (!(state.currentChatUsers.includes(state.sendToUsername)))
-        commit('addChatUser', state.sendToUsername)
+    if (!(state.currentChatUsers.includes(state.chattingWith)))
+        commit('addChatUser', state.chattingWith)
 }

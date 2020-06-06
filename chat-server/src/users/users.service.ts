@@ -1,9 +1,9 @@
 import {BadRequestException, Injectable, Logger} from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Brackets, createQueryBuilder, Repository } from "typeorm";
-import { User } from "./user.entity";
-import { Message } from "../messages/messages.entity";
-import { JwtService } from './jwt/jwt.service';
+import {InjectRepository} from "@nestjs/typeorm";
+import {Brackets, createQueryBuilder, getConnection, Repository} from "typeorm";
+import {User} from "./user.entity";
+import {Message} from "../messages/messages.entity";
+import {JwtService} from './jwt/jwt.service';
 import {UserSchema} from "./jwt/user.schema";
 import * as bcrypt from 'bcrypt';
 
@@ -24,7 +24,7 @@ export class UsersService {
     async validate(username: string, password: string): Promise<any> {
         const user = await this.findByUsername(username);
         const pass = await bcrypt.compare(password, user.password);
-        if(pass)
+        if (pass)
             return user;
         return false;
     }
@@ -36,18 +36,16 @@ export class UsersService {
             gender: user.gender,
             age: user.age,
             biography: user.biography,
-            ppUrl: user.pp_url,
+            ppUrl: user.ppUrl,
             createdAt: user.createdAt,
             lastOnline: user.lastOnline,
             conversations: user.conversations,
-            email: user.email,
-            isActive: user.isActive
         }
     }
 
-    public async login(username: string, password:string): Promise< any | { status: number }>{
+    public async login(username: string, password: string): Promise<any | { status: number }> {
         const user = await this.validate(username, password);
-        if(!user){
+        if (!user) {
             this.logger.log('usr not found');
             return false;
         } else {
@@ -76,8 +74,8 @@ export class UsersService {
     async findMsgsOfChat(user1: number, user2: number): Promise<any> {
         return await createQueryBuilder('Message')
             .where(new Brackets(qb => {
-                qb.where('Message.sender = :id1', { id1: user1 })
-                    .andWhere('Message.receiver = :id2', { id2: user2 })
+                qb.where('Message.sender = :id1', {id1: user1})
+                    .andWhere('Message.receiver = :id2', {id2: user2})
             }))
             .orWhere(new Brackets(qb => {
                 qb.where('Message.sender = :id3', {id3: user2})
@@ -90,7 +88,7 @@ export class UsersService {
     async findMsgsOfUser(id: number): Promise<any> {
         return await createQueryBuilder('User')
             .leftJoinAndSelect('User.sent_messages', 'messages')
-            .where('User.id = :id', { id })
+            .where('User.id = :id', {id})
             .getMany();
     }
 
@@ -103,6 +101,16 @@ export class UsersService {
         return clientSchema;
     }
 
+    async findRandomOnlineUsers(): Promise<any> {
+        const currentTime = Date.now()
+        const lastUsers = await createQueryBuilder('User')
+            .select(["User.id", "User.username", "User.gender", "User.age", "User.biography", "User.ppUrl", "User.lastOnline", "User.conversations"])
+            .orderBy("RAND()")
+            .limit(10)
+            .getMany();
+        return lastUsers;
+    }
+
     async findUserById(id: number): Promise<User> {
         return await this.usersRepository.findOne(id);
     }
@@ -110,21 +118,36 @@ export class UsersService {
     async updateBio(id: number, bio: string): Promise<Record<string, any>> {
         const isUpdated = await createQueryBuilder()
             .update(User)
-            .set({ biography: bio })
-            .where("id = :id", { id: id })
+            .set({biography: bio})
+            .where("id = :id", {id: id})
             .execute();
-        if(isUpdated) {
+        if (isUpdated) {
             const user = await this.findUserById(id);
             return this.userSerializer(user);
         }
     }
 
-    a
+    async updateAvatar(id: number, imageName: string): Promise<any> {
+        await createQueryBuilder()
+            .update(User)
+            .set({ppUrl: imageName})
+            .where("id = :id", {id: id})
+            .execute();
+        const user = await this.findUserById(id);
+        return this.userSerializer(user);
+    }
 
+    async updateLastOnline(id: number): Promise<void> {
+        await createQueryBuilder()
+            .update(User)
+            .set({lastOnline: Date.now()})
+            .where("id = :id", {id: id})
+            .execute();
+    }
 
     async findByUsername(username: string): Promise<any> {
         const user = await createQueryBuilder('User')
-            .where('User.username = :username', { username })
+            .where('User.username = :username', {username})
             .getOne();
         return user;
     }
@@ -138,7 +161,7 @@ export class UsersService {
     }
 
 
-    async create(username: string, password: string, email:string, gender:string, age:number): Promise<any> {
+    async create(username: string, password: string, email: string, gender: string, age: number): Promise<any> {
         const user = new User();
         user.username = username;
         user.password = password;
@@ -147,7 +170,7 @@ export class UsersService {
         user.age = age;
         try {
             await user.save();
-        } catch(Exception) {
+        } catch (Exception) {
             return false;
         }
         return user;

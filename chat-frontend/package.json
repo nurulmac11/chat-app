@@ -18,8 +18,9 @@
     "socket.io": "^2.3.0",
     "sweetalert2": "^9.10.12",
     "vue": "^2.6.11",
-    "vue-avatar-cropper": "^1.0.6",
+    "vue-image-crop-upload": "^2.5.0",
     "vue-router": "^3.2.0",
+    "vue2-timeago": "^1.2.7",
     "vuex": "^3.4.0"
   },
   "devDependencies": {

@@ -8,16 +8,20 @@ export default {
         state.username = username;
     },
 
-    setBio(state, response) {
-        state.profile.biography = response.data.biography;
-    },
-
     setProfile(state, response) {
-        state.profile = response.data
+        state.profile = response.data;
     },
 
-    setSendTo(state, username) {
-        state.sendToUsername = username;
+    setRandomUserList(state, response) {
+        state.randomUserList = response.data;
+    },
+
+    setProfileRaw(state, raw_data) {
+        state.profile = raw_data;
+    },
+
+    setCurrentChat(state, profile) {
+        state.chattingWith = profile;
     },
 
     setScreen(state, screen) {
@@ -32,9 +36,10 @@ export default {
         state.messages.push(message);
     },
 
-    addChatUser(state, username) {
-        if (!(state.currentChatUsers.includes(username)))
-            state.currentChatUsers.push(username);
+    addChatUser(state, profile) {
+        if (!state.currentChatUsers.some(e => e.id === profile.id)) {
+            state.currentChatUsers.push(profile);
+        }
     },
 
     addNotification(state, user) {

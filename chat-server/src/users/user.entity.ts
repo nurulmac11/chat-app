@@ -26,12 +26,12 @@ export class User extends BaseEntity {
     biography: string;
 
     @Column({type: "text", default: ''})
-    pp_url: string;
+    ppUrl: string;
 
-    @Column({type: "timestamp", default: () => "CURRENT_TIMESTAMP", name: "created_at"})
+    @Column({type: "timestamp", default: () => "CURRENT_TIMESTAMP", name: "createdAt"})
     createdAt: string;
 
-    @Column({type: "timestamp", default: () => "CURRENT_TIMESTAMP", name: "last_online"})
+    @Column({type: "text", default: () => "CURRENT_TIMESTAMP", name: "lastOnline"})
     lastOnline: string;
 
     @Column({default: 0})

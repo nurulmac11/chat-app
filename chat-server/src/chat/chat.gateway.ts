@@ -31,16 +31,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     async handleMessage(client: Socket, payload: any): Promise<any> {
         this.logger.log("Message received");
         this.logger.log(payload);
-        const sendTo = this.currentUsers[payload.to];
-        /**
-         * Payload:
-         *  username, text, to, from
-         */
-        const sender = await this.usersService.findByUsername(payload.from);
-        const receiver = await this.usersService.findByUsername(payload.to);
+        const sendTo = this.currentUsers[payload.to.username];
+        const sender = await this.usersService.findByUsername(payload.from.username);
+        const receiver = await this.usersService.findByUsername(payload.to.username);
         await this.messagesService.sendMsg(sender.id, receiver.id, payload.text);
-        this.logger.log("send to:");
-        this.logger.log(sendTo);
         this.server.to(sendTo).emit('chat', payload);
     }
 
@@ -58,11 +52,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     afterInit(server: Server) {
         this.logger.log('Init');
         this.logger.log(this.currentUsers)
-
-        // send user list continuously
-        setInterval(() => {
-            server.emit('activeUsers', Object.keys(this.currentUsers));
-        }, 1000);
     }
 
     handleDisconnect(client: Socket) {
