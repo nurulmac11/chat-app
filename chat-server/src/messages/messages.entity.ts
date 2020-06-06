@@ -19,6 +19,12 @@ export class Message extends BaseEntity {
     @ManyToOne(type => User, user => user.received_messages)
     receiver: User;
 
+    // 0 => not delivered
+    // 1 => delivered
+    // 2 => read
+    @Column({default: 0})
+    read: number;
+
     @Column({ default: true, name: 'is_active' })
     isActive: boolean;
 }
