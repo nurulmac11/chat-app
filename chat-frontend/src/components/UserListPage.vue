@@ -25,8 +25,7 @@
                             >
                                 <div class="d-flex bd-highlight contact-li">
                                     <div class="img_cont">
-                                        <img :src="server + '/users/avatar/' + user.ppUrl"
-                                             class="rounded-circle user_img">
+                                        <Avatar :image-path="user.ppUrl" classes="rounded-circle user_img" />
                                         <span class="online_icon offline"
                                               v-if="msgNotify.includes(user.username)"></span>
                                     </div>
@@ -49,11 +48,13 @@
 <script>
     import {mapGetters} from "vuex";
     import TimeAgo from 'vue2-timeago'
+    import Avatar from "./Avatar";
 
     export default {
         name: "UserListPage",
         components: {
             TimeAgo,
+            Avatar
         },
         props: {
             userList: {

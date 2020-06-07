@@ -40,6 +40,13 @@ export class MessagesService {
             .innerJoin("User", 'user', 'message.sender = user.id')
             .where('message.receiver.id = :id', {id: user.id})
             .getRawMany()
+        // delete after retrieving
+        await getConnection()
+            .createQueryBuilder()
+            .delete()
+            .from(Message)
+            .where("receiver = :id", { id: user.id })
+            .execute();
         console.log(result)
         return result
     }

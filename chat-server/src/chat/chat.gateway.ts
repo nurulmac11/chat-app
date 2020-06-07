@@ -30,14 +30,16 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @SubscribeMessage('msgToServer')
     async handleMessage(client: Socket, payload: any): Promise<any> {
         let delivered = 0;
-
-        if (payload.to.username in this.currentUsers)
-            delivered = 1;
-
         const sendTo = this.currentUsers[payload.to.username];
         const sender = await this.usersService.findByUsername(payload.from.username);
         const receiver = await this.usersService.findByUsername(payload.to.username);
-        await this.messagesService.sendMsg(sender.id, receiver.id, payload.text, delivered);
+        if (payload.to.username in this.currentUsers) {
+            // message delivered, no need to save ?
+            // think about data collection:)
+            delivered = 1;
+        } else {
+            await this.messagesService.sendMsg(sender.id, receiver.id, payload.text, delivered);
+        }
         this.server.to(sendTo).emit('chat', payload);
     }
 
