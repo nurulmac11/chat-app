@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Post, UseGuards} from "@nestjs/common";
+import {Body, Controller, Get, Post, Request, UseGuards} from "@nestjs/common";
 import { MessagesService } from "./messages.service";
 import {AuthGuard} from "@nestjs/passport";
 
@@ -21,4 +21,17 @@ export class MessagesController {
     ): any {
         return this.messagesService.sendMsg(sender, receiver, message, 0);
     }
+
+
+    @Get("news")
+    @UseGuards(AuthGuard('jwt'))
+    async newComings(
+        @Request() req,
+    ): Promise<any> {
+        const user = req.user;
+        const msgs = await this.messagesService.getUndelivered(user.id);
+        console.log(msgs)
+        return msgs[0].received_messages;
+    }
+
 }

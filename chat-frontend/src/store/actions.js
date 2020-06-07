@@ -37,7 +37,7 @@ export const randomUsers = ({commit}) => {
 export const newComingMessages = ({commit}) => {
     return new Promise((resolve, reject) => {
         api.getNewMessages().then(response => {
-            commit('setRandomUserList', response);
+            commit('setNewMessages', response);
             resolve(response);
         }).catch(error => {
             reject(error);

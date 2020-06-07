@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import {createQueryBuilder, Repository} from "typeorm";
 import { Message } from "./messages.entity";
 import { User } from "../users/user.entity";
 
@@ -31,4 +31,13 @@ export class MessagesService {
         await msg.save();
         return msg
     }
+
+    async getUndelivered(id: number): Promise<any> {
+        return await createQueryBuilder('User')
+            .leftJoinAndSelect('User.received_messages', 'messages')
+            .where('User.id = :id', {id})
+            .where('messages.read = 0')
+            .getMany();
+    }
+
 }

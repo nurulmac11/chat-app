@@ -21,7 +21,7 @@ export function userList() {
 }
 
 export function getNewMessages() {
-    return Axios.get(baseURL + '/users/random', auth());
+    return Axios.get(baseURL + '/messages/news', auth());
 }
 
 export function updateBio(bio) {
