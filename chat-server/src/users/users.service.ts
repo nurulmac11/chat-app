@@ -40,6 +40,8 @@ export class UsersService {
             createdAt: user.createdAt,
             lastOnline: user.lastOnline,
             conversations: user.conversations,
+            email: user.email,
+            anon: user.anonymousName,
         }
     }
 
@@ -143,6 +145,13 @@ export class UsersService {
             .set({lastOnline: Date.now()})
             .where("id = :id", {id: id})
             .execute();
+    }
+
+    async findByAnon(anon: string): Promise<any> {
+        const user = await createQueryBuilder('User')
+            .where('User.anonymousName = :anon', {anon})
+            .getOne();
+        return user;
     }
 
     async findByUsername(username: string): Promise<any> {

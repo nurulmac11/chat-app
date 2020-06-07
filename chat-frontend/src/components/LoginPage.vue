@@ -57,7 +57,7 @@
                 register: false,
                 email: '',
                 gender: '',
-                age: 0,
+                age: undefined,
             };
         },
         computed: {
@@ -103,6 +103,7 @@
                         'age': this.age
                     }
                     this.$store.dispatch('registerMe', payload).then(() => {
+                        this.register = !this.register;
                         Swal.fire('Successful', 'Your account created.', 'success')
                     }).catch(error => {
                         Swal.fire('Fail', error.response.data.message, 'error');

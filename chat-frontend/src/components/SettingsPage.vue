@@ -5,10 +5,9 @@
                 <div class="card mb-sm-3 mb-md-0 profile">
                     <div class="header">
                         <div class="avatar">
-                            <img :src="imgPath"
-                                 alt="Circle Image" class="img-raised rounded-circle img-fluid">
+                            <Avatar :image-path="profile.ppUrl" classes="rounded-circle user_img" />
                             <br/>
-                            <a class="btn" @click="toggleShow">set avatar</a>
+                            <a class="btn" @click="toggleShow">change avatar</a>
                             <my-upload field="avatar"
                                        @crop-success="cropSuccess"
                                        @crop-upload-success="cropUploadSuccess"
@@ -24,7 +23,7 @@
                         </div>
                         <div class="name">
                             <h3 class="title">{{ profile.username }}</h3>
-                            <p v-if="mode === 'view'">{{ profile.biography }}</p>
+                            <p v-if="mode === 'view'">{{ newBio }}</p>
                             <input type="text" class="form-control" v-model="newBio" v-else/>
                             <div class="icons">
                                 <div class="left">
@@ -70,16 +69,18 @@
 <script>
     import {mapGetters} from "vuex";
     import myUpload from 'vue-image-crop-upload';
+    import Avatar from "./Avatar";
 
     export default {
         name: "SettingsPage",
         components: {
-            'my-upload': myUpload
+            'my-upload': myUpload,
+            Avatar
         },
         data() {
             return {
                 mode: 'view',
-                newBio: '',
+                newBio: 'Write a bio here...',
                 show: false,
                 params: {
                 },
@@ -92,7 +93,8 @@
             ...mapGetters(['profile', 'server', 'accessToken', 'imgPath']),
         },
         mounted() {
-            this.newBio = this.profile.biography;
+            if(this.profile.biography)
+                this.newBio = this.profile.biography;
         },
         methods: {
             toggleShow() {

@@ -40,8 +40,7 @@ export const newComingMessages = ({commit, state}) => {
             response.data.forEach(msg => {
                 const msgObject = {
                     from: {
-                        id: msg.message_senderId,
-                        username: msg.user_username
+                        username: msg.user_anonymousName
                     },
                     text: msg.message,
                     time: msg.created_at,
@@ -59,9 +58,7 @@ export const newComingMessages = ({commit, state}) => {
 }
 
 export const newMessage = ({commit, state, msg}) => {
-    if (!(state.currentChatUsers.includes(msg.from)))
-        commit('addChatUser', msg.from);
-
+    commit('addChatUser', msg.from);
     commit('addMessage', msg);
 
     if (state.chattingWith.username !== msg.from.username || state.screen !== 'chat')
@@ -73,6 +70,7 @@ export const initSocket = ({commit, state}) => {
 
     // Instant private message receiver
     socket.on('chat', function (msg) {
+        console.log(msg, 'received');
         newMessage({commit, state, msg});
     });
     socket.emit('loginMe', state.username);
@@ -110,12 +108,16 @@ export const sendMessage = ({commit, state}) => {
             username: state.chattingWith.username,
             id: state.chattingWith.id
         },
-        from: state.profile,
+        from: {
+            username: state.profile.username,
+            id: state.profile.id,
+            ppUrl: state.profile.ppUrl
+        },
         time: currentTime()
     };
+
     commit('resetMessage');
     commit('addMessage', message)
     state.socket.emit('msgToServer', message)
-    if (!(state.currentChatUsers.includes(state.chattingWith)))
-        commit('addChatUser', state.chattingWith)
+    commit('addChatUser', state.chattingWith);
 }

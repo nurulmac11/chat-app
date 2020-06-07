@@ -1,7 +1,8 @@
-import {Entity, Column, PrimaryGeneratedColumn, BaseEntity, OneToMany, JoinTable, BeforeInsert} from "typeorm";
+import {Entity, Column, PrimaryGeneratedColumn, BaseEntity, OneToMany, JoinTable, BeforeInsert, Index} from "typeorm";
 import { TableNames } from '../TableNames';
 import { Message } from "../messages/messages.entity";
 import * as bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 
 @Entity({name: TableNames.User})
 export class User extends BaseEntity {
@@ -10,6 +11,10 @@ export class User extends BaseEntity {
 
     @Column({unique: true})
     username: string;
+
+    @Index()
+    @Column({unique: true})
+    anonymousName: string;
 
     @Column()
     password: string;
@@ -40,6 +45,11 @@ export class User extends BaseEntity {
     @BeforeInsert()
     async hashPassword() {
         this.password = await bcrypt.hash(this.password, 10);
+    }
+
+    @BeforeInsert()
+    async createUUID() {
+        this.anonymousName = uuidv4();
     }
 
     @Column({unique: true})

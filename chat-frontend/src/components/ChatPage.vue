@@ -30,24 +30,27 @@
                     </div>
                     <div class="card-body msg_card_body" ref="msgContainer">
                         <div v-for="(message, index) in activeChatMessages" :key="index">
-                            <div class="d-flex justify-content-start mb-4" v-if="message.from.username !== username">
+
+                            <div class="d-flex justify-content-start mb-4" v-if="message.to.id === profile.id">
                                 <div class="img_cont_msg">
-                                    <Avatar :image-path="message.from.ppUrl" classes="rounded-circle user_img_msg" />
+                                    <Avatar :image-path="chattingWith.ppUrl" classes="rounded-circle user_img_msg" />
                                 </div>
                                 <div class="msg_cotainer">
                                     {{ message.text }}
                                     <span class="msg_time">{{ message.time }}</span>
                                 </div>
                             </div>
+
                             <div class="d-flex justify-content-end mb-4" v-else>
                                 <div class="msg_cotainer_send">
                                     {{ message.text }}
                                     <span class="msg_time_send">{{ message.time }}</span>
                                 </div>
                                 <div class="img_cont_msg">
-                                    <Avatar :image-path="message.from.ppUrl" classes="rounded-circle user_img_msg" />
+                                    <Avatar :image-path="profile.ppUrl" classes="rounded-circle user_img_msg" />
                                 </div>
                             </div>
+
                         </div>
                     </div>
                     <div class="card-footer">
@@ -100,7 +103,7 @@
                     this.$store.commit('setMessage', value);
                 }
             },
-            ...mapGetters(['activeChatMessages', 'username', 'chattingWith', 'server'])
+            ...mapGetters(['activeChatMessages', 'username', 'chattingWith', 'server', 'profile'])
         },
         mounted() {
             var container = this.$refs.msgContainer;

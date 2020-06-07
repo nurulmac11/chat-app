@@ -36,7 +36,7 @@ export const chattingWith = state => {
 
 export const activeChatMessages = state => {
     return state.messages.filter((u) => {
-        return u.from.username === state.chattingWith.username || u.to.username === state.chattingWith.username
+        return u.from.username === state.chattingWith.username || u.to.username === state.profile.username || u.to.username === state.chattingWith.username
     })
 }
 

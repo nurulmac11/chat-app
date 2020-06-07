@@ -35,19 +35,25 @@ export class MessagesService {
     async getUndelivered(user: User): Promise<any> {
         const result = await getManager()
             .createQueryBuilder(Message, 'message')
-            .addSelect('message.*')
-            .addSelect('user.username')
+            .addSelect('message.message')
+            .addSelect('message.receiverId')
+            .addSelect('message.created_at')
+            .addSelect('user.anonymousName')
             .innerJoin("User", 'user', 'message.sender = user.id')
             .where('message.receiver.id = :id', {id: user.id})
             .getRawMany()
+        result.forEach(msg => {
+            delete msg.message_senderId;
+        })
+
         // delete after retrieving
-        await getConnection()
-            .createQueryBuilder()
-            .delete()
-            .from(Message)
-            .where("receiver = :id", { id: user.id })
-            .execute();
-        console.log(result)
+        // todo enable after
+        // await getConnection()
+        //     .createQueryBuilder()
+        //     .delete()
+        //     .from(Message)
+        //     .where("receiver = :id", { id: user.id })
+        //     .execute();
         return result
     }
 

@@ -30,9 +30,27 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @SubscribeMessage('msgToServer')
     async handleMessage(client: Socket, payload: any): Promise<any> {
         let delivered = 0;
-        const sendTo = this.currentUsers[payload.to.username];
-        const sender = await this.usersService.findByUsername(payload.from.username);
-        const receiver = await this.usersService.findByUsername(payload.to.username);
+        let receiver = undefined;
+        const sender = await this.usersService.findUserById(payload.from);
+        if(payload.to.id !== payload.to.username) {
+            // anon => user
+            receiver = await this.usersService.findUserById(payload.to.id);
+            payload.from = {
+                username: sender.anonymousName,
+                id: sender.anonymousName,
+                lastOnline: sender.lastOnline
+            };
+        } else {
+            // user => anon
+            receiver = await this.usersService.findByAnon(payload.to.username);
+            payload.to = {
+                username: receiver.username,
+                id: receiver.id,
+                lastOnline: receiver.lastOnline
+            }
+        }
+        const sendTo = this.currentUsers[receiver.username];
+        console.log(this.currentUsers,'xdd', sendTo, receiver.username);
         if (payload.to.username in this.currentUsers) {
             // message delivered, no need to save ?
             // think about data collection:)

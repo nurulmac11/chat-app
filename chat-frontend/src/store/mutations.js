@@ -37,7 +37,8 @@ export default {
     },
 
     addChatUser(state, profile) {
-        if (!state.currentChatUsers.some(e => e.id === profile.id)) {
+        const checkNewUser = state.currentChatUsers.some(item => item.username === profile.username);
+        if (!checkNewUser) {
             state.currentChatUsers.push(profile);
         }
     },
