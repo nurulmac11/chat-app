@@ -13,10 +13,10 @@ export class Message extends BaseEntity {
     @Column({type: "timestamp", default: () => "CURRENT_TIMESTAMP", name: "created_at"})
     createdAt: string;
 
-    @ManyToOne(type => User, user => user.sent_messages)
+    @ManyToOne(type => User, user => user.sentMessages)
     sender: User;
 
-    @ManyToOne(type => User, user => user.received_messages)
+    @ManyToOne(type => User, user => user.receivedMessages)
     receiver: User;
 
     // 0 => not delivered

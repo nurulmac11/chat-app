@@ -29,9 +29,8 @@ export class MessagesController {
         @Request() req,
     ): Promise<any> {
         const user = req.user;
-        const msgs = await this.messagesService.getUndelivered(user.id);
-        console.log(msgs)
-        return msgs[0].received_messages;
+        const msgs = await this.messagesService.getUndelivered(user);
+        return msgs;
     }
 
 }

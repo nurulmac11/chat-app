@@ -47,11 +47,11 @@ export class User extends BaseEntity {
 
     @OneToMany(type => Message, message => message.sender)
     @JoinTable()
-    sent_messages: Message[];
+    sentMessages: Message[];
 
     @OneToMany(type => Message, message => message.receiver)
     @JoinTable()
-    received_messages: Message[];
+    receivedMessages: Message[];
 
     @Column({ default: true, name: 'is_active' })
     isActive: boolean;

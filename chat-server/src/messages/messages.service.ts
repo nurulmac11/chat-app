@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import {createQueryBuilder, Repository} from "typeorm";
+import {createQueryBuilder, getConnection, getManager, Repository} from "typeorm";
 import { Message } from "./messages.entity";
 import { User } from "../users/user.entity";
 
@@ -32,12 +32,16 @@ export class MessagesService {
         return msg
     }
 
-    async getUndelivered(id: number): Promise<any> {
-        return await createQueryBuilder('User')
-            .leftJoinAndSelect('User.received_messages', 'messages')
-            .where('User.id = :id', {id})
-            .where('messages.read = 0')
-            .getMany();
+    async getUndelivered(user: User): Promise<any> {
+        const result = await getManager()
+            .createQueryBuilder(Message, 'message')
+            .addSelect('message.*')
+            .addSelect('user.username')
+            .innerJoin("User", 'user', 'message.sender = user.id')
+            .where('message.receiver.id = :id', {id: user.id})
+            .getRawMany()
+        console.log(result)
+        return result
     }
 
 }

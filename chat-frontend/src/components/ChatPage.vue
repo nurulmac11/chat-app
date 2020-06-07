@@ -6,8 +6,7 @@
                     <div class="card-header msg_head">
                         <div class="d-flex bd-highlight">
                             <div class="img_cont">
-                                <img :src="server + '/users/avatar/' + chattingWith.ppUrl"
-                                     class="rounded-circle user_img">
+                                <Avatar :image-path="chattingWith.ppUrl" classes="rounded-circle user_img" />
                                 <span class="online_icon"></span>
                             </div>
                             <div class="user_info">
@@ -33,8 +32,7 @@
                         <div v-for="(message, index) in activeChatMessages" :key="index">
                             <div class="d-flex justify-content-start mb-4" v-if="message.from.username !== username">
                                 <div class="img_cont_msg">
-                                    <img :src="server + '/users/avatar/' + message.from.ppUrl"
-                                         class="rounded-circle user_img_msg">
+                                    <Avatar :image-path="message.from.ppUrl" classes="rounded-circle user_img_msg" />
                                 </div>
                                 <div class="msg_cotainer">
                                     {{ message.text }}
@@ -47,8 +45,7 @@
                                     <span class="msg_time_send">{{ message.time }}</span>
                                 </div>
                                 <div class="img_cont_msg">
-                                    <img :src="server + '/users/avatar/' + message.from.ppUrl"
-                                         class="rounded-circle user_img_msg">
+                                    <Avatar :image-path="message.from.ppUrl" classes="rounded-circle user_img_msg" />
                                 </div>
                             </div>
                         </div>
@@ -84,9 +81,13 @@
 
 <script>
     import {mapGetters} from "vuex";
+    import Avatar from "./Avatar";
 
     export default {
         name: "Chat",
+        components: {
+            Avatar,
+        },
         data() {
             return {};
         },

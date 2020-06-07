@@ -16,10 +16,6 @@ export default {
         state.randomUserList = response.data;
     },
 
-    setNewMessages(state, response) {
-        console.log(response.data);
-    },
-
     setProfileRaw(state, raw_data) {
         state.profile = raw_data;
     },
