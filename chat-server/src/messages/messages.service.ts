@@ -14,11 +14,11 @@ export class MessagesService {
     ) {
     }
 
-    async allMsg(): Promise<Message[]> {
-        return await this.messagesRepository.find();
-    }
-
-    async sendMsg(sender: number, receiver: number, message: string): Promise<Message> {
+    async sendMsg(sender: number, receiver: number, message: string, delivery: number): Promise<Message> {
+        // delivery:
+        // 0 => not delivered
+        // 1 => delivered
+        // 2 => read
         const msg = new Message();
         await User.findOne(sender).then(result => {
             msg.sender = result;
@@ -27,6 +27,7 @@ export class MessagesService {
             msg.receiver = result;
         });
         msg.message = message;
+        msg.read = delivery;
         await msg.save();
         return msg
     }

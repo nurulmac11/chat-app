@@ -34,6 +34,17 @@ export const randomUsers = ({commit}) => {
     })
 }
 
+export const newComingMessages = ({commit}) => {
+    return new Promise((resolve, reject) => {
+        api.getNewMessages().then(response => {
+            commit('setRandomUserList', response);
+            resolve(response);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
 export const initSocket = ({commit, state}) => {
     let socket = io('http://localhost:81', {"query": 'token=' + state.accessToken});
 

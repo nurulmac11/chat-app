@@ -20,7 +20,7 @@ import {MulterModule} from "@nestjs/platform-express";
     ],
     providers: [UsersService, JwtService, JwtStrategy],
     controllers: [UsersController],
-    exports: [JwtService, UsersService]
+    exports: [JwtService, UsersService, JwtStrategy]
 })
 export class UsersModule {
 }

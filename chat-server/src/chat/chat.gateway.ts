@@ -29,12 +29,15 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('msgToServer')
     async handleMessage(client: Socket, payload: any): Promise<any> {
-        this.logger.log("Message received");
-        this.logger.log(payload);
+        let delivered = 0;
+
+        if (payload.to.username in this.currentUsers)
+            delivered = 1;
+
         const sendTo = this.currentUsers[payload.to.username];
         const sender = await this.usersService.findByUsername(payload.from.username);
         const receiver = await this.usersService.findByUsername(payload.to.username);
-        await this.messagesService.sendMsg(sender.id, receiver.id, payload.text);
+        await this.messagesService.sendMsg(sender.id, receiver.id, payload.text, delivered);
         this.server.to(sendTo).emit('chat', payload);
     }
 

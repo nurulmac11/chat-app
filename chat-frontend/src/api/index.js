@@ -20,6 +20,10 @@ export function userList() {
     return Axios.get(baseURL + '/users/random', auth());
 }
 
+export function getNewMessages() {
+    return Axios.get(baseURL + '/users/random', auth());
+}
+
 export function updateBio(bio) {
     const data = {
         'bio': bio
