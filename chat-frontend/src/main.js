@@ -21,7 +21,8 @@ import {
     faBan,
     faEllipsisV,
     faPhone,
-    faVideo
+    faVideo,
+    faArrowLeft
 } from '@fortawesome/free-solid-svg-icons'
 
 Vue.config.productionTip = false
@@ -30,7 +31,7 @@ Vue.use(Vuex);
 Vue.use(VueRouter);
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 library.add(faCogs, faUsers, faComments, faLocationArrow, faPaperclip,
-    faBirthdayCake, faVenusMars, faUser, faUserCircle, faPlus, faBan, faEllipsisV, faPhone, faVideo);
+    faBirthdayCake, faVenusMars, faUser, faUserCircle, faPlus, faBan, faEllipsisV, faPhone, faVideo, faArrowLeft);
 
 var filter = function(text, length, clamp){
     clamp = clamp || '...';

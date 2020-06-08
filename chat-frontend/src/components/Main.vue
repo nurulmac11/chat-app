@@ -18,7 +18,7 @@
             <SettingsPage />
         </div>
 
-        <ul class="nav nav-pills nav-fill fixed-bottom">
+        <ul class="nav nav-pills nav-fill fixed-bottom" v-if="screen !== 'chat' && screen !== 'settings'">
             <li class="nav-item">
                 <a class="nav-link" :class="{ active: screen === 'chatList' }" href="#"
                    @click.prevent="screen = 'chatList'"><font-awesome-icon icon="comments" /><span style="color: red" v-if="msgNotify.length">{{ msgNotify.length }}</span></a>
@@ -32,6 +32,7 @@
                    @click.prevent="screen = 'settings'"><font-awesome-icon icon="user" /> </a>
             </li>
         </ul>
+        <div class="back-button" v-else @click.prevent="home()"><font-awesome-icon icon="arrow-left" /></div>
 
     </div>
 </template>
@@ -87,7 +88,11 @@
             else if (!this.accessToken)
                 this.$router.replace({name: 'login'});
         },
-        methods: {},
+        methods: {
+            home() {
+                this.$store.commit('setScreen', 'userList');
+            }
+        },
     };
 </script>
 
