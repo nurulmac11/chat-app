@@ -12,6 +12,10 @@ export const loginAction = ({commit}, payload) => {
     })
 }
 
+export const logout = ({commit}) => {
+    commit('logoutMutation');
+}
+
 export const reLoginAction = ({commit}, payload) => {
     return new Promise((resolve, reject) => {
         api.reLoginApi(payload).then(response => {

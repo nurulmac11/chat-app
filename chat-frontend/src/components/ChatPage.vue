@@ -14,17 +14,16 @@
                                 <p>1767 Messages - {{ chattingWith.biography }}</p>
                             </div>
                             <div class="video_cam">
-                                <span><i class="fas fa-video"></i></span>
-                                <span><i class="fas fa-phone"></i></span>
+                                <span><font-awesome-icon icon="video"/></span>
+                                <span><font-awesome-icon icon="phone"/></span>
                             </div>
                         </div>
-                        <span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
-                        <div class="action_menu">
+                        <span id="action_menu_btn" @click.prevent="toggleActionMenu()"><font-awesome-icon icon="ellipsis-v"/></span>
+                        <div class="action_menu" v-if="actionMenu">
                             <ul>
-                                <li><i class="fas fa-user-circle"></i> View profile</li>
-                                <li><i class="fas fa-users"></i> Add to close friends</li>
-                                <li><i class="fas fa-plus"></i> Add to group</li>
-                                <li><i class="fas fa-ban"></i> Block</li>
+                                <li><font-awesome-icon icon="user-circle"/> View profile</li>
+                                <li><font-awesome-icon icon="users"/> Add to close friends</li>
+                                <li><font-awesome-icon icon="ban"/> Block</li>
                             </ul>
                         </div>
                     </div>
@@ -92,7 +91,9 @@
             Avatar,
         },
         data() {
-            return {};
+            return {
+                actionMenu: false
+            };
         },
         computed: {
             message: {
@@ -122,9 +123,9 @@
                 if(this.message.length > 0)
                     this.$store.dispatch('sendMessage');
             },
-            validateInput() {
-                return this.username.length > 0 && this.message.length > 0
-            },
+            toggleActionMenu() {
+                this.actionMenu = !this.actionMenu;
+            }
         }
     }
 </script>
@@ -364,7 +365,6 @@
         border-radius: 15px;
         top: 30px;
         right: 15px;
-        display: none;
     }
 
     .action_menu ul {

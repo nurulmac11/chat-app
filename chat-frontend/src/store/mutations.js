@@ -5,6 +5,11 @@ export default {
         localStorage.accessToken = state.accessToken;
     },
 
+    logoutMutation(state) {
+      state.accessToken = '';
+      localStorage.accessToken = undefined;
+    },
+
     reLoginMutation(state, response) {
         state.profile = response.data;
     },
