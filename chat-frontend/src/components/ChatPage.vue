@@ -10,12 +10,8 @@
                                 <span class="online_icon"></span>
                             </div>
                             <div class="user_info">
-                                <span>Chat with {{ chattingWith.username }}</span>
+                                <span>Chat with {{ chattingWith.username | truncate(10, '...') }}</span>
                                 <p>1767 Messages - {{ chattingWith.biography }}</p>
-                            </div>
-                            <div class="video_cam">
-                                <span><font-awesome-icon icon="video"/></span>
-                                <span><font-awesome-icon icon="phone"/></span>
                             </div>
                         </div>
                         <span id="action_menu_btn" @click.prevent="toggleActionMenu()"><font-awesome-icon icon="ellipsis-v"/></span>

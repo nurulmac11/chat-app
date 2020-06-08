@@ -12,6 +12,7 @@ export default {
 
     reLoginMutation(state, response) {
         state.profile = response.data;
+        state.username = state.profile.username;
     },
 
     setToken(state, token) {

@@ -45,4 +45,7 @@ export default {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+.bg-dark {
+    background-color: #0000008a !important;
+}
 </style>

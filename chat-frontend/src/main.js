@@ -32,6 +32,16 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 library.add(faCogs, faUsers, faComments, faLocationArrow, faPaperclip,
     faBirthdayCake, faVenusMars, faUser, faUserCircle, faPlus, faBan, faEllipsisV, faPhone, faVideo);
 
+var filter = function(text, length, clamp){
+    clamp = clamp || '...';
+    var node = document.createElement('div');
+    node.innerHTML = text;
+    var content = node.textContent;
+    return content.length > length ? content.slice(0, length) + clamp : content;
+};
+
+Vue.filter('truncate', filter);
+
 const routes = [
     {path: '/', component: LoginPage, name: 'login'},
     {path: '/chat', component: ChatApp, name: 'chat'}

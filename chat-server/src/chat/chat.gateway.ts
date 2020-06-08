@@ -50,7 +50,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             }
         }
         const sendTo = this.currentUsers[receiver.username];
-        console.log(this.currentUsers,'xdd', sendTo, receiver.username);
         if (payload.to.username in this.currentUsers) {
             // message delivered, no need to save ?
             // think about data collection:)
