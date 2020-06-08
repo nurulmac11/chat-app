@@ -48,12 +48,12 @@ export class MessagesService {
 
         // delete after retrieving
         // todo enable after
-        // await getConnection()
-        //     .createQueryBuilder()
-        //     .delete()
-        //     .from(Message)
-        //     .where("receiver = :id", { id: user.id })
-        //     .execute();
+        await getConnection()
+            .createQueryBuilder()
+            .delete()
+            .from(Message)
+            .where("receiver = :id", { id: user.id })
+            .execute();
         return result
     }
 

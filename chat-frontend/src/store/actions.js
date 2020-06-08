@@ -15,7 +15,8 @@ export const loginAction = ({commit}, payload) => {
 export const reLoginAction = ({commit}, payload) => {
     return new Promise((resolve, reject) => {
         api.reLoginApi(payload).then(response => {
-            commit('reLoginMutation', response, payload);
+            commit('reLoginMutation', response);
+            commit('setToken', payload);
             resolve(response);
         }).catch(error => {
             reject(error);

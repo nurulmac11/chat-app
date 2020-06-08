@@ -5,8 +5,11 @@ export default {
         localStorage.accessToken = state.accessToken;
     },
 
-    reLoginMutation(state, response, token) {
+    reLoginMutation(state, response) {
         state.profile = response.data;
+    },
+
+    setToken(state, token) {
         state.accessToken = token;
     },
 
@@ -38,32 +41,20 @@ export default {
         state.message = message;
     },
 
-    initializeFromLocalStorage(state) {
-        if(localStorage.currentChatUsers)
-            state.currentChatUsers = JSON.parse(localStorage.currentChatUsers)
-        if(localStorage.messages)
-            state.messages = JSON.parse(localStorage.messages);
-        if(localStorage.msgNotify)
-            state.msgNotify = JSON.parse(localStorage.msgNotify);
-    },
-
     addMessage(state, message) {
         state.messages.push(message);
-        localStorage.messages = JSON.stringify(state.messages);
     },
 
     addChatUser(state, profile) {
         const checkNewUser = state.currentChatUsers.some(item => item.username === profile.username);
         if (!checkNewUser) {
             state.currentChatUsers.push(profile);
-            localStorage.currentChatUsers = JSON.stringify(state.currentChatUsers);
         }
     },
 
     addNotification(state, user) {
         if(!state.msgNotify.includes(user)) {
             state.msgNotify.push(user);
-            localStorage.msgNotify = JSON.stringify(state.msgNotify);
         }
     },
 
@@ -73,12 +64,6 @@ export default {
 
     saveSocket(state, socket) {
         state.socket = socket;
-    },
-
-    updateUserList(state, userList) {
-        state.userList = userList.filter(
-            item => item && item !== state.username,
-        );
     },
 
     resetMessage(state) {

@@ -41,6 +41,7 @@
     import ChatPage from "./ChatPage";
     import UserListPage from "./UserListPage";
     import SettingsPage from "./SettingsPage";
+    import Swal from "sweetalert2";
 
     export default {
         name: 'Main',
@@ -73,7 +74,15 @@
         },
         mounted() {
             if (localStorage.accessToken) {
-                this.$store.dispatch('reLoginAction', localStorage.accessToken);
+                this.$store.dispatch('reLoginAction', localStorage.accessToken).then(() => {
+                    this.$store.dispatch('initSocket');
+                    this.$store.dispatch('randomUsers');
+                    this.$store.dispatch('newComingMessages');
+                    this.$router.replace({ name: 'chat' });
+                }).catch(error => {
+                    console.log(error);
+                    Swal.fire('Fail', error.response.data.message, 'error');
+                });
             }
             else if (!this.accessToken)
                 this.$router.replace({name: 'login'});

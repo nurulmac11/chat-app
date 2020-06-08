@@ -77,7 +77,6 @@
                     'password': md5(this.password)
                 }
                 this.$store.dispatch('loginAction', userData).then(() => {
-                    this.$store.commit('initializeFromLocalStorage');
                     this.$store.dispatch('initSocket');
                     this.$store.dispatch('randomUsers');
                     this.$store.dispatch('newComingMessages');

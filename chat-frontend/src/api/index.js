@@ -13,7 +13,7 @@ export function loginApi(userData) {
 }
 
 export function reLoginApi(token) {
-    return Axios.post(baseURL + '/users/re-login', {headers: {'Authorization': 'Bearer ' + token}})
+    return Axios.get(baseURL + '/users/re-login', {headers: {'Authorization': 'Bearer ' + token}})
 }
 
 export function registerApi(userData) {
