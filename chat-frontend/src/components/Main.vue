@@ -21,7 +21,7 @@
         <ul class="nav nav-pills nav-fill fixed-bottom">
             <li class="nav-item">
                 <a class="nav-link" :class="{ active: screen === 'chatList' }" href="#"
-                   @click.prevent="screen = 'chatList'"><font-awesome-icon icon="comments" /></a>
+                   @click.prevent="screen = 'chatList'"><font-awesome-icon icon="comments" /><span style="color: red" v-if="msgNotify.length">{{ msgNotify.length }}</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" :class="{ active: screen === 'userList' }" href="#"
@@ -72,7 +72,10 @@
 
         },
         mounted() {
-            if (!this.accessToken)
+            if (localStorage.accessToken) {
+                this.$store.dispatch('reLoginAction', localStorage.accessToken);
+            }
+            else if (!this.accessToken)
                 this.$router.replace({name: 'login'});
         },
         methods: {},

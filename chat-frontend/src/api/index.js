@@ -12,6 +12,10 @@ export function loginApi(userData) {
     return Axios.post(baseURL + '/users/login', userData)
 }
 
+export function reLoginApi(token) {
+    return Axios.post(baseURL + '/users/re-login', {headers: {'Authorization': 'Bearer ' + token}})
+}
+
 export function registerApi(userData) {
     return Axios.post(baseURL + '/users/create', userData);
 }

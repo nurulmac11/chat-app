@@ -16,7 +16,7 @@ import {MulterModule} from "@nestjs/platform-express";
         ]),
         MulterModule.register({
             dest: './uploads/avatar',
-        })
+        }),
     ],
     providers: [UsersService, JwtService, JwtStrategy],
     controllers: [UsersController],

@@ -103,6 +103,15 @@ export class UsersController {
         return res.sendFile(image, { root: './uploads/avatar' });
     }
 
+    @Post('re-login')
+    @UseGuards(AuthGuard('jwt'))
+    async reLoginUser(
+        @Request() req,
+    ): Promise<any> {
+        await this.usersService.updateLastOnline(req.user.id)
+        return this.usersService.userSerializer(req.user);
+    }
+
     @Post('login')
     async loginUser(
         @Body('username') username: string,
