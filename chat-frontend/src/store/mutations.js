@@ -6,13 +6,29 @@ export default {
     },
 
     logoutMutation(state) {
+      localStorage.accessToken = '';
+      state.username = '';
+      state.email = '';
+      state.profile = {};
+      state.randomUserList = [];
       state.accessToken = '';
-      localStorage.accessToken = undefined;
+      state.refreshToken = '';
+      state.currentChatUsers = [];
+      state.messages = [];
+      state.message = '';
+      state.msgNotify = [];
+      state.userList = [];
+      state.chattingWith = {};
+      state.socket = null;
     },
 
     reLoginMutation(state, response) {
         state.profile = response.data;
         state.username = state.profile.username;
+    },
+
+    setViewProfile(state, profile) {
+        state.viewProfile = profile;
     },
 
     setToken(state, token) {

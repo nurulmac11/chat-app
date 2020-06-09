@@ -20,6 +20,7 @@ const state = {
     userList: [],
     chattingWith: {},
     socket: null,
+    viewProfile: {},
     screen: 'userList',
     server: 'http://localhost:3000',
 }

@@ -2,7 +2,7 @@
     <div class="card">
         <div class="card-header msg_head">
             <div class="d-flex bd-highlight">
-                <div class="img_cont">
+                <div class="img_cont" v-on:click.stop="showProfile(chattingWith)">
                     <Avatar :image-path="chattingWith.ppUrl" classes="rounded-circle user_img" />
                     <span class="online_icon"></span>
                 </div>
@@ -120,6 +120,10 @@
             deleteChat() {
                 this.$store.commit('removeChat', this.chattingWith);
                 this.$router.replace({name: 'chatUsers'});
+            },
+            showProfile(profile) {
+                this.$store.commit('setViewProfile', profile);
+                this.$router.push({name: 'profile'});
             }
         }
     }
@@ -134,10 +138,7 @@
         background: linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5);
     }
 
-    .chat {
-        margin-top: auto;
-        margin-bottom: auto;
-    }
+
 
     .card {
         height: 500px;

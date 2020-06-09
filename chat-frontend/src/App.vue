@@ -22,6 +22,8 @@
         <div class="container-fluid h-100">
             <div class="row justify-content-center h-100">
                 <div class="col-md-12 col-xl-9 chat">
+
+
                     <router-view></router-view>
 
 
@@ -105,6 +107,9 @@
 </script>
 
 <style>
+    .chat {
+        margin-top: 50px;
+    }
     #app {
         font-family: Avenir, Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;

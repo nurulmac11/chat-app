@@ -18,11 +18,11 @@
                 <li
                         v-for="user in userList"
                         :key="user.id + mode"
-                        v-on:click="selectUser(user)"
+                        v-on:click.prevent="selectUser(user)"
                 >
                     <div class="d-flex bd-highlight contact-li">
-                        <div class="img_cont">
-                            <Avatar :image-path="user.ppUrl" classes="rounded-circle user_img" />
+                        <div class="img_cont" v-on:click.stop="showProfile(user)">
+                            <Avatar  :image-path="user.ppUrl" classes="rounded-circle user_img" />
                             <span class="online_icon offline"
                                   v-if="msgNotify.includes(user.username)"></span>
                         </div>
@@ -92,6 +92,10 @@
             },
             refresh() {
                 this.$store.dispatch('randomUsers');
+            },
+            showProfile(profile) {
+                this.$store.commit('setViewProfile', profile);
+                this.$router.push({name: 'profile'});
             }
         }
     }

@@ -80,7 +80,7 @@
                     this.$store.dispatch('initSocket');
                     this.$store.dispatch('randomUsers');
                     this.$store.dispatch('newComingMessages');
-                    this.$router.replace({ name: 'chat' });
+                    this.$router.replace({ name: 'users' });
                 }).catch(error => {
                     console.log(error);
                     Swal.fire('Fail', error.response.data.message, 'error');
