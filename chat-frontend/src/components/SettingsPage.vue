@@ -1,68 +1,60 @@
 <template>
-    <div class="container-fluid h-100">
-        <div class="row justify-content-center h-100">
-            <div class="col-md-12 col-xl-9">
-                <div class="card mb-sm-3 mb-md-0 profile">
-                    <div class="header">
-                        <div class="avatar">
-                            <Avatar :image-path="profile.ppUrl" classes="rounded-circle user_img" />
-                            <br/>
-                            <a class="btn" @click="toggleShow">change avatar</a>
-                            <my-upload field="avatar"
-                                       @crop-success="cropSuccess"
-                                       @crop-upload-success="cropUploadSuccess"
-                                       @crop-upload-fail="cropUploadFail"
-                                       v-model="show"
-                                       langType="en"
-                                       :width="300"
-                                       :height="300"
-                                       :url="server + '/users/update-avatar'"
-                                       :params="params"
-                                       :headers="headers"
-                                       img-format="png"></my-upload>
-                        </div>
-                        <div class="name">
-                            <h3 class="title">{{ profile.username }}</h3>
-                            <p v-if="mode === 'view'">{{ newBio }}</p>
-                            <input type="text" class="form-control" v-model="newBio" v-else/>
-                            <div class="icons">
-                                <div class="left">
-                                    <font-awesome-icon :icon="['fas', 'birthday-cake']"/>
-                                    <br/>{{ profile.age}}
-                                </div>
-                                <div class="left">
-                                    <font-awesome-icon :icon="['fas', 'comments']"/>
-                                    <br/>{{ profile.conversations }}
-                                </div>
-                                <div class="left">
-                                    <font-awesome-icon :icon="['fas', 'venus-mars']"/>
-                                    <br/>{{ profile.gender }}
-                                </div>
-                                <div class="left edit" v-if="mode === 'view'" @click.prevent="mode = 'edit'">
-                                    <font-awesome-icon :icon="['fas', 'cogs']"/>
-                                    <br/>Edit
-                                </div>
-                            </div>
-                        </div>
+    <div class="card mb-sm-3 mb-md-0 profile">
+        <div class="header">
+            <div class="avatar">
+                <Avatar :image-path="profile.ppUrl" classes="rounded-circle user_img" />
+                <br/>
+                <a class="btn" @click="toggleShow">change avatar</a>
+                <my-upload field="avatar"
+                           @crop-success="cropSuccess"
+                           @crop-upload-success="cropUploadSuccess"
+                           @crop-upload-fail="cropUploadFail"
+                           v-model="show"
+                           langType="en"
+                           :width="300"
+                           :height="300"
+                           :url="server + '/users/update-avatar'"
+                           :params="params"
+                           :headers="headers"
+                           img-format="png"></my-upload>
+            </div>
+            <div class="name">
+                <h3 class="title">{{ profile.username }}</h3>
+                <p v-if="mode === 'view'">{{ newBio }}</p>
+                <input type="text" class="form-control" v-model="newBio" v-else/>
+                <div class="icons">
+                    <div class="left">
+                        <font-awesome-icon :icon="['fas', 'birthday-cake']"/>
+                        <br/>{{ profile.age}}
                     </div>
-
-                    <div class="row body">
-                        <div class="col-md-4">
-                            <p>Email:</p>
-                        </div>
-                        <div class="col-md-8">
-                            <p>{{ profile.email }}</p>
-                        </div>
-
+                    <div class="left">
+                        <font-awesome-icon :icon="['fas', 'comments']"/>
+                        <br/>{{ profile.conversations }}
                     </div>
-                    <button type="button" class="btn btn-success" v-if="mode==='edit'" @click.prevent="updateBio">
-                        Save
-                    </button>
+                    <div class="left">
+                        <font-awesome-icon :icon="['fas', 'venus-mars']"/>
+                        <br/>{{ profile.gender }}
+                    </div>
+                    <div class="left edit" v-if="mode === 'view'" @click.prevent="mode = 'edit'">
+                        <font-awesome-icon :icon="['fas', 'cogs']"/>
+                        <br/>Edit
+                    </div>
                 </div>
-
-
             </div>
         </div>
+
+        <div class="row body">
+            <div class="col-md-4">
+                <p>Email:</p>
+            </div>
+            <div class="col-md-8">
+                <p>{{ profile.email }}</p>
+            </div>
+
+        </div>
+        <button type="button" class="btn btn-success" v-if="mode==='edit'" @click.prevent="updateBio">
+            Save
+        </button>
     </div>
 </template>
 

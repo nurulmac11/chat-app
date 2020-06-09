@@ -1,7 +1,3 @@
-export const isLoggedIn = state => {
-    return !!state.accessToken
-}
-
 export const server = state => {
     return state.server
 }
@@ -62,6 +58,3 @@ export const msgNotify = state => {
     return state.msgNotify
 }
 
-export const screen = state => {
-    return state.screen
-}

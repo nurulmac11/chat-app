@@ -1,76 +1,70 @@
 <template>
-    <div class="container-fluid h-100">
-        <div class="row justify-content-center h-100">
-            <div class="col-md-12 col-xl-9 chat">
-                <div class="card">
-                    <div class="card-header msg_head">
-                        <div class="d-flex bd-highlight">
-                            <div class="img_cont">
-                                <Avatar :image-path="chattingWith.ppUrl" classes="rounded-circle user_img" />
-                                <span class="online_icon"></span>
-                            </div>
-                            <div class="user_info">
-                                <span>Chat with {{ chattingWith.username | truncate(10, '...') }}</span>
-                                <p>1767 Messages - {{ chattingWith.biography }}</p>
-                            </div>
-                        </div>
-                        <span id="action_menu_btn" @click.prevent="toggleActionMenu()"><font-awesome-icon icon="ellipsis-v"/></span>
-                        <div class="action_menu" v-if="actionMenu">
-                            <ul>
-                                <li><font-awesome-icon icon="user-circle"/> View profile</li>
-                                <li><font-awesome-icon icon="users"/> Add to close friends</li>
-                                <li><font-awesome-icon icon="ban"/> Block</li>
-                            </ul>
-                        </div>
+    <div class="card">
+        <div class="card-header msg_head">
+            <div class="d-flex bd-highlight">
+                <div class="img_cont">
+                    <Avatar :image-path="chattingWith.ppUrl" classes="rounded-circle user_img" />
+                    <span class="online_icon"></span>
+                </div>
+                <div class="user_info">
+                    <span>Chat with {{ chattingWith.username | truncate(10, '...') }}</span>
+                    <p>1767 Messages - {{ chattingWith.biography }}</p>
+                </div>
+            </div>
+            <span id="action_menu_btn" @click.prevent="toggleActionMenu()"><font-awesome-icon icon="ellipsis-v"/></span>
+            <div class="action_menu" v-if="actionMenu">
+                <ul>
+                    <li><font-awesome-icon icon="user-circle"/> View profile</li>
+                    <li><font-awesome-icon icon="users"/> Add to close friends</li>
+                    <li><font-awesome-icon icon="ban"/> Block</li>
+                </ul>
+            </div>
+        </div>
+        <div class="card-body msg_card_body" ref="msgContainer">
+            <div v-for="(message, index) in activeChatMessages" :key="index">
+
+                <div class="d-flex justify-content-start mb-4" v-if="message.to.id === profile.id">
+                    <div class="img_cont_msg">
+                        <Avatar :image-path="chattingWith.ppUrl" classes="rounded-circle user_img_msg" />
                     </div>
-                    <div class="card-body msg_card_body" ref="msgContainer">
-                        <div v-for="(message, index) in activeChatMessages" :key="index">
-
-                            <div class="d-flex justify-content-start mb-4" v-if="message.to.id === profile.id">
-                                <div class="img_cont_msg">
-                                    <Avatar :image-path="chattingWith.ppUrl" classes="rounded-circle user_img_msg" />
-                                </div>
-                                <div class="msg_cotainer">
-                                    {{ message.text }}
-                                    <span class="msg_time">{{ message.time }}</span>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-end mb-4" v-else>
-                                <div class="msg_cotainer_send">
-                                    {{ message.text }}
-                                    <span class="msg_time_send">{{ message.time }}</span>
-                                </div>
-                                <div class="img_cont_msg">
-                                    <Avatar :image-path="profile.ppUrl" classes="rounded-circle user_img_msg" />
-                                </div>
-                            </div>
-
-                        </div>
+                    <div class="msg_cotainer">
+                        {{ message.text }}
+                        <span class="msg_time">{{ message.time }}</span>
                     </div>
-                    <div class="card-footer">
-                        <div class="input-group">
-                            <div class="input-group-append">
-                                <span class="input-group-text attach_btn">
-                                    <font-awesome-icon icon="location-arrow"/>
-                                    </span>
-                            </div>
-                            <textarea name="" class="form-control type_msg"
-                                      @keyup.enter="message.length !== 0 ? sendMessage() : null"
-                                      v-model="message"
-                                      placeholder="Type your message..."></textarea>
+                </div>
 
-                            <div class="input-group-append"
-                                 @click.prevent="sendMessage()"
-                            >
-                                <span class="input-group-text send_btn"
-                                      :class="message.length > 0 ? 'clickable' : null"
-                                >
-                                    <font-awesome-icon icon="location-arrow"/>
-                                    <i class="fas fa-location-arrow"></i></span>
-                            </div>
-                        </div>
+                <div class="d-flex justify-content-end mb-4" v-else>
+                    <div class="msg_cotainer_send">
+                        {{ message.text }}
+                        <span class="msg_time_send">{{ message.time }}</span>
                     </div>
+                    <div class="img_cont_msg">
+                        <Avatar :image-path="profile.ppUrl" classes="rounded-circle user_img_msg" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="input-group">
+                <div class="input-group-append">
+                    <span class="input-group-text attach_btn">
+                        <font-awesome-icon icon="location-arrow"/>
+                        </span>
+                </div>
+                <textarea name="" class="form-control type_msg"
+                          @keyup.enter="message.length !== 0 ? sendMessage() : null"
+                          v-model="message"
+                          placeholder="Type your message..."></textarea>
+
+                <div class="input-group-append"
+                     @click.prevent="sendMessage()"
+                >
+                    <span class="input-group-text send_btn"
+                          :class="message.length > 0 ? 'clickable' : null"
+                    >
+                        <font-awesome-icon icon="location-arrow"/>
+                        <i class="fas fa-location-arrow"></i></span>
                 </div>
             </div>
         </div>

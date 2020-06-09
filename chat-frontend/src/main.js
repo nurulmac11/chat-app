@@ -4,7 +4,7 @@ import store from './store'
 import Vuex from 'vuex';
 import VueRouter from 'vue-router'
 import LoginPage from "./components/LoginPage";
-import ChatApp from "./components/Main";
+// import Main from "./components/Main";
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
 import {library} from '@fortawesome/fontawesome-svg-core'
 import {
@@ -24,6 +24,9 @@ import {
     faVideo,
     faArrowLeft
 } from '@fortawesome/free-solid-svg-icons'
+import UserListPage from "./components/UserListPage";
+import SettingsPage from "./components/SettingsPage";
+import ChatPage from "./components/ChatPage";
 
 Vue.config.productionTip = false
 
@@ -45,7 +48,10 @@ Vue.filter('truncate', filter);
 
 const routes = [
     {path: '/', component: LoginPage, name: 'login'},
-    {path: '/chat', component: ChatApp, name: 'chat'}
+    {path: '/users', component: UserListPage, name: 'users', props: {mode: 'users'}},
+    {path: '/chat', component: ChatPage, name: 'chat'},
+    {path: '/chat-list', component: UserListPage, name: 'chatUsers', props: {mode: 'chatUsers'}},
+    {path: '/settings', component: SettingsPage, name: 'settings'},
 ]
 
 const router = new VueRouter({

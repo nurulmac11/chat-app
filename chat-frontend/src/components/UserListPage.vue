@@ -1,47 +1,41 @@
 <template>
-    <div class="container-fluid h-100">
-        <div class="row justify-content-center h-100">
-            <div class="col-md-12 col-xl-9 chat">
-                <div class="card mb-sm-3 mb-md-0 contacts_card">
-                    <div class="card-header">
-                        <div class="input-group">
-                            <button type="button" class="btn btn-success"
-                                    v-on:click="refresh()"
-                                    v-if="mode === 'users'"
-                            >Refresh
-                            </button>
-                            <input type="text" placeholder="Search..." name="" class="form-control search">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body contacts_body">
-                        <ul class="contacts">
-                            <li
-                                    v-for="user in userList"
-                                    :key="user.id + mode"
-                                    v-on:click="selectUser(user)"
-                            >
-                                <div class="d-flex bd-highlight contact-li">
-                                    <div class="img_cont">
-                                        <Avatar :image-path="user.ppUrl" classes="rounded-circle user_img" />
-                                        <span class="online_icon offline"
-                                              v-if="msgNotify.includes(user.username)"></span>
-                                    </div>
-                                    <div class="user_info">
-                                        <span>{{ user.username }}</span>
-                                        <p><time-ago :datetime="user.lastOnline" long></time-ago></p>
-                                    </div>
-                                </div>
-                            </li>
-
-                        </ul>
-                    </div>
-                    <div class="card-footer"></div>
+    <div class="card mb-sm-3 mb-md-0 contacts_card">
+        <div class="card-header">
+            <div class="input-group">
+                <button type="button" class="btn btn-success"
+                        v-on:click="refresh()"
+                        v-if="mode === 'users'"
+                >Refresh
+                </button>
+                <input type="text" placeholder="Search..." name="" class="form-control search">
+                <div class="input-group-prepend">
+                    <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
                 </div>
             </div>
         </div>
+        <div class="card-body contacts_body">
+            <ul class="contacts">
+                <li
+                        v-for="user in userList"
+                        :key="user.id + mode"
+                        v-on:click="selectUser(user)"
+                >
+                    <div class="d-flex bd-highlight contact-li">
+                        <div class="img_cont">
+                            <Avatar :image-path="user.ppUrl" classes="rounded-circle user_img" />
+                            <span class="online_icon offline"
+                                  v-if="msgNotify.includes(user.username)"></span>
+                        </div>
+                        <div class="user_info">
+                            <span>{{ user.username }}</span>
+                            <p><time-ago :datetime="user.lastOnline" long></time-ago></p>
+                        </div>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+        <div class="card-footer"></div>
     </div>
 </template>
 
@@ -57,14 +51,16 @@
             Avatar
         },
         props: {
-            userList: {
-                type: Array,
-                default: () => []
-            },
             mode: {
                 type: String,
                 default: ''
+            },
+            userMode: {
+                type: String,
+                default: ''
             }
+        },
+        mounted() {
         },
         computed: {
             screen: {
@@ -75,7 +71,16 @@
                     this.$store.commit('setScreen', value);
                 }
             },
-            ...mapGetters(['msgNotify', 'server'])
+            ...mapGetters(['msgNotify', 'server']),
+            userList() {
+                if (this.mode === 'chatUsers') {
+                    return this.$store.getters.currentChatUsers;
+                }
+                else if (this.mode === 'users') {
+                    return this.$store.getters.randomUserList;
+                }
+                return [];
+            }
         },
         methods: {
             selectUser(profile) {
@@ -83,7 +88,7 @@
                 this.$store.commit('setCurrentChat', profile);
                 this.$store.commit('addChatUser', profile);
                 this.$store.commit('clearNotification', profile);
-                this.$store.commit('setScreen', 'chat');
+                this.$router.push({name: 'chat'});
             },
             refresh() {
                 this.$store.dispatch('randomUsers');
