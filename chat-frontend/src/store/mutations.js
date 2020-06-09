@@ -58,6 +58,17 @@ export default {
         }
     },
 
+    removeChat(state, profile) {
+        const removed = state.currentChatUsers.filter((u) => {
+            return u.username !== profile.username
+        })
+        state.currentChatUsers = removed;
+        const removedMessages = state.messages.filter((u) => {
+            return u.from.username !== profile.username && u.to.username !== profile.username
+        })
+        state.messages = removedMessages;
+    },
+
     addNotification(state, user) {
         if(!state.msgNotify.includes(user)) {
             state.msgNotify.push(user);

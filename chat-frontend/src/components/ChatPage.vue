@@ -16,6 +16,7 @@
                 <ul>
                     <li><font-awesome-icon icon="user-circle"/> View profile</li>
                     <li><font-awesome-icon icon="users"/> Add to close friends</li>
+                    <li @click.prevent="deleteChat()"><font-awesome-icon icon="trash"/> Delete chat</li>
                     <li><font-awesome-icon icon="ban"/> Block</li>
                 </ul>
             </div>
@@ -97,13 +98,13 @@
             ...mapGetters(['activeChatMessages', 'username', 'chattingWith', 'server', 'profile'])
         },
         mounted() {
-            var container = this.$refs.msgContainer;
+            const container = this.$refs.msgContainer;
             container.scrollTop = container.scrollHeight + 120;
         },
         watch: {
             activeChatMessages: function() {
                 this.$nextTick(function() {
-                    var container = this.$refs.msgContainer;
+                    const container = this.$refs.msgContainer;
                     container.scrollTop = container.scrollHeight + 120;
                 });
             }
@@ -115,6 +116,10 @@
             },
             toggleActionMenu() {
                 this.actionMenu = !this.actionMenu;
+            },
+            deleteChat() {
+                this.$store.commit('removeChat', this.chattingWith);
+                this.$router.replace({name: 'chatUsers'});
             }
         }
     }
