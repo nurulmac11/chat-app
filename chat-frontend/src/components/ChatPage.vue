@@ -8,14 +8,14 @@
                 </div>
                 <div class="user_info">
                     <span>Chat with {{ chattingWith.username | truncate(10, '...') }}</span>
-                    <p>1767 Messages - {{ chattingWith.biography }}</p>
+                    <p>{{ chattingWith.conversations }} Messages - {{ chattingWith.biography }}</p>
                 </div>
             </div>
             <span id="action_menu_btn" @click.prevent="toggleActionMenu()"><font-awesome-icon icon="ellipsis-v"/></span>
             <div class="action_menu" v-if="actionMenu">
                 <ul>
                     <li v-on:click.stop="showProfile(chattingWith)"><font-awesome-icon icon="user-circle" /> View profile</li>
-                    <li v-on:click.stop="addFavorite(chattingWith)"><font-awesome-icon icon="users"/> Add to favorites</li>
+                    <li v-on:click.stop="addFavorite(chattingWith)" v-if="chattingWith.hasOwnProperty('age')"><font-awesome-icon icon="users"/> Add to favorites</li>
                     <li @click.prevent="deleteChat()"><font-awesome-icon icon="trash"/> Delete chat</li>
                     <li><font-awesome-icon icon="ban"/> Block</li>
                 </ul>
@@ -129,6 +129,8 @@
             addFavorite(profile) {
                 this.$store.dispatch('addFavUser', profile).catch((error) => {
                     Swal.fire('Fail', error.response.data.message, 'error');
+                }).then(() => {
+                    Swal.fire('Successful', 'User added to favorites.', 'success')
                 });
             }
         }

@@ -79,7 +79,6 @@ export class User extends BaseEntity {
     favorites: Favorites[];
 
     @OneToMany(type => Favorites, favorited => favorited.favorite)
-    @JoinTable()
     favorited: Favorites[];
 
     @Column({ default: true, name: 'is_active' })

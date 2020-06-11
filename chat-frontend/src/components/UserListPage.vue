@@ -9,15 +9,17 @@
                 </button>
                 <input type="text" placeholder="Search..." name="" class="form-control search" v-if="mode === 'users'">
                 <div class="input-group-prepend" v-if="mode === 'users'">
-                    <span class="input-group-text search_btn"><font-awesome-icon icon="search" /></span>
+                    <span class="input-group-text search_btn"><font-awesome-icon icon="search"/></span>
                 </div>
             </div>
             <ul class="nav nav-tabs" v-if="mode === 'chatUsers'">
                 <li class="nav-item">
-                    <a class="nav-link" :class="{ active: !showFavorites }" @click.stop="showFavorites = false"  href="#">Active Chats</a>
+                    <a class="nav-link" :class="{ active: !showFavorites }" @click.stop="showFavorites = false"
+                       href="#">Active Chats</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" :class="{ active: showFavorites }" @click.stop="showFavorites = true" href="#">Favorites</a>
+                    <a class="nav-link" :class="{ active: showFavorites }"
+                       @click.stop="showFavs();" href="#">Favorites</a>
                 </li>
             </ul>
         </div>
@@ -30,13 +32,15 @@
                 >
                     <div class="d-flex bd-highlight contact-li">
                         <div class="img_cont" v-on:click.stop="showProfile(user)">
-                            <Avatar  :image-path="user.ppUrl" classes="rounded-circle user_img" />
+                            <Avatar :image-path="user.ppUrl" classes="rounded-circle user_img"/>
                             <span class="online_icon offline"
                                   v-if="msgNotify.includes(user.username)"></span>
                         </div>
                         <div class="user_info">
                             <span>{{ user.username }}</span>
-                            <p>{{ user.biography }}<time-ago :datetime="user.lastOnline" long></time-ago></p>
+                            <p>{{ user.biography }}
+                                <time-ago :datetime="user.lastOnline" long></time-ago>
+                            </p>
                         </div>
                     </div>
                 </li>
@@ -87,13 +91,10 @@
             ...mapGetters(['msgNotify', 'server']),
             userList() {
                 if (this.showFavorites) {
-                    this.$store.dispatch('favorites');
                     return this.$store.getters.favorites;
-                }
-                else if (this.mode === 'chatUsers') {
+                } else if (this.mode === 'chatUsers') {
                     return this.$store.getters.currentChatUsers;
-                }
-                else if (this.mode === 'users') {
+                } else if (this.mode === 'users') {
                     return this.$store.getters.randomUserList;
                 }
                 return [];
@@ -112,6 +113,10 @@
             showProfile(profile) {
                 this.$store.commit('setViewProfile', profile);
                 this.$router.push({name: 'profile'});
+            },
+            showFavs() {
+                this.showFavorites = true;
+                this.$store.dispatch('favorites');
             }
         }
     }

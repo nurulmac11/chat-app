@@ -115,10 +115,8 @@ export class UsersController {
     async favorites(
         @Request() req,
     ): Promise<any> {
-        // TODO fix here
-        const favs = await req.user.favorites;
-        console.log(favs);
-        return favs;
+        const user = await this.usersService.findUserWithFavorites(req.user.id);
+        return user;
     }
 
 }

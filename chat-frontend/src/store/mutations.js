@@ -48,7 +48,11 @@ export default {
     },
 
     setFavorites(state, response) {
-        state.favorites = response.data;
+        const favs = [];
+        response.data.favorites.forEach( fav => {
+            favs.push(fav.favorite);
+        });
+        state.favorites = favs;
     },
 
     setRandomUserList(state, response) {

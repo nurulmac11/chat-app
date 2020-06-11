@@ -118,6 +118,17 @@ export class UsersService {
         return await this.usersRepository.findOne(id);
     }
 
+    async findUserWithFavorites(id: number): Promise<any> {
+        const favs = await createQueryBuilder('User')
+            .select(['User.id', 'favs.id', 'favorite.id', 'favorite.username', 'favorite.gender', 'favorite.age',
+                'favorite.biography', 'favorite.ppUrl', 'favorite.createdAt', 'favorite.lastOnline', 'favorite.conversations'])
+            .leftJoin('User.favorites', 'favs')
+            .leftJoin('favs.favorite', 'favorite')
+            .where('User.id = :id', {id})
+            .getOne();
+        return favs;
+    }
+
     async updateBio(id: number, bio: string): Promise<Record<string, any>> {
         const isUpdated = await createQueryBuilder()
             .update(User)

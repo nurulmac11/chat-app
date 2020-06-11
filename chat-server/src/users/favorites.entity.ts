@@ -21,12 +21,11 @@ export class Favorites extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(type => User, user => user.favorited)
-    @JoinColumn()
+    @ManyToOne(type => User, user => user.favorites)
     user: User;
 
-    @ManyToOne(type => User, favorite => favorite.favorites)
-    @JoinColumn()
+    @ManyToOne(type => User, favorite => favorite.favorited)
+    @JoinTable()
     favorite: User;
 
     @Column({type: "timestamp", default: () => "CURRENT_TIMESTAMP", name: "createdAt"})
