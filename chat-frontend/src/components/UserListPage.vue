@@ -7,11 +7,19 @@
                         v-if="mode === 'users'"
                 >Refresh
                 </button>
-                <input type="text" placeholder="Search..." name="" class="form-control search">
-                <div class="input-group-prepend">
-                    <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
+                <input type="text" placeholder="Search..." name="" class="form-control search" v-if="mode === 'users'">
+                <div class="input-group-prepend" v-if="mode === 'users'">
+                    <span class="input-group-text search_btn"><font-awesome-icon icon="search" /></span>
                 </div>
             </div>
+            <ul class="nav nav-tabs" v-if="mode === 'chatUsers'">
+                <li class="nav-item">
+                    <a class="nav-link" :class="{ active: !showFavorites }" @click.stop="showFavorites = false"  href="#">Active Chats</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" :class="{ active: showFavorites }" @click.stop="showFavorites = true" href="#">Favorites</a>
+                </li>
+            </ul>
         </div>
         <div class="card-body contacts_body">
             <ul class="contacts">
@@ -28,7 +36,7 @@
                         </div>
                         <div class="user_info">
                             <span>{{ user.username }}</span>
-                            <p><time-ago :datetime="user.lastOnline" long></time-ago></p>
+                            <p>{{ user.biography }}<time-ago :datetime="user.lastOnline" long></time-ago></p>
                         </div>
                     </div>
                 </li>
@@ -62,6 +70,11 @@
         },
         mounted() {
         },
+        data: () => {
+            return {
+                showFavorites: false
+            }
+        },
         computed: {
             screen: {
                 get() {
@@ -73,7 +86,11 @@
             },
             ...mapGetters(['msgNotify', 'server']),
             userList() {
-                if (this.mode === 'chatUsers') {
+                if (this.showFavorites) {
+                    this.$store.dispatch('favorites');
+                    return this.$store.getters.favorites;
+                }
+                else if (this.mode === 'chatUsers') {
                     return this.$store.getters.currentChatUsers;
                 }
                 else if (this.mode === 'users') {
@@ -86,7 +103,6 @@
             selectUser(profile) {
                 // Writing to username
                 this.$store.commit('setCurrentChat', profile);
-                this.$store.commit('addChatUser', profile);
                 this.$store.commit('clearNotification', profile);
                 this.$router.push({name: 'chat'});
             },
@@ -261,7 +277,7 @@
     }
 
     .user_info p {
-        font-size: 10px;
+        font-size: 12px;
         color: rgba(255, 255, 255, 0.6);
     }
 

@@ -39,10 +39,32 @@ export const updateBio = ({commit}, payload) => {
     })
 }
 
+export const addFavUser = ({commit}, payload) => {
+    return new Promise((resolve, reject) => {
+        api.addFavorite(payload.id).then(response => {
+            commit('addFavorite', payload);
+            resolve(response);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
 export const randomUsers = ({commit}) => {
     return new Promise((resolve, reject) => {
         api.userList().then(response => {
             commit('setRandomUserList', response);
+            resolve(response);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
+export const favorites = ({commit}) => {
+    return new Promise((resolve, reject) => {
+        api.getFavorites().then(response => {
+            commit('setFavorites', response);
             resolve(response);
         }).catch(error => {
             reject(error);

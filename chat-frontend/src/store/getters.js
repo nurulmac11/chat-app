@@ -30,6 +30,10 @@ export const chattingWith = state => {
     return state.chattingWith
 }
 
+export const favorites = state => {
+    return state.favorites
+}
+
 export const activeChatMessages = state => {
     return state.messages.filter((u) => {
         return u.from.username === state.chattingWith.username || u.to.username === state.chattingWith.username

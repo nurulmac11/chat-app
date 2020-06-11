@@ -34,3 +34,11 @@ export function updateBio(bio) {
     }
     return Axios.post(baseURL + '/users/update-bio', data, auth())
 }
+
+export function addFavorite(favUser) {
+    return Axios.post(baseURL + '/users/add-favorite', {'favorite': favUser}, auth());
+}
+
+export function getFavorites() {
+    return Axios.get(baseURL + '/users/favorites', auth());
+}

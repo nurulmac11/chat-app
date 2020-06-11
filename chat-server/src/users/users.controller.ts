@@ -30,38 +30,11 @@ export class UsersController {
         return "Hello Users";
     }
 
-    @Get("all")
-    @UseGuards(AuthGuard('jwt'))
-    getUsers(): {} {
-        return this.usersService.findAll();
-    }
-
-    @Get("user/:id")
-    @UseGuards(AuthGuard('jwt'))
-    getUser(@Param('id') id): any {
-        return this.usersService.findById(id);
-    }
-
     @Get("random")
     @UseGuards(AuthGuard('jwt'))
     async getRandomUsers(): Promise<any> {
         const userList = await this.usersService.findRandomOnlineUsers();
         return userList;
-    }
-
-    @Get("messages/:id")
-    @UseGuards(AuthGuard('jwt'))
-    getMessages(@Param('id') id): {} {
-        return this.usersService.findMsgsOfUser(id);
-    }
-
-    @Get("chat/:user1/:user2")
-    @UseGuards(AuthGuard('jwt'))
-    getChat(
-        @Param('user1') user1,
-        @Param('user2') user2
-    ): {} {
-        return this.usersService.findMsgsOfChat(user1, user2);
     }
 
     @Post('create')
@@ -123,6 +96,29 @@ export class UsersController {
             throw new BadRequestException('Invalid user or password!');
         await this.usersService.updateLastOnline(result.user_id)
         return result;
+    }
+
+    @Post('add-favorite')
+    @UseGuards(AuthGuard('jwt'))
+    async addFavorite(
+        @Request() req,
+        @Body('favorite') favoriteUser: number,
+    ): Promise<any> {
+        const result = await this.usersService.addFavorite(req.user, favoriteUser);
+        if(!result)
+            throw new BadRequestException('This user already in your favorites!');
+        return result;
+    }
+
+    @Get('favorites')
+    @UseGuards(AuthGuard('jwt'))
+    async favorites(
+        @Request() req,
+    ): Promise<any> {
+        // TODO fix here
+        const favs = await req.user.favorites;
+        console.log(favs);
+        return favs;
     }
 
 }

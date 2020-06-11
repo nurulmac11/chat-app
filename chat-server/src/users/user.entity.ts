@@ -1,8 +1,19 @@
-import {Entity, Column, PrimaryGeneratedColumn, BaseEntity, OneToMany, JoinTable, BeforeInsert, Index} from "typeorm";
+import {
+    Entity,
+    Column,
+    PrimaryGeneratedColumn,
+    BaseEntity,
+    OneToMany,
+    JoinTable,
+    BeforeInsert,
+    Index,
+    OneToOne
+} from "typeorm";
 import { TableNames } from '../TableNames';
 import { Message } from "../messages/messages.entity";
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
+import {Favorites} from "./favorites.entity";
 
 @Entity({name: TableNames.User})
 export class User extends BaseEntity {
@@ -62,6 +73,14 @@ export class User extends BaseEntity {
     @OneToMany(type => Message, message => message.receiver)
     @JoinTable()
     receivedMessages: Message[];
+
+    @OneToMany(type => Favorites, favorites => favorites.user)
+    @JoinTable()
+    favorites: Favorites[];
+
+    @OneToMany(type => Favorites, favorited => favorited.favorite)
+    @JoinTable()
+    favorited: Favorites[];
 
     @Column({ default: true, name: 'is_active' })
     isActive: boolean;

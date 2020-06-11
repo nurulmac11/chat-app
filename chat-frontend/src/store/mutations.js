@@ -43,6 +43,14 @@ export default {
         state.profile = response.data;
     },
 
+    addFavorite(state, fav) {
+        state.favorites.push(fav);
+    },
+
+    setFavorites(state, response) {
+        state.favorites = response.data;
+    },
+
     setRandomUserList(state, response) {
         state.randomUserList = response.data;
     },

@@ -15,7 +15,7 @@
             <div class="action_menu" v-if="actionMenu">
                 <ul>
                     <li v-on:click.stop="showProfile(chattingWith)"><font-awesome-icon icon="user-circle" /> View profile</li>
-                    <li><font-awesome-icon icon="users"/> Add to close friends</li>
+                    <li v-on:click.stop="addFavorite(chattingWith)"><font-awesome-icon icon="users"/> Add to favorites</li>
                     <li @click.prevent="deleteChat()"><font-awesome-icon icon="trash"/> Delete chat</li>
                     <li><font-awesome-icon icon="ban"/> Block</li>
                 </ul>
@@ -50,7 +50,7 @@
             <div class="input-group">
                 <div class="input-group-append">
                     <span class="input-group-text attach_btn">
-                        <font-awesome-icon icon="location-arrow"/>
+                        <font-awesome-icon icon="video"/>
                         </span>
                 </div>
                 <textarea name="" class="form-control type_msg"
@@ -75,6 +75,7 @@
 <script>
     import {mapGetters} from "vuex";
     import Avatar from "./Avatar";
+    import Swal from "sweetalert2";
 
     export default {
         name: "Chat",
@@ -124,6 +125,11 @@
             showProfile(profile) {
                 this.$store.commit('setViewProfile', profile);
                 this.$router.push({name: 'profile'});
+            },
+            addFavorite(profile) {
+                this.$store.dispatch('addFavUser', profile).catch((error) => {
+                    Swal.fire('Fail', error.response.data.message, 'error');
+                });
             }
         }
     }

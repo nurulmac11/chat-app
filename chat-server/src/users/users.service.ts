@@ -6,6 +6,7 @@ import {Message} from "../messages/messages.entity";
 import {JwtService} from './jwt/jwt.service';
 import {UserSchema} from "./jwt/user.schema";
 import * as bcrypt from 'bcrypt';
+import {Favorites} from "./favorites.entity";
 
 @Injectable()
 export class UsersService {
@@ -161,14 +162,18 @@ export class UsersService {
         return user;
     }
 
-    async idByUsername(username: string): Promise<User> {
-        return await this.usersRepository.findOne({
-            where: {
-                username,
-            },
-        });
+    async addFavorite(user: User, favorite: number): Promise<any> {
+        const favoriteUser = await this.findUserById(favorite)
+        const fav = new Favorites()
+        fav.user = user;
+        fav.favorite = favoriteUser;
+        try {
+            await fav.save();
+            return true;
+        } catch (Exception) {
+            return false;
+        }
     }
-
 
     async create(username: string, password: string, email: string, gender: string, age: number): Promise<any> {
         const user = new User();

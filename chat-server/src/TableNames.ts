@@ -1,4 +1,5 @@
 export enum TableNames {
     User = 'users',
-    Message = 'messages'
+    Message = 'messages',
+    Favorites = 'favorite'
 }

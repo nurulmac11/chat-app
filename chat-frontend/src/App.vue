@@ -79,6 +79,7 @@
                     this.$store.dispatch('initSocket');
                     this.$store.dispatch('randomUsers');
                     this.$store.dispatch('newComingMessages');
+                    this.$store.dispatch('favorites');
                     this.$router.replace({name: 'users'});
                 }).catch(error => {
                     localStorage.accessToken = '';

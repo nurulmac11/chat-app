@@ -21,6 +21,7 @@ const state = {
     chattingWith: {},
     socket: null,
     viewProfile: {},
+    favorites: [],
     screen: 'userList',
     server: 'http://localhost:3000',
 }
