@@ -7,6 +7,7 @@ import {JwtService} from './jwt/jwt.service';
 import {UserSchema} from "./jwt/user.schema";
 import * as bcrypt from 'bcrypt';
 import {Favorites} from "./favorites.entity";
+import {Blocks} from "./blocks.entity";
 
 @Injectable()
 export class UsersService {
@@ -94,16 +95,6 @@ export class UsersService {
         return await this.usersRepository.findOne(id);
     }
 
-    async findUserWithFavorites(id: number): Promise<any> {
-        const favs = await createQueryBuilder('User')
-            .select(['User.id', 'favs.id', 'favorite.id', 'favorite.username', 'favorite.gender', 'favorite.age',
-                'favorite.biography', 'favorite.ppUrl', 'favorite.createdAt', 'favorite.lastOnline', 'favorite.conversations'])
-            .leftJoin('User.favorites', 'favs')
-            .leftJoin('favs.favorite', 'favorite')
-            .where('User.id = :id', {id})
-            .getOne();
-        return favs;
-    }
 
     async updateBio(id: number, bio: string): Promise<Record<string, any>> {
         const isUpdated = await createQueryBuilder()
@@ -169,13 +160,24 @@ export class UsersService {
                 .createQueryBuilder()
                 .delete()
                 .from(Favorites)
-                .where("user = :id and favorite = :id2", { id: user.id, id2: favorite })
+                .where("user = :id and favorite = :id2", {id: user.id, id2: favorite})
                 .execute();
             return true;
         } catch (Exception) {
             console.log(Exception);
             return false;
         }
+    }
+
+    async findUserWithFavorites(id: number): Promise<any> {
+        const favs = await createQueryBuilder('User')
+            .select(['User.id', 'favs.id', 'favorite.id', 'favorite.username', 'favorite.gender', 'favorite.age',
+                'favorite.biography', 'favorite.ppUrl', 'favorite.createdAt', 'favorite.lastOnline', 'favorite.conversations'])
+            .leftJoin('User.favorites', 'favs')
+            .leftJoin('favs.favorite', 'favorite')
+            .where('User.id = :id', {id})
+            .getOne();
+        return favs;
     }
 
     async create(username: string, password: string, email: string, gender: string, age: number): Promise<any> {
@@ -196,4 +198,47 @@ export class UsersService {
     async remove(id: number): Promise<void> {
         await this.usersRepository.delete(id);
     }
+
+    // BLOCK OPERATIONS
+    async block(user: User, blockUserId: number): Promise<any> {
+        const blockUser = await this.findUserById(blockUserId)
+        const block = new Blocks()
+        block.user = user;
+        block.blocked = blockUser;
+        try {
+            await block.save();
+            return true;
+        } catch (Exception) {
+            return false;
+        }
+    }
+
+    async removeBlock(user: User, blockId: number): Promise<any> {
+        const blockUser = await this.findUserById(blockId)
+        try {
+            await getConnection()
+                .createQueryBuilder()
+                .delete()
+                .from(Blocks)
+                .where("user = :id and blocked = :id2", {id: user.id, id2: blockId})
+                .execute();
+            return true;
+        } catch (Exception) {
+            console.log(Exception);
+            return false;
+        }
+    }
+
+    async findUserWithBlocks(id: number): Promise<any> {
+        const blocks = await createQueryBuilder('User')
+            .select(['User.id', 'blocks.id', 'blocked.id', 'blocked.username', 'blocked.gender', 'blocked.age',
+                'blocked.biography', 'blocked.ppUrl', 'blocked.createdAt', 'blocked.lastOnline', 'blocked.conversations'])
+            .leftJoin('User.blocks', 'blocks')
+            .leftJoin('blocks.blocked', 'blocked')
+            .where('User.id = :id', {id})
+            .getOne();
+        return blocks;
+    }
+
+
 }

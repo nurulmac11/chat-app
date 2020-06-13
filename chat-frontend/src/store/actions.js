@@ -61,6 +61,50 @@ export const removeFavUser = ({commit}, payload) => {
     })
 }
 
+export const favorites = ({commit}) => {
+    return new Promise((resolve, reject) => {
+        api.getFavorites().then(response => {
+            commit('setFavorites', response);
+            resolve(response);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
+export const blockUser = ({commit}, payload) => {
+    return new Promise((resolve, reject) => {
+        api.block(payload.id).then(response => {
+            commit('addBlock', payload);
+            resolve(response);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
+export const removeBlock = ({commit}, payload) => {
+    return new Promise((resolve, reject) => {
+        api.removeBlock(payload.id).then(response => {
+            commit('removeBlock', payload);
+            resolve(response);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
+export const blocks = ({commit}) => {
+    return new Promise((resolve, reject) => {
+        api.getBlocks().then(response => {
+            commit('setBlocks', response);
+            resolve(response);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
 export const randomUsers = ({commit}) => {
     return new Promise((resolve, reject) => {
         api.userList().then(response => {
@@ -72,16 +116,6 @@ export const randomUsers = ({commit}) => {
     })
 }
 
-export const favorites = ({commit}) => {
-    return new Promise((resolve, reject) => {
-        api.getFavorites().then(response => {
-            commit('setFavorites', response);
-            resolve(response);
-        }).catch(error => {
-            reject(error);
-        })
-    })
-}
 
 export const newComingMessages = ({commit, state}) => {
     return new Promise((resolve, reject) => {

@@ -4,7 +4,7 @@
             <div class="avatar">
                 <Avatar :image-path="profile.ppUrl" classes="rounded-circle user_img" />
                 <br/>
-                <a class="btn" @click="toggleShow">change avatar</a>
+                <a class="btn btn-secondary" @click="toggleShow">change avatar</a>
                 <my-upload field="avatar"
                            @crop-success="cropSuccess"
                            @crop-upload-success="cropUploadSuccess"

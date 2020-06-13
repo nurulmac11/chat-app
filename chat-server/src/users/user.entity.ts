@@ -14,6 +14,7 @@ import { Message } from "../messages/messages.entity";
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import {Favorites} from "./favorites.entity";
+import {Blocks} from "./blocks.entity";
 
 @Entity({name: TableNames.User})
 export class User extends BaseEntity {
@@ -80,6 +81,13 @@ export class User extends BaseEntity {
 
     @OneToMany(type => Favorites, favorited => favorited.favorite)
     favorited: Favorites[];
+
+    @OneToMany(type => Blocks, blocks => blocks.user)
+    @JoinTable()
+    blocks: Blocks[];
+
+    @OneToMany(type => Blocks, blocked => blocked.blocked)
+    blocked: Blocks[];
 
     @Column({ default: true, name: 'is_active' })
     isActive: boolean;

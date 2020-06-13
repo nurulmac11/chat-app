@@ -131,4 +131,37 @@ export class UsersController {
         return user;
     }
 
+    @Post('block')
+    @UseGuards(AuthGuard('jwt'))
+    async block(
+        @Request() req,
+        @Body('block') blockUser: number,
+    ): Promise<any> {
+        const result = await this.usersService.block(req.user, blockUser);
+        if(!result)
+            throw new BadRequestException('This user already blocked!');
+        return result;
+    }
+
+    @Post('remove-block')
+    @UseGuards(AuthGuard('jwt'))
+    async removeBlock(
+        @Request() req,
+        @Body('block') blockUser: number,
+    ): Promise<any> {
+        const result = await this.usersService.removeBlock(req.user, blockUser);
+        if(!result)
+            throw new BadRequestException('This user already removed!');
+        return result;
+    }
+
+    @Get('blocks')
+    @UseGuards(AuthGuard('jwt'))
+    async blocks(
+        @Request() req,
+    ): Promise<any> {
+        const user = await this.usersService.findUserWithBlocks(req.user.id);
+        return user;
+    }
+
 }

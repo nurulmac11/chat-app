@@ -22,6 +22,7 @@ const state = {
     socket: null,
     viewProfile: {},
     favorites: [],
+    blocks: [],
     screen: 'userList',
     server: 'http://localhost:3000',
 }

@@ -62,6 +62,25 @@ export default {
         state.favorites = favs;
     },
 
+    addBlock(state, block) {
+        state.blocks.push(block);
+    },
+
+    removeBlock(state, block) {
+        const removed = state.blocks.filter((u) => {
+            return u.username !== block.username
+        })
+        state.blocks = removed;
+    },
+
+    setBlocks(state, response) {
+        const blocks = [];
+        response.data.blocks.forEach( block => {
+            blocks.push(block.favorite);
+        });
+        state.blocks = blocks;
+    },
+
     setRandomUserList(state, response) {
         state.randomUserList = response.data;
     },

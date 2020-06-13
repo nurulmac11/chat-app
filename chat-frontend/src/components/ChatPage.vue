@@ -1,12 +1,12 @@
 <template>
-    <div class="card" >
+    <div class="card">
         <div class="card-header msg_head">
             <div class="d-flex bd-highlight">
                 <div style="cursor: pointer" v-if="this.$router.currentRoute.name === 'chat'" @click.prevent="back()">
                     <font-awesome-icon icon="arrow-left"/>
                 </div>
                 <div class="img_cont" v-on:click.stop="showProfile(chattingWith)">
-                    <Avatar :image-path="chattingWith.ppUrl" classes="rounded-circle user_img" />
+                    <Avatar :image-path="chattingWith.ppUrl" classes="rounded-circle user_img"/>
                     <span class="online_icon"></span>
                 </div>
                 <div class="user_info">
@@ -17,11 +17,34 @@
             <span id="action_menu_btn" @click.prevent="toggleActionMenu()"><font-awesome-icon icon="ellipsis-v"/></span>
             <div class="action_menu" v-if="actionMenu">
                 <ul>
-                    <li v-on:click.stop="showProfile(chattingWith)"><font-awesome-icon icon="user-circle" /> View profile</li>
-                    <li v-on:click.stop="addFavorite(chattingWith)" v-if="!isInFavorites && chattingWith.hasOwnProperty('age')"><font-awesome-icon icon="users"/> Add to favorites</li>
-                    <li v-on:click.stop="removeFavorite(chattingWith)" v-if="isInFavorites && chattingWith.hasOwnProperty('age')"><font-awesome-icon icon="users"/> Remove from favorites</li>
-                    <li @click.prevent="deleteChat()"><font-awesome-icon icon="trash"/> Delete chat</li>
-                    <li><font-awesome-icon icon="ban"/> Block</li>
+                    <li v-on:click.stop="showProfile(chattingWith)">
+                        <font-awesome-icon icon="user-circle"/>
+                        View profile
+                    </li>
+                    <li v-on:click.stop="addFavorite(chattingWith)"
+                        v-if="!isInFavorites && chattingWith.hasOwnProperty('age')">
+                        <font-awesome-icon icon="users"/>
+                        Add to favorites
+                    </li>
+                    <li v-on:click.stop="removeFavorite(chattingWith)"
+                        v-if="isInFavorites && chattingWith.hasOwnProperty('age')">
+                        <font-awesome-icon icon="users"/>
+                        Remove from favorites
+                    </li>
+                    <li @click.prevent="deleteChat()">
+                        <font-awesome-icon icon="trash"/>
+                        Delete chat
+                    </li>
+                    <li v-on:click.stop="block(chattingWith)"
+                        v-if="!isBlocked">
+                        <font-awesome-icon icon="ban"/>
+                        Block User
+                    </li>
+                    <li v-on:click.stop="unblock(chattingWith)"
+                        v-if="isBlocked">
+                        <font-awesome-icon icon="ban"/>
+                        Unblock
+                    </li>
                 </ul>
             </div>
         </div>
@@ -30,7 +53,7 @@
 
                 <div class="d-flex justify-content-start mb-4" v-if="message.to.id === profile.id">
                     <div class="img_cont_msg">
-                        <Avatar :image-path="chattingWith.ppUrl" classes="rounded-circle user_img_msg" />
+                        <Avatar :image-path="chattingWith.ppUrl" classes="rounded-circle user_img_msg"/>
                     </div>
                     <div class="msg_cotainer">
                         {{ message.text }}
@@ -44,7 +67,7 @@
                         <span class="msg_time_send">{{ message.time }}</span>
                     </div>
                     <div class="img_cont_msg">
-                        <Avatar :image-path="profile.ppUrl" classes="rounded-circle user_img_msg" />
+                        <Avatar :image-path="profile.ppUrl" classes="rounded-circle user_img_msg"/>
                     </div>
                 </div>
 
@@ -106,7 +129,19 @@
                     let result = false;
                     favs.forEach(user => {
                         console.log(user.username, this.$store.state.chattingWith.username);
-                        if(user.username === this.$store.state.chattingWith.username)
+                        if (user.username === this.$store.state.chattingWith.username)
+                            result = true;
+                    })
+                    return result;
+                }
+            },
+            isBlocked: {
+                get() {
+                    let blocks = this.$store.state.blocks;
+                    let result = false;
+                    blocks.forEach(user => {
+                        console.log(user.username, this.$store.state.chattingWith.username);
+                        if (user.username === this.$store.state.chattingWith.username)
                             result = true;
                     })
                     return result;
@@ -119,8 +154,8 @@
             container.scrollTop = container.scrollHeight + 120;
         },
         watch: {
-            activeChatMessages: function() {
-                this.$nextTick(function() {
+            activeChatMessages: function () {
+                this.$nextTick(function () {
                     const container = this.$refs.msgContainer;
                     container.scrollTop = container.scrollHeight + 120;
                 });
@@ -128,11 +163,11 @@
         },
         methods: {
             sendMessage() {
-                if(this.message.length > 0)
+                if (this.message.length > 0)
                     this.$store.dispatch('sendMessage');
             },
-            toggleActionMenu(to=false) {
-                if(to)
+            toggleActionMenu(to = false) {
+                if (to)
                     this.actionMenu = false;
                 else
                     this.actionMenu = !this.actionMenu;
@@ -159,6 +194,21 @@
                     Swal.fire('Fail', error.response.data.message, 'error');
                 });
             },
+            block(profile) {
+                this.$store.dispatch('blockUser', profile).then(() => {
+                    Swal.fire('Successful', 'User blocked.', 'success')
+                }).catch((error) => {
+                    Swal.fire('Fail', error.response.data.message, 'error');
+                });
+            },
+            unblock(profile) {
+                this.$store.dispatch('removeBlock', profile).then(() => {
+                    Swal.fire('Successful', 'User unblocked.', 'success')
+                }).catch((error) => {
+                    Swal.fire('Fail', error.response.data.message, 'error');
+                });
+            },
+
             back() {
                 this.$router.go(-1);
             }
@@ -174,7 +224,6 @@
         background: -webkit-linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5);
         background: linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5);
     }
-
 
 
     .card {
@@ -427,6 +476,7 @@
             margin-bottom: 15px !important;
         }
     }
+
     .clickable {
         cursor: pointer;
     }
