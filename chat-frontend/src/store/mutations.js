@@ -47,6 +47,13 @@ export default {
         state.favorites.push(fav);
     },
 
+    removeFavorite(state, fav) {
+        const removed = state.favorites.filter((u) => {
+            return u.username !== fav.username
+        })
+        state.favorites = removed;
+    },
+
     setFavorites(state, response) {
         const favs = [];
         response.data.favorites.forEach( fav => {

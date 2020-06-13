@@ -14,7 +14,9 @@ import { Message } from "../messages/messages.entity";
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import {User} from "./user.entity";
+import {Injectable} from "@nestjs/common";
 
+@Injectable()
 @Entity({name: TableNames.Favorites})
 @Index(["user", "favorite"], { unique: true })
 export class Favorites extends BaseEntity {

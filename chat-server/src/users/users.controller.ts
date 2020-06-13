@@ -110,6 +110,18 @@ export class UsersController {
         return result;
     }
 
+    @Post('remove-favorite')
+    @UseGuards(AuthGuard('jwt'))
+    async removeFavorite(
+        @Request() req,
+        @Body('favorite') favoriteUser: number,
+    ): Promise<any> {
+        const result = await this.usersService.removeFavorite(req.user, favoriteUser);
+        if(!result)
+            throw new BadRequestException('This user already removed!');
+        return result;
+    }
+
     @Get('favorites')
     @UseGuards(AuthGuard('jwt'))
     async favorites(

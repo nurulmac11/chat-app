@@ -50,6 +50,17 @@ export const addFavUser = ({commit}, payload) => {
     })
 }
 
+export const removeFavUser = ({commit}, payload) => {
+    return new Promise((resolve, reject) => {
+        api.removeFavorite(payload.id).then(response => {
+            commit('removeFavorite', payload);
+            resolve(response);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
 export const randomUsers = ({commit}) => {
     return new Promise((resolve, reject) => {
         api.userList().then(response => {

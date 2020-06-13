@@ -7,6 +7,7 @@ import { Message } from "../messages/messages.entity";
 import {JwtService} from "./jwt/jwt.service";
 import {JwtStrategy} from "./jwt/jwt.strategy";
 import {MulterModule} from "@nestjs/platform-express";
+import {Favorites} from "./favorites.entity";
 
 @Module({
     imports: [
@@ -18,7 +19,7 @@ import {MulterModule} from "@nestjs/platform-express";
             dest: './uploads/avatar',
         }),
     ],
-    providers: [UsersService, JwtService, JwtStrategy],
+    providers: [UsersService, JwtService, JwtStrategy, Favorites],
     controllers: [UsersController],
     exports: [JwtService, UsersService, JwtStrategy]
 })

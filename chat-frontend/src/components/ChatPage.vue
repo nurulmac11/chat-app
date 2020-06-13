@@ -1,7 +1,10 @@
 <template>
-    <div class="card">
+    <div class="card" >
         <div class="card-header msg_head">
             <div class="d-flex bd-highlight">
+                <div style="cursor: pointer" v-if="this.$router.currentRoute.name === 'chat'" @click.prevent="back()">
+                    <font-awesome-icon icon="arrow-left"/>
+                </div>
                 <div class="img_cont" v-on:click.stop="showProfile(chattingWith)">
                     <Avatar :image-path="chattingWith.ppUrl" classes="rounded-circle user_img" />
                     <span class="online_icon"></span>
@@ -15,7 +18,8 @@
             <div class="action_menu" v-if="actionMenu">
                 <ul>
                     <li v-on:click.stop="showProfile(chattingWith)"><font-awesome-icon icon="user-circle" /> View profile</li>
-                    <li v-on:click.stop="addFavorite(chattingWith)" v-if="chattingWith.hasOwnProperty('age')"><font-awesome-icon icon="users"/> Add to favorites</li>
+                    <li v-on:click.stop="addFavorite(chattingWith)" v-if="!isInFavorites && chattingWith.hasOwnProperty('age')"><font-awesome-icon icon="users"/> Add to favorites</li>
+                    <li v-on:click.stop="removeFavorite(chattingWith)" v-if="isInFavorites && chattingWith.hasOwnProperty('age')"><font-awesome-icon icon="users"/> Remove from favorites</li>
                     <li @click.prevent="deleteChat()"><font-awesome-icon icon="trash"/> Delete chat</li>
                     <li><font-awesome-icon icon="ban"/> Block</li>
                 </ul>
@@ -96,6 +100,18 @@
                     this.$store.commit('setMessage', value);
                 }
             },
+            isInFavorites: {
+                get() {
+                    let favs = this.$store.state.favorites;
+                    let result = false;
+                    favs.forEach(user => {
+                        console.log(user.username, this.$store.state.chattingWith.username);
+                        if(user.username === this.$store.state.chattingWith.username)
+                            result = true;
+                    })
+                    return result;
+                }
+            },
             ...mapGetters(['activeChatMessages', 'username', 'chattingWith', 'server', 'profile'])
         },
         mounted() {
@@ -115,8 +131,11 @@
                 if(this.message.length > 0)
                     this.$store.dispatch('sendMessage');
             },
-            toggleActionMenu() {
-                this.actionMenu = !this.actionMenu;
+            toggleActionMenu(to=false) {
+                if(to)
+                    this.actionMenu = false;
+                else
+                    this.actionMenu = !this.actionMenu;
             },
             deleteChat() {
                 this.$store.commit('removeChat', this.chattingWith);
@@ -127,11 +146,21 @@
                 this.$router.push({name: 'profile'});
             },
             addFavorite(profile) {
-                this.$store.dispatch('addFavUser', profile).catch((error) => {
-                    Swal.fire('Fail', error.response.data.message, 'error');
-                }).then(() => {
+                this.$store.dispatch('addFavUser', profile).then(() => {
                     Swal.fire('Successful', 'User added to favorites.', 'success')
+                }).catch((error) => {
+                    Swal.fire('Fail', error.response.data.message, 'error');
                 });
+            },
+            removeFavorite(profile) {
+                this.$store.dispatch('removeFavUser', profile).then(() => {
+                    Swal.fire('Successful', 'User removed from favorites.', 'success')
+                }).catch((error) => {
+                    Swal.fire('Fail', error.response.data.message, 'error');
+                });
+            },
+            back() {
+                this.$router.go(-1);
             }
         }
     }

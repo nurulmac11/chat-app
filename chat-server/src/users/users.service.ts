@@ -1,4 +1,4 @@
-import {BadRequestException, Injectable, Logger} from "@nestjs/common";
+import {BadRequestException, forwardRef, Inject, Injectable, Logger} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Brackets, createQueryBuilder, getConnection, Repository} from "typeorm";
 import {User} from "./user.entity";
@@ -15,6 +15,8 @@ export class UsersService {
         private usersRepository: Repository<User>,
         @InjectRepository(Message)
         private messagesRepository: Repository<Message>,
+        @Inject(forwardRef(() => Favorites))
+        private favoritesRepository: Repository<Favorites>,
         private readonly jwtService: JwtService
     ) {
     }
@@ -67,32 +69,6 @@ export class UsersService {
             profile: this.userSerializer(user),
             status: 200
         };
-    }
-
-
-    async findAll(): Promise<User[]> {
-        return await this.usersRepository.find();
-    }
-
-    async findMsgsOfChat(user1: number, user2: number): Promise<any> {
-        return await createQueryBuilder('Message')
-            .where(new Brackets(qb => {
-                qb.where('Message.sender = :id1', {id1: user1})
-                    .andWhere('Message.receiver = :id2', {id2: user2})
-            }))
-            .orWhere(new Brackets(qb => {
-                qb.where('Message.sender = :id3', {id3: user2})
-                    .andWhere('Message.receiver = :id4', {id4: user1})
-            }))
-            .getMany();
-    }
-
-    // returns messages that user sent
-    async findMsgsOfUser(id: number): Promise<any> {
-        return await createQueryBuilder('User')
-            .leftJoinAndSelect('User.sent_messages', 'messages')
-            .where('User.id = :id', {id})
-            .getMany();
     }
 
     async findById(id: number): Promise<UserSchema> {
@@ -182,6 +158,22 @@ export class UsersService {
             await fav.save();
             return true;
         } catch (Exception) {
+            return false;
+        }
+    }
+
+    async removeFavorite(user: User, favorite: number): Promise<any> {
+        const favoriteUser = await this.findUserById(favorite)
+        try {
+            await getConnection()
+                .createQueryBuilder()
+                .delete()
+                .from(Favorites)
+                .where("user = :id and favorite = :id2", { id: user.id, id2: favorite })
+                .execute();
+            return true;
+        } catch (Exception) {
+            console.log(Exception);
             return false;
         }
     }

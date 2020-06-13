@@ -39,6 +39,10 @@ export function addFavorite(favUser) {
     return Axios.post(baseURL + '/users/add-favorite', {'favorite': favUser}, auth());
 }
 
+export function removeFavorite(favUser) {
+    return Axios.post(baseURL + '/users/remove-favorite', {'favorite': favUser}, auth());
+}
+
 export function getFavorites() {
     return Axios.get(baseURL + '/users/favorites', auth());
 }
