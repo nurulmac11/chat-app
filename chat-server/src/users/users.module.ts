@@ -8,6 +8,7 @@ import {JwtService} from "./jwt/jwt.service";
 import {JwtStrategy} from "./jwt/jwt.strategy";
 import {MulterModule} from "@nestjs/platform-express";
 import {Favorites} from "./favorites.entity";
+import {WsJwtGuard} from "./jwt/WSjwt.strategy";
 
 @Module({
     imports: [
@@ -19,9 +20,9 @@ import {Favorites} from "./favorites.entity";
             dest: './uploads/avatar',
         }),
     ],
-    providers: [UsersService, JwtService, JwtStrategy, Favorites],
+    providers: [UsersService, JwtService, JwtStrategy, Favorites, WsJwtGuard],
     controllers: [UsersController],
-    exports: [JwtService, UsersService, JwtStrategy]
+    exports: [JwtService, UsersService, JwtStrategy, WsJwtGuard]
 })
 export class UsersModule {
 }

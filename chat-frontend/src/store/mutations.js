@@ -76,7 +76,7 @@ export default {
     setBlocks(state, response) {
         const blocks = [];
         response.data.blocks.forEach( block => {
-            blocks.push(block.favorite);
+            blocks.push(block.blocked);
         });
         state.blocks = blocks;
     },

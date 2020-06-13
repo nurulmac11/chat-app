@@ -11,6 +11,8 @@ import { Socket, Server } from 'socket.io';
 import {JwtService} from "../users/jwt/jwt.service";
 import {MessagesService} from "../messages/messages.service";
 import {UsersService} from "../users/users.service";
+import {AuthGuard} from "@nestjs/passport";
+import {WsJwtGuard} from "../users/jwt/WSjwt.strategy";
 
 @WebSocketGateway(81)
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -28,7 +30,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     private logger: Logger = new Logger('ChatGateway');
 
     @SubscribeMessage('msgToServer')
+    @UseGuards(WsJwtGuard)
     async handleMessage(client: Socket, payload: any): Promise<any> {
+        const clientUser = client.handshake.query.user;
         let delivered = 0;
         let receiver = undefined;
         const sender = await this.usersService.findUserById(payload.from);
@@ -61,6 +65,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     }
 
     @SubscribeMessage('loginMe')
+    @UseGuards(WsJwtGuard)
     loginMe(client: Socket, username: string): void {
         this.logger.log('LoginMe');
 

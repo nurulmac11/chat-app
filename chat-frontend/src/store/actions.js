@@ -149,7 +149,10 @@ export const newMessage = ({commit, state, msg}) => {
 }
 
 export const initSocket = ({commit, state}) => {
-    let socket = io('http://localhost:81', {"query": 'token=' + state.accessToken});
+    const socketOptions = {
+        // query: {token: state.accessToken}
+    };
+    let socket = io('http://localhost:81', socketOptions);
 
     // Instant private message receiver
     socket.on('chat', function (msg) {

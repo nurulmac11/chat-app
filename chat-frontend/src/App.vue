@@ -80,6 +80,7 @@
                     this.$store.dispatch('randomUsers');
                     this.$store.dispatch('newComingMessages');
                     this.$store.dispatch('favorites');
+                    this.$store.dispatch('blocks');
                     this.$router.replace({name: 'users'});
                 }).catch(error => {
                     localStorage.accessToken = '';
