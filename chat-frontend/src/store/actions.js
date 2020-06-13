@@ -150,7 +150,7 @@ export const newMessage = ({commit, state, msg}) => {
 
 export const initSocket = ({commit, state}) => {
     const socketOptions = {
-        // query: {token: state.accessToken}
+        query: {token: state.accessToken}
     };
     let socket = io('http://localhost:81', socketOptions);
 

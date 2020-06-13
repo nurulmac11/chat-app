@@ -33,9 +33,19 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @UseGuards(WsJwtGuard)
     async handleMessage(client: Socket, payload: any): Promise<any> {
         const clientUser = client.handshake.query.user;
+        const sender = await this.usersService.findUserById(clientUser.id);
+        const blockPayload = await this.usersService.findUserWithBlocks(payload.to.id);
+        let permit = true;
+        blockPayload.blocks.forEach(blocked => {
+            if(blocked.blocked.id === clientUser.id) {
+                permit = false;
+            }
+        })
+        if(!permit) {
+            return;
+        }
         let delivered = 0;
         let receiver = undefined;
-        const sender = await this.usersService.findUserById(payload.from);
         if(payload.to.id !== payload.to.username) {
             // anon => user
             receiver = await this.usersService.findUserById(payload.to.id);
