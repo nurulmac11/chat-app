@@ -2,7 +2,7 @@
     <div class="card">
         <div class="card-header msg_head">
             <div class="d-flex bd-highlight">
-                <div style="cursor: pointer" v-if="this.$router.currentRoute.name === 'chat'" @click.prevent="back()">
+                <div class="back-btn btn btn-dark" v-if="this.$router.currentRoute.name === 'chat'" @click.prevent="back()">
                     <font-awesome-icon icon="arrow-left"/>
                 </div>
                 <div class="img_cont" v-on:click.stop="showProfile(chattingWith)">
@@ -73,8 +73,8 @@
 
             </div>
         </div>
-        <div class="card-footer">
-            <div class="input-group">
+        <div class="card-footer" >
+            <div class="input-group" v-if="!isBlocked">
                 <div class="input-group-append">
                     <span class="input-group-text attach_btn">
                         <font-awesome-icon icon="video"/>
@@ -94,6 +94,9 @@
                         <font-awesome-icon icon="location-arrow"/>
                         <i class="fas fa-location-arrow"></i></span>
                 </div>
+            </div>
+            <div class="block-msg" v-else>
+                You blocked this person, you can't send more any messages.
             </div>
         </div>
     </div>
@@ -140,7 +143,6 @@
                     let blocks = this.$store.state.blocks;
                     let result = false;
                     blocks.forEach(user => {
-                        console.log(user.username, this.$store.state.chattingWith.username);
                         if (user.username === this.$store.state.chattingWith.username)
                             result = true;
                     })
@@ -479,5 +481,17 @@
 
     .clickable {
         cursor: pointer;
+    }
+
+    .block-msg {
+        text-align: center;
+        color: red;
+    }
+
+    .back-btn {
+        cursor: pointer;
+        padding-top: 20px;
+        width: 40px;
+        margin-right: 10px
     }
 </style>

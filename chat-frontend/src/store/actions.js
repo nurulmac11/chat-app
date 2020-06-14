@@ -144,7 +144,7 @@ export const newMessage = ({commit, state, msg}) => {
     commit('addChatUser', msg.from);
     commit('addMessage', msg);
 
-    if (state.chattingWith.username !== msg.from.username || state.screen !== 'chat')
+    if (state.chattingWith.username !== msg.from.username || this.$router.currentRoute.name !== 'chat')
         commit('addNotification', msg.from.username);
 }
 

@@ -23,7 +23,6 @@ const state = {
     viewProfile: {},
     favorites: [],
     blocks: [],
-    screen: 'userList',
     server: 'http://localhost:3000',
 }
 

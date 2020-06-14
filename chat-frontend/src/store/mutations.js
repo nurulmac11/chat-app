@@ -19,6 +19,7 @@ export default {
       state.msgNotify = [];
       state.userList = [];
       state.chattingWith = {};
+      state.blocks = [];
       state.socket = null;
     },
 
@@ -91,10 +92,6 @@ export default {
 
     setCurrentChat(state, profile) {
         state.chattingWith = profile;
-    },
-
-    setScreen(state, screen) {
-        state.screen = screen;
     },
 
     setMessage(state, message) {

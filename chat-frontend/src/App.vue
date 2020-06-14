@@ -27,10 +27,7 @@
                     <router-view></router-view>
 
 
-                    <div class="back-button" v-if="screen() === 'chat'" @click.prevent="goTo('users')">
-                        <font-awesome-icon icon="arrow-left"/>
-                    </div>
-                    <ul class="nav nav-pills nav-fill fixed-bottom" v-else>
+                    <ul class="nav nav-pills nav-fill fixed-bottom" v-if="screen() !== 'chat'">
                         <li class="nav-item">
                             <a class="nav-link" :class="{ active: screen() === 'chatUsers' }" href="#"
                                @click.prevent="goTo('chatUsers')">

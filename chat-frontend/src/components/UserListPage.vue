@@ -80,17 +80,9 @@
             }
         },
         computed: {
-            screen: {
-                get() {
-                    return this.$store.state.screen;
-                },
-                set(value) {
-                    this.$store.commit('setScreen', value);
-                }
-            },
             ...mapGetters(['msgNotify', 'server']),
             userList() {
-                if (this.showFavorites) {
+                if (this.mode === 'chatUsers' && this.showFavorites) {
                     return this.$store.getters.favorites;
                 } else if (this.mode === 'chatUsers') {
                     return this.$store.getters.currentChatUsers;

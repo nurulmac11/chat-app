@@ -36,21 +36,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const clientUser = client.handshake.query.user;
         const sender = await this.usersService.findUserById(clientUser.id);
 
-        // Block blocked users
-        const blockPayload = await this.usersService.findUserWithBlocks(payload.to.id);
-        let permit = true;
-        blockPayload.blocks.forEach(blocked => {
-            if (blocked.blocked.id === clientUser.id) {
-                permit = false;
-            }
-        })
-        if (!permit) {
-            this.server.to(client.id).emit('exception',
-                "You are blocked by this person, your messages will not be delivered!");
-            return;
-        }
-
-
         let delivered = 0;
         let receiver = undefined;
         if (payload.to.id !== payload.to.username) {
@@ -70,6 +55,22 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
                 lastOnline: receiver.lastOnline
             }
         }
+
+        // Block blocked users
+        const blockPayload = await this.usersService.findUserWithBlocks(payload.to.id);
+        let permit = true;
+        blockPayload.blocks.forEach(blocked => {
+            if (blocked.blocked.id === clientUser.id) {
+                permit = false;
+            }
+        })
+        if (!permit) {
+            this.server.to(client.id).emit('exception',
+                "You are blocked by this person, your messages will not be delivered!");
+            return;
+        }
+
+
         const sendTo = this.currentUsers[receiver.username];
         if (payload.to.username in this.currentUsers) {
             // message delivered, no need to save ?
