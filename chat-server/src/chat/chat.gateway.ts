@@ -7,7 +7,7 @@ import {
     OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import {BadRequestException, Logger, UseGuards} from '@nestjs/common';
-import { Socket, Server } from 'socket.io';
+import {Socket, Server} from 'socket.io';
 import {JwtService} from "../users/jwt/jwt.service";
 import {MessagesService} from "../messages/messages.service";
 import {UsersService} from "../users/users.service";
@@ -24,7 +24,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         private jwtService: JwtService,
         private readonly messagesService: MessagesService,
         private readonly usersService: UsersService
-    ) {}
+    ) {
+    }
 
     @WebSocketServer() server: Server;
     private logger: Logger = new Logger('ChatGateway');
@@ -34,19 +35,25 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     async handleMessage(client: Socket, payload: any): Promise<any> {
         const clientUser = client.handshake.query.user;
         const sender = await this.usersService.findUserById(clientUser.id);
+
+        // Block blocked users
         const blockPayload = await this.usersService.findUserWithBlocks(payload.to.id);
         let permit = true;
         blockPayload.blocks.forEach(blocked => {
-            if(blocked.blocked.id === clientUser.id) {
+            if (blocked.blocked.id === clientUser.id) {
                 permit = false;
             }
         })
-        if(!permit) {
+        if (!permit) {
+            this.server.to(client.id).emit('exception',
+                "You are blocked by this person, your messages will not be delivered!");
             return;
         }
+
+
         let delivered = 0;
         let receiver = undefined;
-        if(payload.to.id !== payload.to.username) {
+        if (payload.to.id !== payload.to.username) {
             // anon => user
             receiver = await this.usersService.findUserById(payload.to.id);
             payload.from = {
@@ -78,9 +85,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @UseGuards(WsJwtGuard)
     loginMe(client: Socket, username: string): void {
         this.logger.log('LoginMe');
-
-        this.currentUsers[username] = client.id
-        this.idToUsername[client.id] = username
+        const clientUser = client.handshake.query.user;
+        const realUsername = clientUser.username;
+        this.currentUsers[realUsername] = client.id;
+        this.idToUsername[client.id] = realUsername;
 
         // join user to private room
         client.join(client.id);

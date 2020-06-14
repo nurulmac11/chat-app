@@ -61,6 +61,7 @@
 
 <script>
     import {mapGetters} from "vuex";
+    import Swal from "sweetalert2";
 
     export default {
         name: 'App',
@@ -82,6 +83,9 @@
                     this.$store.dispatch('favorites');
                     this.$store.dispatch('blocks');
                     this.$router.replace({name: 'users'});
+                    this.socket.on('exception', function (msg) {
+                        Swal.fire('Fail', msg, 'error');
+                    });
                 }).catch(error => {
                     localStorage.accessToken = '';
                     console.log(error);
