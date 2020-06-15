@@ -2,11 +2,13 @@
     <div class="card">
         <div class="card-header msg_head">
             <div class="d-flex bd-highlight">
-                <div class="back-btn btn btn-dark" v-if="this.$router.currentRoute.name === 'chat'" @click.prevent="back()">
+                <div class="back-btn btn btn-dark" v-if="this.$router.currentRoute.name === 'chat'"
+                     @click.prevent="back()">
                     <font-awesome-icon icon="arrow-left"/>
                 </div>
                 <div class="img_cont" v-on:click.stop="showProfile(chattingWith)">
-                    <Avatar :image-path="chattingWith.ppUrl" classes="rounded-circle user_img"/>
+                    <Avatar :image-path="chattingWith.ppUrl" classes="rounded-circle user_img"
+                            :gender="chattingWith.gender"/>
                     <span class="online_icon"></span>
                 </div>
                 <div class="user_info">
@@ -73,7 +75,7 @@
 
             </div>
         </div>
-        <div class="card-footer" >
+        <div class="card-footer">
             <div class="input-group" v-if="!isBlocked">
                 <div class="input-group-append">
                     <span class="input-group-text attach_btn">
@@ -234,12 +236,6 @@
         background-color: rgba(0, 0, 0, 0.4) !important;
     }
 
-    .contacts_body {
-        padding: 0.75rem 0 !important;
-        overflow-y: auto;
-        white-space: nowrap;
-    }
-
     .msg_card_body {
         overflow-y: auto;
     }
@@ -252,22 +248,6 @@
     .card-footer {
         border-radius: 0 0 15px 15px !important;
         border-top: 0 !important;
-    }
-
-    .container {
-        align-content: center;
-    }
-
-    .search {
-        border-radius: 15px 0 0 15px !important;
-        background-color: rgba(0, 0, 0, 0.3) !important;
-        border: 0 !important;
-        color: white !important;
-    }
-
-    .search:focus {
-        box-shadow: none !important;
-        outline: 0px !important;
     }
 
     .type_msg {
@@ -298,34 +278,10 @@
         color: white !important;
     }
 
-    .search_btn {
-        border-radius: 0 15px 15px 0 !important;
-        background-color: rgba(0, 0, 0, 0.3) !important;
-        border: 0 !important;
-        color: white !important;
-        cursor: pointer;
-    }
-
-    .contacts {
-        list-style: none;
-        padding: 0;
-    }
-
     .contacts li {
         width: 100% !important;
         padding: 5px 10px;
         margin-bottom: 15px !important;
-    }
-
-    .active {
-        background-color: rgba(0, 0, 0, 0.3);
-    }
-
-    .user_img {
-        height: 70px;
-        width: 70px;
-        border: 1.5px solid #f5f6fa;
-
     }
 
     .user_img_msg {
@@ -357,10 +313,6 @@
         border: 1.5px solid white;
     }
 
-    .offline {
-        background-color: #c23616 !important;
-    }
-
     .user_info {
         margin-top: auto;
         margin-bottom: auto;
@@ -375,11 +327,6 @@
     .user_info p {
         font-size: 10px;
         color: rgba(255, 255, 255, 0.6);
-    }
-
-    .video_cam {
-        margin-left: 50px;
-        margin-top: 5px;
     }
 
     .video_cam span {
@@ -471,16 +418,6 @@
     .action_menu ul li:hover {
         cursor: pointer;
         background-color: rgba(0, 0, 0, 0.2);
-    }
-
-    @media (max-width: 576px) {
-        .contacts_card {
-            margin-bottom: 15px !important;
-        }
-    }
-
-    .clickable {
-        cursor: pointer;
     }
 
     .block-msg {

@@ -46,6 +46,7 @@ export class UsersService {
             conversations: user.conversations,
             email: user.email,
             anon: user.anonymousName,
+            isOnline: user.isOnline
         }
     }
 
@@ -84,7 +85,8 @@ export class UsersService {
     async findRandomOnlineUsers(): Promise<any> {
         const currentTime = Date.now()
         const lastUsers = await createQueryBuilder('User')
-            .select(["User.id", "User.username", "User.gender", "User.age", "User.biography", "User.ppUrl", "User.lastOnline", "User.conversations"])
+            .select(["User.id", "User.username", "User.gender", "User.age", "User.biography", "User.ppUrl",
+                "User.lastOnline", "User.conversations", "User.isOnline"])
             .orderBy("RAND()")
             .limit(10)
             .getMany();
@@ -121,8 +123,16 @@ export class UsersService {
     async updateLastOnline(id: number): Promise<void> {
         await createQueryBuilder()
             .update(User)
-            .set({lastOnline: Date.now()})
+            .set({lastOnline: Date.now(), isOnline: true})
             .where("id = :id", {id: id})
+            .execute();
+    }
+
+    async disconnected(username: string): Promise<void> {
+        await createQueryBuilder()
+            .update(User)
+            .set({lastOnline: Date.now(), isOnline: false})
+            .where("username = :username", {username: username})
             .execute();
     }
 
@@ -172,7 +182,8 @@ export class UsersService {
     async findUserWithFavorites(id: number): Promise<any> {
         const favs = await createQueryBuilder('User')
             .select(['User.id', 'favs.id', 'favorite.id', 'favorite.username', 'favorite.gender', 'favorite.age',
-                'favorite.biography', 'favorite.ppUrl', 'favorite.createdAt', 'favorite.lastOnline', 'favorite.conversations'])
+                'favorite.biography', 'favorite.ppUrl', 'favorite.createdAt', 'favorite.lastOnline', 'favorite.conversations',
+                'favorite.isOnline'])
             .leftJoin('User.favorites', 'favs')
             .leftJoin('favs.favorite', 'favorite')
             .where('User.id = :id', {id})

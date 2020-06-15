@@ -101,9 +101,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     }
 
     handleDisconnect(client: Socket) {
+        const clientUser = client.handshake.query.user;
         this.logger.log(`Client disconnected: ${client.id}`);
 
         const username = this.idToUsername[client.id];
+        this.usersService.disconnected(username);
         delete this.currentUsers[username];
         delete this.idToUsername[client.id];
     }

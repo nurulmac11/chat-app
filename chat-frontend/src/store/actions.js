@@ -188,11 +188,17 @@ const currentTime = () => {
 }
 
 export const sendMessage = ({commit, state}) => {
+    let toId = undefined;
+    if(Object.prototype.hasOwnProperty.call(state.chattingWith, 'id'))
+        toId = state.chattingWith.id;
+    else
+        toId = state.chattingWith.username;
+
     const message = {
         text: state.message,
         to: {
             username: state.chattingWith.username,
-            id: state.chattingWith.id
+            id: toId
         },
         from: {
             username: state.profile.username,

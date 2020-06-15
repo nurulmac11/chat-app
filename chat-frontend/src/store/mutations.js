@@ -20,6 +20,7 @@ export default {
       state.userList = [];
       state.chattingWith = {};
       state.blocks = [];
+      state.socket.disconnect();
       state.socket = null;
     },
 

@@ -35,6 +35,7 @@
                             <Avatar :image-path="user.ppUrl" classes="rounded-circle user_img" :gender="user.gender"/>
                             <span class="online_icon offline"
                                   v-if="msgNotify.includes(user.username)"></span>
+                            <span class="online_icon" v-else-if="user.isOnline"></span>
                         </div>
                         <div class="user_info">
                             <span>{{ user.username }}</span>

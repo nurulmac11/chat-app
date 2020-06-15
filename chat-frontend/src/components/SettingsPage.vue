@@ -2,7 +2,7 @@
     <div class="card mb-sm-3 mb-md-0 profile">
         <div class="header">
             <div class="avatar">
-                <Avatar :image-path="profile.ppUrl" classes="rounded-circle user_img" />
+                <Avatar :image-path="profile.ppUrl" classes="rounded-circle user_img" :gender="profile.gender"/>
                 <br/>
                 <a class="btn btn-secondary" @click="toggleShow">change avatar</a>
                 <my-upload field="avatar"
@@ -137,27 +137,13 @@
     }
 
     .profile img {
-        max-width: 100px;
-        width: 100%;
+        max-width: 120px;
         margin: 0 auto;
         -webkit-transform: translate3d(0, -50%, 0);
         -moz-transform: translate3d(0, -50%, 0);
         -o-transform: translate3d(0, -50%, 0);
         -ms-transform: translate3d(0, -50%, 0);
         transform: translate3d(0, -10%, 0);
-    }
-
-    .img-raised {
-        box-shadow: 0 5px 15px -8px rgba(0, 0, 0, .24), 0 8px 10px -5px rgba(0, 0, 0, .2);
-    }
-
-    .rounded-circle {
-        border-radius: 50% !important;
-    }
-
-    .img-fluid, .img-thumbnail {
-        max-width: 100%;
-        height: auto;
     }
 
     body, html {
@@ -217,12 +203,6 @@
     .action_menu ul li:hover {
         cursor: pointer;
         background-color: rgba(0, 0, 0, 0.2);
-    }
-
-    @media (max-width: 576px) {
-        .contacts_card {
-            margin-bottom: 15px !important;
-        }
     }
 
 </style>

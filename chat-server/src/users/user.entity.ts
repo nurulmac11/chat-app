@@ -89,6 +89,9 @@ export class User extends BaseEntity {
     @OneToMany(type => Blocks, blocked => blocked.blocked)
     blocked: Blocks[];
 
+    @Column({ default: false })
+    isOnline: boolean;
+
     @Column({ default: true, name: 'is_active' })
     isActive: boolean;
 }

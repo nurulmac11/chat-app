@@ -158,9 +158,13 @@
     }
 
     .rainbow_border {
-        box-shadow: 0 0 0 2px #8B2323,
-        0 0 0 4px #ffd000,
-        0 0 0 6px #00ffd6;
+        box-shadow:
+        0 0 0 1px #3300ff,
+        0 0 0 2px #0004ff,
+        0 0 0 3px #4cff00,
+        0 0 0 4px #ffd900,
+        0 0 0 5px #ff7b00,
+        0 0 0 6px #ff0000;
 
     }
 
