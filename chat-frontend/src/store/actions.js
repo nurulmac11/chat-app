@@ -146,13 +146,10 @@ export const newMessage = ({commit, state, msg}) => {
     commit('addChatUser', msg.from);
     commit('addMessage', msg);
 
-    // TODO fix here
     if (state.chattingWith.username === msg.from.username && router.currentRoute.name === 'chat') {
-        console.log('not notify');
         return;
     }
     else {
-        console.log('notify');
         commit('addNotification', msg.from.username);
     }
 }
@@ -167,8 +164,11 @@ export const initSocket = ({commit, state}) => {
     socket.on('chat', function (msg) {
         newMessage({commit, state, msg});
     });
+
     socket.emit('loginMe', state.username);
+
     commit('saveSocket', socket);
+
 }
 
 export const registerMe = ({dispatch}, payload) => {

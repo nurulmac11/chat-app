@@ -59,17 +59,25 @@
 <script>
     import {mapGetters} from "vuex";
     import Swal from "sweetalert2";
+    import * as api from "./api";
 
     export default {
         name: 'App',
         components: {},
         data: () => {
             return {
+                interval: undefined
             }
         },
         computed: {
             ...mapGetters(['accessToken', 'username', 'socket', 'messages',
                 'randomUserList', 'currentChatUsers', 'msgNotify']),
+        },
+        created() {
+            this.interval = setInterval(api.updateLastOnline, 1000*60) // 60 sn
+        },
+        destroyed() {
+            clearInterval(this.interval);
         },
         mounted() {
             if (localStorage.accessToken) {

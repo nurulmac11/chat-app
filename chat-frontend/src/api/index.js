@@ -20,6 +20,10 @@ export function registerApi(userData) {
     return Axios.post(baseURL + '/users/create', userData);
 }
 
+export function updateLastOnline() {
+    return Axios.get(baseURL + '/users/update-last-online', auth());
+}
+
 export function userList() {
     return Axios.get(baseURL + '/users/random', auth());
 }

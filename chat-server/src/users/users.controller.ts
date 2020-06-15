@@ -60,6 +60,13 @@ export class UsersController {
         return await this.usersService.updateBio(req.user.id, bio);
     }
 
+    @Get('update-last-online')
+    @UseGuards(AuthGuard('jwt'))
+    async updateLastOnline(
+        @Request() req,
+    ): Promise<any> {
+        return await this.usersService.updateLastOnline(req.user.id);
+    }
 
     @Post('update-avatar')
     @UseGuards(AuthGuard('jwt'))
