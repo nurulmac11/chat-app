@@ -38,7 +38,7 @@
                             <span class="online_icon" v-else-if="user.isOnline"></span>
                         </div>
                         <div class="user_info">
-                            <span>{{ user.username }} - {{ user.gender }}</span>
+                            <span>{{ user.username }}</span>
                             <p>{{ user.biography }}
                                 <time-ago :datetime="user.lastOnline" long></time-ago>
                             </p>

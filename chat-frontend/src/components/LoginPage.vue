@@ -39,7 +39,7 @@
 
         <button class="btn btn-lg btn-primary btn-block" type="submit" @click.prevent="loginMe" v-if="!register">Sign in</button>
 
-        <button class="btn btn-lg btn-primary btn-block" type="submit" @click.prevent="registerMe">Create Account</button>
+        <button class="btn btn-lg btn-secondary btn-block" type="submit" @click.prevent="registerMe">Create Account</button>
         <button class="btn btn-lg btn-danger btn-block" type="submit" @click.prevent="register = !register" v-if="register">Cancel</button>
         <p class="mt-5 mb-3 text-muted">&copy; 2020-2021</p>
     </form>

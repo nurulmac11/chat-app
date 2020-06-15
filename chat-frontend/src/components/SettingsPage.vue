@@ -2,7 +2,8 @@
     <div class="card mb-sm-3 mb-md-0 profile">
         <div class="header">
             <div class="avatar">
-                <Avatar :image-path="profile.ppUrl" classes="rounded-circle user_img" :gender="profile.gender"/>
+                <Avatar :image-path="profile.ppUrl" classes="rounded-circle user_img" :gender="profile.gender"
+                        v-on:click.native="toggleShow"/>
                 <br/>
                 <a class="btn btn-secondary" @click="toggleShow">change avatar</a>
                 <my-upload field="avatar"
@@ -74,8 +75,7 @@
                 mode: 'view',
                 newBio: 'Write a bio here...',
                 show: false,
-                params: {
-                },
+                params: {},
                 headers: {
                     Authorization: 'Bearer ' + this.$store.state.accessToken
                 },
@@ -85,26 +85,26 @@
             ...mapGetters(['profile', 'server', 'accessToken', 'imgPath']),
         },
         mounted() {
-            if(this.profile.biography)
+            if (this.profile.biography)
                 this.newBio = this.profile.biography;
         },
         methods: {
             toggleShow() {
                 this.show = !this.show;
             },
-            cropSuccess(imgDataUrl, field){
-                console.log('-------- crop success --------',field, imgDataUrl);
+            cropSuccess(imgDataUrl, field) {
+                console.log('-------- crop success --------', field, imgDataUrl);
             },
-            cropUploadSuccess(jsonData, field){
+            cropUploadSuccess(jsonData, field) {
                 console.log(field);
                 this.$store.commit('setProfileRaw', jsonData);
                 this.show = false;
             },
 
-            cropUploadFail(status, field){
+            cropUploadFail(status, field) {
                 console.log(status, field);
             },
-            updateBio () {
+            updateBio() {
                 this.mode = 'view';
                 this.$store.dispatch('updateBio', this.newBio);
             }
