@@ -57,7 +57,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         }
 
         // Block blocked users
-        const blockPayload = await this.usersService.findUserWithBlocks(payload.to.id);
+        const blockPayload = await this.usersService.findUserWithBlocks(receiver.id);
         let permit = true;
         blockPayload.blocks.forEach(blocked => {
             if (blocked.blocked.id === clientUser.id) {
@@ -72,7 +72,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 
         const sendTo = this.currentUsers[receiver.username];
-        if (payload.to.username in this.currentUsers) {
+        if (receiver.username in this.currentUsers) {
             // message delivered, no need to save ?
             // think about data collection:)
             delivered = 1;

@@ -1,6 +1,6 @@
 <template>
     <img :src="imagePath ? server + '/users/avatar/' + imagePath : defaultAvatar()"
-         :class="classes">
+         :class="all_classes">
 </template>
 
 <script>
@@ -17,6 +17,10 @@
                 type: String,
                 default: () => ''
             },
+            gender: {
+                type: String,
+                default: () => ''
+            },
         },
         data() {
             return {
@@ -24,6 +28,18 @@
         },
         computed: {
             ...mapGetters(['server']),
+            all_classes: {
+                get() {
+                    let gender_class;
+                    if(this.gender === 'm')
+                        gender_class = ' blue_border';
+                    else if (this.gender === 'f')
+                        gender_class = ' pink_border';
+                    else
+                        gender_class = ' rainbow_border';
+                    return this.classes + gender_class;
+                }
+            }
         },
         methods: {
             defaultAvatar() {

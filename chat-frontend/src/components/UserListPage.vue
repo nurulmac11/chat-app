@@ -32,7 +32,7 @@
                 >
                     <div class="d-flex bd-highlight contact-li">
                         <div class="img_cont" v-on:click.stop="showProfile(user)">
-                            <Avatar :image-path="user.ppUrl" classes="rounded-circle user_img"/>
+                            <Avatar :image-path="user.ppUrl" classes="rounded-circle user_img" :gender="user.gender"/>
                             <span class="online_icon offline"
                                   v-if="msgNotify.includes(user.username)"></span>
                         </div>
@@ -123,11 +123,6 @@
         background: linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5);
     }
 
-    .chat {
-        margin-top: auto;
-        margin-bottom: auto;
-    }
-
     .card {
         height: 500px;
         border-radius: 15px !important;
@@ -140,10 +135,6 @@
         white-space: nowrap;
     }
 
-    .msg_card_body {
-        overflow-y: auto;
-    }
-
     .card-header {
         border-radius: 15px 15px 0 0 !important;
         border-bottom: 0 !important;
@@ -152,10 +143,6 @@
     .card-footer {
         border-radius: 0 0 15px 15px !important;
         border-top: 0 !important;
-    }
-
-    .container {
-        align-content: center;
     }
 
     .search {
@@ -168,35 +155,6 @@
     .search:focus {
         box-shadow: none !important;
         outline: 0px !important;
-    }
-
-    .type_msg {
-        background-color: rgba(0, 0, 0, 0.3) !important;
-        border: 0 !important;
-        color: white !important;
-        height: 60px !important;
-        overflow-y: auto;
-    }
-
-    .type_msg:focus {
-        box-shadow: none !important;
-        outline: 0px !important;
-    }
-
-    .attach_btn {
-        border-radius: 15px 0 0 15px !important;
-        background-color: rgba(0, 0, 0, 0.3) !important;
-        border: 0 !important;
-        color: white !important;
-        cursor: pointer;
-    }
-
-    .send_btn {
-        border-radius: 0 15px 15px 0 !important;
-        background-color: rgba(0, 0, 0, 0.3) !important;
-        border: 0 !important;
-        color: white !important;
-        cursor: pointer;
     }
 
     .search_btn {
@@ -218,33 +176,10 @@
         margin-bottom: 15px !important;
     }
 
-    .active {
-        background-color: rgba(0, 0, 0, 0.3);
-    }
-
-    .user_img {
-        height: 70px;
-        width: 70px;
-        border: 1.5px solid #f5f6fa;
-
-    }
-
-    .user_img_msg {
-        height: 40px;
-        width: 40px;
-        border: 1.5px solid #f5f6fa;
-
-    }
-
     .img_cont {
         position: relative;
         height: 70px;
         width: 70px;
-    }
-
-    .img_cont_msg {
-        height: 40px;
-        width: 40px;
     }
 
     .online_icon {
@@ -278,77 +213,11 @@
         color: rgba(255, 255, 255, 0.6);
     }
 
-    .video_cam {
-        margin-left: 50px;
-        margin-top: 5px;
-    }
-
     .video_cam span {
         color: white;
         font-size: 20px;
         cursor: pointer;
         margin-right: 20px;
-    }
-
-    .msg_cotainer {
-        margin-top: auto;
-        margin-bottom: auto;
-        margin-left: 10px;
-        border-radius: 25px;
-        background-color: #82ccdd;
-        padding: 10px;
-        position: relative;
-    }
-
-    .msg_cotainer_send {
-        margin-top: auto;
-        margin-bottom: auto;
-        margin-right: 10px;
-        border-radius: 25px;
-        background-color: #78e08f;
-        padding: 10px;
-        position: relative;
-    }
-
-    .msg_time {
-        position: absolute;
-        left: 0;
-        bottom: -15px;
-        color: rgba(255, 255, 255, 0.5);
-        font-size: 10px;
-    }
-
-    .msg_time_send {
-        position: absolute;
-        right: 0;
-        bottom: -15px;
-        color: rgba(255, 255, 255, 0.5);
-        font-size: 10px;
-    }
-
-    .msg_head {
-        position: relative;
-    }
-
-    #action_menu_btn {
-        position: absolute;
-        right: 10px;
-        top: 10px;
-        color: white;
-        cursor: pointer;
-        font-size: 20px;
-    }
-
-    .action_menu {
-        z-index: 1;
-        position: absolute;
-        padding: 15px 0;
-        background-color: rgba(0, 0, 0, 0.5);
-        color: white;
-        border-radius: 15px;
-        top: 30px;
-        right: 15px;
-        display: none;
     }
 
     .action_menu ul {

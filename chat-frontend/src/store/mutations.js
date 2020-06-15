@@ -105,7 +105,13 @@ export default {
     addChatUser(state, profile) {
         const checkNewUser = state.currentChatUsers.some(item => item.username === profile.username);
         if (!checkNewUser) {
-            state.currentChatUsers.push(profile);
+            state.currentChatUsers.unshift(profile);
+        } else {
+            const removed = state.currentChatUsers.filter((u) => {
+                return u.username !== profile.username
+            })
+            removed.unshift(profile);
+            state.currentChatUsers = removed;
         }
     },
 

@@ -128,10 +128,6 @@
         padding: 0px;
     }
 
-    .container {
-        height: 100%;
-    }
-
     body {
         background: url("./assets/backgrounds/c2.jpg") no-repeat center center fixed;
         -webkit-background-size: cover;
@@ -147,4 +143,25 @@
         padding-top: 50px;
         padding-bottom: 50px
     }
+
+    .user_img {
+        height: 70px;
+        width: 70px;
+    }
+
+    .blue_border {
+        border: 1.5px solid #00bbff;
+    }
+
+    .pink_border {
+        border: 1.5px solid #ff00c3;
+    }
+
+    .rainbow_border {
+        box-shadow: 0 0 0 2px #8B2323,
+        0 0 0 4px #ffd000,
+        0 0 0 6px #00ffd6;
+
+    }
+
 </style>
