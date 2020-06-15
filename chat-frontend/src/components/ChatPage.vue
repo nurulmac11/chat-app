@@ -77,9 +77,19 @@
         </div>
         <div class="card-footer">
             <div class="input-group" v-if="!isBlocked">
-                <div class="input-group-append">
+                <my-upload field="avatar"
+                           @crop-upload-success="cropUploadSuccess"
+                           v-model="showUploader"
+                           langType="en"
+                           :width="300"
+                           :height="300"
+                           :url="server + '/users/update-avatar'"
+                           :params="params"
+                           :headers="headers"
+                           img-format="png"></my-upload>
+                <div class="input-group-append" v-on:click="toggleShow" >
                     <span class="input-group-text attach_btn">
-                        <font-awesome-icon icon="video"/>
+                        <font-awesome-icon icon="video" />
                         </span>
                 </div>
                 <textarea name="" class="form-control type_msg"
@@ -108,15 +118,22 @@
     import {mapGetters} from "vuex";
     import Avatar from "./Avatar";
     import Swal from "sweetalert2";
+    import myUpload from 'vue-image-crop-upload';
 
     export default {
         name: "Chat",
         components: {
             Avatar,
+            'my-upload': myUpload,
         },
         data() {
             return {
-                actionMenu: false
+                actionMenu: false,
+                showUploader: false,
+                params: {},
+                headers: {
+                    Authorization: 'Bearer ' + this.$store.state.accessToken
+                },
             };
         },
         computed: {
@@ -166,6 +183,14 @@
             }
         },
         methods: {
+            cropUploadSuccess(jsonData, field) {
+                console.log(field);
+                // this.$store.commit('setProfileRaw', jsonData);
+                this.showUploader = false;
+            },
+            toggleShow() {
+                this.showUploader = !this.showUploader;
+            },
             sendMessage() {
                 if (this.message.length > 0)
                     this.$store.dispatch('sendMessage');

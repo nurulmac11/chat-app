@@ -7,10 +7,8 @@
                 <br/>
                 <a class="btn btn-secondary" @click="toggleShow">change avatar</a>
                 <my-upload field="avatar"
-                           @crop-success="cropSuccess"
                            @crop-upload-success="cropUploadSuccess"
-                           @crop-upload-fail="cropUploadFail"
-                           v-model="show"
+                           v-model="showUploader"
                            langType="en"
                            :width="300"
                            :height="300"
@@ -74,7 +72,7 @@
             return {
                 mode: 'view',
                 newBio: 'Write a bio here...',
-                show: false,
+                showUploader: false,
                 params: {},
                 headers: {
                     Authorization: 'Bearer ' + this.$store.state.accessToken
@@ -90,19 +88,12 @@
         },
         methods: {
             toggleShow() {
-                this.show = !this.show;
-            },
-            cropSuccess(imgDataUrl, field) {
-                console.log('-------- crop success --------', field, imgDataUrl);
+                this.showUploader = !this.showUploader;
             },
             cropUploadSuccess(jsonData, field) {
                 console.log(field);
                 this.$store.commit('setProfileRaw', jsonData);
-                this.show = false;
-            },
-
-            cropUploadFail(status, field) {
-                console.log(status, field);
+                this.showUploader = false;
             },
             updateBio() {
                 this.mode = 'view';
