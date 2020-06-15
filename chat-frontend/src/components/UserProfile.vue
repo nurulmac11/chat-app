@@ -76,7 +76,6 @@
 
     .profile img {
         max-width: 100px;
-        width: 100%;
         margin: 0 auto;
         -webkit-transform: translate3d(0, -50%, 0);
         -moz-transform: translate3d(0, -50%, 0);

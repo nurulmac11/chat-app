@@ -2,7 +2,7 @@
     <div class="card mb-sm-3 mb-md-0 contacts_card">
         <div class="card-header">
             <div class="input-group">
-                <button type="button" class="btn btn-success"
+                <button type="button" class="btn btn-success refresh"
                         v-on:click="refresh()"
                         v-if="mode === 'users'"
                 >Refresh
@@ -26,8 +26,8 @@
         <div class="card-body contacts_body">
             <ul class="contacts">
                 <li
-                        v-for="user in userList"
-                        :key="user.id + mode"
+                        v-for="(user, index) in userList"
+                        :key="user.id + mode + index"
                         v-on:click.prevent="selectUser(user)"
                 >
                     <div class="d-flex bd-highlight contact-li">
@@ -38,7 +38,7 @@
                             <span class="online_icon" v-else-if="user.isOnline"></span>
                         </div>
                         <div class="user_info">
-                            <span>{{ user.username }}</span>
+                            <span>{{ user.username }} - {{ user.gender }}</span>
                             <p>{{ user.biography }}
                                 <time-ago :datetime="user.lastOnline" long></time-ago>
                             </p>
@@ -256,5 +256,9 @@
 
     .contact-li:hover {
         background-color: rgba(19, 93, 94, 0.8);
+    }
+
+    .refresh {
+        margin-right: 15px;
     }
 </style>

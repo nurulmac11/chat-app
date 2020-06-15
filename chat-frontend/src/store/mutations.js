@@ -108,10 +108,14 @@ export default {
         if (!checkNewUser) {
             state.currentChatUsers.unshift(profile);
         } else {
+            let removed_profile;
             const removed = state.currentChatUsers.filter((u) => {
-                return u.username !== profile.username
+                if(u.username === profile.username)
+                    removed_profile = u;
+                else
+                    return true;
             })
-            removed.unshift(profile);
+            removed.unshift(removed_profile);
             state.currentChatUsers = removed;
         }
     },

@@ -1,5 +1,6 @@
 import * as api from '../api'
 import * as io from 'socket.io-client'
+import router from "../main.js"
 
 export const loginAction = ({commit}, payload) => {
     return new Promise((resolve, reject) => {
@@ -140,12 +141,20 @@ export const newComingMessages = ({commit, state}) => {
     })
 }
 
+// new comming messages
 export const newMessage = ({commit, state, msg}) => {
     commit('addChatUser', msg.from);
     commit('addMessage', msg);
 
-    if (state.chattingWith.username !== msg.from.username || this.$router.currentRoute.name !== 'chat')
+    // TODO fix here
+    if (state.chattingWith.username === msg.from.username && router.currentRoute.name === 'chat') {
+        console.log('not notify');
+        return;
+    }
+    else {
+        console.log('notify');
         commit('addNotification', msg.from.username);
+    }
 }
 
 export const initSocket = ({commit, state}) => {
@@ -156,7 +165,6 @@ export const initSocket = ({commit, state}) => {
 
     // Instant private message receiver
     socket.on('chat', function (msg) {
-        console.log(msg, 'received');
         newMessage({commit, state, msg});
     });
     socket.emit('loginMe', state.username);

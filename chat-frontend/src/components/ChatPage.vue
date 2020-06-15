@@ -9,7 +9,7 @@
                 <div class="img_cont" v-on:click.stop="showProfile(chattingWith)">
                     <Avatar :image-path="chattingWith.ppUrl" classes="rounded-circle user_img"
                             :gender="chattingWith.gender"/>
-                    <span class="online_icon"></span>
+                    <span class="online_icon" v-if="chattingWith.isOnline"></span>
                 </div>
                 <div class="user_info">
                     <span>Chat with {{ chattingWith.username | truncate(10, '...') }}</span>
