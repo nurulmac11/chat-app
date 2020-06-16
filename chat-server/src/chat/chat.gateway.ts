@@ -33,6 +33,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @SubscribeMessage('msgToServer')
     @UseGuards(WsJwtGuard)
     async handleMessage(client: Socket, payload: any): Promise<any> {
+        console.log(this.currentUsers);
         const clientUser = client.handshake.query.user;
         const sender = await this.usersService.findUserById(clientUser.id);
 
@@ -76,10 +77,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             // message delivered, no need to save ?
             // think about data collection:)
             delivered = 1;
+            this.server.to(sendTo).emit('chat', payload);
         } else {
             await this.messagesService.sendMsg(sender.id, receiver.id, payload.text, delivered);
         }
-        this.server.to(sendTo).emit('chat', payload);
     }
 
     @SubscribeMessage('loginMe')

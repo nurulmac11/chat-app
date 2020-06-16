@@ -16,6 +16,7 @@ const state = {
     currentChatUsers: [],
     messages: [],
     message: '',
+    img: '',
     msgNotify: [],
     userList: [],
     chattingWith: {},

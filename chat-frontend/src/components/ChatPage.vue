@@ -55,10 +55,11 @@
 
                 <div class="d-flex justify-content-start mb-4" v-if="message.to.id === profile.id">
                     <div class="img_cont_msg">
-                        <Avatar :image-path="chattingWith.ppUrl" classes="rounded-circle user_img_msg"/>
+                        <Avatar :image-path="chattingWith.ppUrl" :gender="chattingWith.gender" classes="rounded-circle user_img_msg"/>
                     </div>
                     <div class="msg_cotainer">
                         {{ message.text }}
+                        <img :src="message.img" v-if="message.img" />
                         <span class="msg_time">{{ message.time }}</span>
                     </div>
                 </div>
@@ -66,10 +67,11 @@
                 <div class="d-flex justify-content-end mb-4" v-else>
                     <div class="msg_cotainer_send">
                         {{ message.text }}
+                        <img :src="message.img" v-if="message.img" />
                         <span class="msg_time_send">{{ message.time }}</span>
                     </div>
                     <div class="img_cont_msg">
-                        <Avatar :image-path="profile.ppUrl" classes="rounded-circle user_img_msg"/>
+                        <Avatar :image-path="profile.ppUrl" :gender="profile.gender" classes="rounded-circle user_img_msg"/>
                     </div>
                 </div>
 
@@ -78,16 +80,16 @@
         <div class="card-footer">
             <div class="input-group" v-if="!isBlocked">
                 <my-upload field="avatar"
+                           @crop-success="cropSuccess"
                            @crop-upload-success="cropUploadSuccess"
                            v-model="showUploader"
                            langType="en"
                            :width="300"
                            :height="300"
-                           :url="server + '/users/update-avatar'"
                            :params="params"
                            :headers="headers"
                            img-format="png"></my-upload>
-                <div class="input-group-append" v-on:click="toggleShow" >
+                <div class="input-group-append" v-on:click="toggleShow" v-if="chattingWith.isOnline">
                     <span class="input-group-text attach_btn">
                         <font-awesome-icon icon="video" />
                         </span>
@@ -183,6 +185,11 @@
             }
         },
         methods: {
+            cropSuccess(imgDataUrl, field){
+                console.log('-------- crop success --------', field, imgDataUrl);
+                this.$store.commit('setImg', imgDataUrl);
+                this.$store.dispatch('sendMessage');
+            },
             cropUploadSuccess(jsonData, field) {
                 console.log(field);
                 // this.$store.commit('setProfileRaw', jsonData);
@@ -312,8 +319,6 @@
     .user_img_msg {
         height: 40px;
         width: 40px;
-        border: 1.5px solid #f5f6fa;
-
     }
 
     .img_cont {

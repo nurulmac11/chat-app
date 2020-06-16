@@ -145,7 +145,6 @@ export const newComingMessages = ({commit, state}) => {
 export const newMessage = ({commit, state, msg}) => {
     commit('addChatUser', msg.from);
     commit('addMessage', msg);
-
     if (state.chattingWith.username === msg.from.username && router.currentRoute.name === 'chat') {
         return;
     }
@@ -204,6 +203,7 @@ export const sendMessage = ({commit, state}) => {
 
     const message = {
         text: state.message,
+        img: state.img,
         to: {
             username: state.chattingWith.username,
             id: toId

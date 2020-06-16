@@ -147,6 +147,11 @@ export default {
 
     resetMessage(state) {
         state.message = ''
+        state.img = ''
+    },
+
+    setImg(state, imgData) {
+        state.img = imgData;
     }
 
 }
