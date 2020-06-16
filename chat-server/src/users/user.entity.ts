@@ -67,6 +67,9 @@ export class User extends BaseEntity {
     @Column({unique: true})
     email: string;
 
+    @Column({})
+    ipAddress: string;
+
     @OneToMany(type => Message, message => message.sender)
     @JoinTable()
     sentMessages: Message[];

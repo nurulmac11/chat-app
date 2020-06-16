@@ -5,13 +5,15 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { UsersModule } from "./users/users.module";
 import { MessagesModule } from "./messages/messages.module";
 import { ChatModule } from './chat/chat.module';
+import {DefaultAdminModule} from "nestjs-admin";
 
 @Module({
     imports: [
         TypeOrmModule.forRoot(),
         UsersModule,
         MessagesModule,
-        ChatModule
+        ChatModule,
+        DefaultAdminModule
     ],
     controllers: [AppController],
     providers: []

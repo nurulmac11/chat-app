@@ -38,6 +38,7 @@
     "cors": "^2.8.5",
     "express-session": "^1.17.1",
     "mysql": "^2.18.1",
+    "nestjs-admin": "^0.4.0",
     "nestjs-session": "^1.0.1",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
