@@ -11,14 +11,13 @@ import {Socket, Server} from 'socket.io';
 import {JwtService} from "../users/jwt/jwt.service";
 import {MessagesService} from "../messages/messages.service";
 import {UsersService} from "../users/users.service";
-import {AuthGuard} from "@nestjs/passport";
 import {WsJwtGuard} from "../users/jwt/WSjwt.strategy";
 
 @WebSocketGateway(81)
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
     private currentUsers = {};
-    private idToUsername = {};
+    private conversations = {};
 
     constructor(
         private jwtService: JwtService,
@@ -33,12 +32,12 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @SubscribeMessage('msgToServer')
     @UseGuards(WsJwtGuard)
     async handleMessage(client: Socket, payload: any): Promise<any> {
-        console.log(this.currentUsers);
         const clientUser = client.handshake.query.user;
         const sender = await this.usersService.findUserById(clientUser.id);
 
         let delivered = 0;
         let receiver = undefined;
+        let countFlag = false;
         if (payload.to.id !== payload.to.username) {
             // anon => user
             receiver = await this.usersService.findUserById(payload.to.id);
@@ -47,6 +46,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
                 id: sender.anonymousName,
                 lastOnline: sender.lastOnline
             };
+            countFlag = true;
         } else {
             // user => anon
             receiver = await this.usersService.findByAnon(payload.to.username);
@@ -71,9 +71,19 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             return;
         }
 
+        // Count conversation count
+        if (!(receiver.id in this.conversations))
+                this.conversations[receiver.id] = []
 
-        const sendTo = this.currentUsers[receiver.username];
-        if (receiver.username in this.currentUsers) {
+        const chatList = this.conversations[receiver.id];
+        if (!chatList.includes(sender.id) && countFlag) {
+            // increment count and append it
+            this.conversations[receiver.id].push(sender.id);
+            await this.usersService.incrementConversationCount(receiver.id)
+        }
+
+        if (receiver.id in this.currentUsers) {
+            const sendTo = this.currentUsers[receiver.id];
             // message delivered, no need to save ?
             // think about data collection:)
             delivered = 1;
@@ -88,9 +98,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     loginMe(client: Socket, username: string): void {
         this.logger.log('LoginMe');
         const clientUser = client.handshake.query.user;
-        const realUsername = clientUser.username;
-        this.currentUsers[realUsername] = client.id;
-        this.idToUsername[client.id] = realUsername;
+        this.currentUsers[clientUser.id] = client.id;
 
         // join user to private room
         client.join(client.id);
@@ -102,12 +110,14 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     }
 
     handleDisconnect(client: Socket) {
+        const clientUser = client.handshake.query.user;
         this.logger.log(`Client disconnected: ${client.id}`);
 
-        const username = this.idToUsername[client.id];
-        this.usersService.disconnected(username);
-        delete this.currentUsers[username];
-        delete this.idToUsername[client.id];
+        if (clientUser) {
+            this.usersService.disconnected(clientUser.id);
+            delete this.currentUsers[clientUser.id];
+            delete this.conversations[clientUser.id]
+        }
     }
 
     // Handshake with jwt

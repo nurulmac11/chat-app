@@ -128,11 +128,11 @@ export class UsersService {
             .execute();
     }
 
-    async disconnected(username: string): Promise<void> {
+    async disconnected(id: number): Promise<void> {
         await createQueryBuilder()
             .update(User)
             .set({lastOnline: Date.now(), isOnline: false})
-            .where("username = :username", {username: username})
+            .where("id = :id", {id: id})
             .execute();
     }
 
@@ -249,6 +249,12 @@ export class UsersService {
             .where('User.id = :id', {id})
             .getOne();
         return blocks;
+    }
+
+    async incrementConversationCount(id: number): Promise<any> {
+        const user = await this.usersRepository.findOne(id);
+        user.conversations++;
+        await this.usersRepository.save(user);
     }
 
 

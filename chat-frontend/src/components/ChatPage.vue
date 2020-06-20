@@ -414,7 +414,7 @@
         top: 10px;
         color: white;
         cursor: pointer;
-        font-size: 20px;
+        font-size: 30px;
     }
 
     .action_menu {

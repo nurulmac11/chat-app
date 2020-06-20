@@ -29,19 +29,19 @@
 
                     <ul class="nav nav-pills nav-fill fixed-bottom" v-if="screen() !== 'chat'">
                         <li class="nav-item">
-                            <a class="nav-link" :class="{ active: screen() === 'chatUsers' }" href="#"
+                            <a class="nav-link dark-nav" :class="{ active: screen() === 'chatUsers' }" href="#"
                                @click.prevent="goTo('chatUsers')">
                                 <font-awesome-icon icon="comments"/>
                                 <span style="color: red" v-if="msgNotify.length">{{ msgNotify.length }}</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" :class="{ active: screen() === 'users' }" href="#"
+                            <a class="nav-link dark-nav" :class="{ active: screen() === 'users' }" href="#"
                                @click.prevent="goTo('users')">
                                 <font-awesome-icon icon="users"/>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" :class="{ active: screen() === 'settings' }" href="#"
+                            <a class="nav-link dark-nav" :class="{ active: screen() === 'settings' }" href="#"
                                @click.prevent="goTo('settings')">
                                 <font-awesome-icon icon="user"/>
                             </a>
@@ -93,6 +93,7 @@
                     });
                 }).catch(error => {
                     localStorage.accessToken = '';
+                    this.$router.replace({name: 'login'});
                     console.log(error);
                 });
             } else if (!this.accessToken)
@@ -117,6 +118,18 @@
 </script>
 
 <style>
+    .dark-nav {
+        color: #626262;
+        background: rgba(0, 0, 0, 0.53) !important;
+    }
+    .dark-nav.active {
+        color: #ffc107 !important;
+    }
+
+    .dark-nav:hover {
+        color: #d2d2d2 !important;
+    }
+
     .chat {
         margin-top: 50px;
     }

@@ -71,8 +71,6 @@
             },
         },
         mounted() {
-          if(localStorage.accessToken)
-              this.$router.replace({name: 'users'});
         },
         methods: {
             loginMe() {

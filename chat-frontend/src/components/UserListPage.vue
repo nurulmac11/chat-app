@@ -12,16 +12,18 @@
                     <span class="input-group-text search_btn"><font-awesome-icon icon="search"/></span>
                 </div>
             </div>
-            <ul class="nav nav-tabs" v-if="mode === 'chatUsers'">
+
+            <ul class="nav nav-tabs nav-fill" v-if="mode === 'chatUsers'">
                 <li class="nav-item">
-                    <a class="nav-link" :class="{ active: !showFavorites }" @click.stop="showFavorites = false"
-                       href="#">Active Chats</a>
+                    <a class="nav-link dark-nav" :class="{ active: !showFavorites }" @click.stop="showFavorites = false"
+                       href="#"><font-awesome-icon icon="comments"/></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" :class="{ active: showFavorites }"
-                       @click.stop="showFavs();" href="#">Favorites</a>
+                    <a class="nav-link dark-nav" :class="{ active: showFavorites }"
+                       @click.stop="showFavs();" href="#"><font-awesome-icon icon="heart"/></a>
                 </li>
             </ul>
+
         </div>
         <div class="card-body contacts_body">
             <ul class="contacts">
