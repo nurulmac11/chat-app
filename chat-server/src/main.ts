@@ -1,14 +1,9 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import {NestExpressApplication} from "@nestjs/platform-express";
-import {PassportModule} from "@nestjs/passport";
-import * as session from 'express-session';
-import * as passport from "passport";
-
 
 
 async function bootstrap() {
-    // const app = await NestFactory.create(AppModule);
     const app = await NestFactory.create<NestExpressApplication>(AppModule, {
         cors: true
     });

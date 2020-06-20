@@ -5,11 +5,9 @@ import { ChatController } from "./chat.controller";
 import { User } from "../users/user.entity";
 import { Message } from '../messages/messages.entity';
 import { ChatGateway } from './chat.gateway';
-import {UsersService} from "../users/users.service";
 import {UsersModule} from "../users/users.module";
 import {MessagesModule} from "../messages/messages.module";
 import {JwtStrategy} from "../users/jwt/jwt.strategy";
-import {JwtService} from "../users/jwt/jwt.service";
 import {WsJwtGuard} from "../users/jwt/WSjwt.strategy";
 
 @Module({

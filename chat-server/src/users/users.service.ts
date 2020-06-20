@@ -8,9 +8,10 @@ import {UserSchema} from "./jwt/user.schema";
 import * as bcrypt from 'bcrypt';
 import {Favorites} from "./favorites.entity";
 import {Blocks} from "./blocks.entity";
+import {TypeOrmCrudService} from "@nestjsx/crud-typeorm";
 
 @Injectable()
-export class UsersService {
+export class UsersService extends TypeOrmCrudService<User> {
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>,
@@ -20,6 +21,7 @@ export class UsersService {
         private favoritesRepository: Repository<Favorites>,
         private readonly jwtService: JwtService
     ) {
+        super(usersRepository);
     }
 
     private logger: Logger = new Logger('UserService');
