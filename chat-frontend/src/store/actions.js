@@ -75,7 +75,12 @@ export const favorites = ({commit}) => {
 
 export const blockUser = ({commit}, payload) => {
     return new Promise((resolve, reject) => {
-        api.block(payload.id).then(response => {
+        let sendData = {};
+        if (payload.id !== payload.username)
+            sendData['blockID'] = payload.id;
+        else
+            sendData['blockUsername'] = payload.username;
+        api.block(sendData).then(response => {
             commit('addBlock', payload);
             resolve(response);
         }).catch(error => {
@@ -86,7 +91,12 @@ export const blockUser = ({commit}, payload) => {
 
 export const removeBlock = ({commit}, payload) => {
     return new Promise((resolve, reject) => {
-        api.removeBlock(payload.id).then(response => {
+        let sendData = {};
+        if (payload.id !== payload.username)
+            sendData['blockID'] = payload.id;
+        else
+            sendData['blockUsername'] = payload.username;
+        api.removeBlock(sendData).then(response => {
             commit('removeBlock', payload);
             resolve(response);
         }).catch(error => {

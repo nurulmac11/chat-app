@@ -29,11 +29,13 @@ export class UsersService extends TypeOrmCrudService<User> {
     // JWT METHODS
     async validate(username: string, password: string): Promise<any> {
         const user = await this.findByUsername(username);
-        if (!user)
+        if (!user) {
             return false;
+        }
         const pass = await bcrypt.compare(password, user.password);
-        if (pass)
+        if (pass) {
             return user;
+        }
         return false;
     }
 
@@ -61,8 +63,8 @@ export class UsersService extends TypeOrmCrudService<User> {
             return false;
         } else {
             this.logger.log('usr found!');
-
         }
+
         const tokens = await this.jwtService.generateToken(user);
 
         return {
@@ -150,7 +152,7 @@ export class UsersService extends TypeOrmCrudService<User> {
 
     async findByUsername(username: string): Promise<any> {
         const user = await createQueryBuilder('User')
-            .where('User.username = :username', {username})
+            .where('User.username = :username and User.isActive = 1', {username})
             .getOne();
         return user;
     }
@@ -216,8 +218,13 @@ export class UsersService extends TypeOrmCrudService<User> {
     }
 
     // BLOCK OPERATIONS
-    async block(user: User, blockUserId: number): Promise<any> {
-        const blockUser = await this.findUserById(blockUserId)
+    async block(user: User, blockUserID: number, blockUsername: string): Promise<any> {
+        let blockUser = undefined;
+        if(blockUsername)
+            blockUser = await this.findByAnon(blockUsername);
+        else
+            blockUser = await this.findUserById(blockUserID);
+
         const block = new Blocks()
         block.user = user;
         block.blocked = blockUser;
@@ -229,14 +236,19 @@ export class UsersService extends TypeOrmCrudService<User> {
         }
     }
 
-    async removeBlock(user: User, blockId: number): Promise<any> {
-        const blockUser = await this.findUserById(blockId)
+    async removeBlock(user: User, blockUserID: number, blockUsername): Promise<any> {
+        let blockUser = undefined;
+        if(blockUsername)
+            blockUser = await this.findByAnon(blockUsername);
+        else
+            blockUser = await this.findUserById(blockUserID);
+
         try {
             await getConnection()
                 .createQueryBuilder()
                 .delete()
                 .from(Blocks)
-                .where("user = :id and blocked = :id2", {id: user.id, id2: blockId})
+                .where("user = :id and blocked = :id2", {id: user.id, id2: blockUserID})
                 .execute();
             return true;
         } catch (Exception) {
@@ -259,6 +271,12 @@ export class UsersService extends TypeOrmCrudService<User> {
     async incrementConversationCount(id: number): Promise<any> {
         const user = await this.usersRepository.findOne(id);
         user.conversations++;
+        await this.usersRepository.save(user);
+    }
+
+    async updateIP(id: number, ip: string): Promise<any> {
+        const user = await this.usersRepository.findOne(id);
+        user.ipAddress = ip;
         await this.usersRepository.save(user);
     }
 

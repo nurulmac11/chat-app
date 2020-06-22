@@ -18,7 +18,6 @@ import {Observable} from "rxjs";
 export class IsAdmin implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
         const req = context.switchToHttp().getRequest();
-        console.log(req.user);
         if(req.user.isAdmin)
             return next.handle();
         else

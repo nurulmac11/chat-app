@@ -14,20 +14,21 @@ const validateRequired = required();
 export const GuestCreate = props => (
     <Create {...props}>
         <SimpleForm redirect="show">
-            <TextInput source="firstName" validate={validateRequired}/>
-            <TextInput source="lastName" validate={validateRequired}/>
+            <TextInput source="username" validate={validateRequired}/>
+            <TextInput source="anonymousName" validate={validateRequired}/>
             <TextInput source="email" validate={validateEmail}/>
         </SimpleForm>
     </Create>
 );
-const GuestEditTitle = ({record}) => (<span>{`${record.firstName} ${record.lastName}`}</span>);
+const GuestEditTitle = ({record}) => (<span>{`${record.username} ${record.email}`}</span>);
 export const GuestEdit = props => (
     <Edit {...props} title={<GuestEditTitle/>}>
         <SimpleForm redirect="list">
-            <TextInput source="firstName" validate={validateRequired}/>
-            <TextInput source="lastName" validate={validateRequired}/>
+            <TextInput source="username" validate={validateRequired}/>
+            <TextInput source="anonymousName" validate={validateRequired}/>
             <TextInput source="email" validate={validateEmail}/>
-            <BooleanInput source="isPresent"/>
+            <BooleanInput source="isActive"/>
+            <BooleanInput source="isOnline"/>
         </SimpleForm>
     </Edit>
 );

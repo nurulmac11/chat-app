@@ -99,7 +99,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         this.logger.log('LoginMe');
         const clientUser = client.handshake.query.user;
         this.currentUsers[clientUser.id] = client.id;
-
+        const clientIpAddress = client.request.headers['x-forwarded-for'] || client.request.connection.remoteAddress;
+        this.usersService.updateIP(clientUser.id, clientIpAddress);
         // join user to private room
         client.join(client.id);
     }

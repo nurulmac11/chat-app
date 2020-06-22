@@ -51,12 +51,12 @@ export function getFavorites() {
     return Axios.get(baseURL + '/users/favorites', auth());
 }
 
-export function block(blockUser) {
-    return Axios.post(baseURL + '/users/block', {'block': blockUser}, auth());
+export function block(payload) {
+    return Axios.post(baseURL + '/users/block', payload, auth());
 }
 
-export function removeBlock(blockUser) {
-    return Axios.post(baseURL + '/users/remove-block', {'block': blockUser}, auth());
+export function removeBlock(payload) {
+    return Axios.post(baseURL + '/users/remove-block', payload, auth());
 }
 
 export function getBlocks() {

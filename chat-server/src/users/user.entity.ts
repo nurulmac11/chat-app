@@ -15,6 +15,7 @@ import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import {Favorites} from "./favorites.entity";
 import {Blocks} from "./blocks.entity";
+import {Reports} from "./reports.entity";
 
 @Entity({name: TableNames.User})
 export class User extends BaseEntity {
@@ -91,6 +92,10 @@ export class User extends BaseEntity {
 
     @OneToMany(type => Blocks, blocked => blocked.blocked)
     blocked: Blocks[];
+
+    @OneToMany(type => Reports, reports => reports.user)
+    @JoinTable()
+    reports: Reports[];
 
     @Column({ default: false })
     isOnline: boolean;

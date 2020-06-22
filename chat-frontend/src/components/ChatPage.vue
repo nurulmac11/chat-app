@@ -19,7 +19,8 @@
             <span id="action_menu_btn" @click.prevent="toggleActionMenu()"><font-awesome-icon icon="ellipsis-v"/></span>
             <div class="action_menu" v-if="actionMenu">
                 <ul>
-                    <li v-on:click.stop="showProfile(chattingWith)">
+                    <li v-on:click.stop="showProfile(chattingWith)"
+                        v-if="!isInFavorites && chattingWith.hasOwnProperty('age')">
                         <font-awesome-icon icon="user-circle"/>
                         View profile
                     </li>

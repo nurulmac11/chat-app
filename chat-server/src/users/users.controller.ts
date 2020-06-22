@@ -142,9 +142,11 @@ export class UsersController {
     @UseGuards(AuthGuard('jwt'))
     async block(
         @Request() req,
-        @Body('block') blockUser: number,
+        @Body('blockID') blockUser: number,
+        @Body('blockUsername') blockUsername: string,
     ): Promise<any> {
-        const result = await this.usersService.block(req.user, blockUser);
+        console.log(blockUser, blockUsername);
+        const result = await this.usersService.block(req.user, blockUser, blockUsername);
         if(!result)
             throw new BadRequestException('This user already blocked!');
         return result;
@@ -154,9 +156,10 @@ export class UsersController {
     @UseGuards(AuthGuard('jwt'))
     async removeBlock(
         @Request() req,
-        @Body('block') blockUser: number,
+        @Body('blockID') blockUser: number,
+        @Body('blockUsername') blockUsername: string,
     ): Promise<any> {
-        const result = await this.usersService.removeBlock(req.user, blockUser);
+        const result = await this.usersService.removeBlock(req.user, blockUser, blockUsername);
         if(!result)
             throw new BadRequestException('This user already removed!');
         return result;
@@ -170,5 +173,19 @@ export class UsersController {
         const user = await this.usersService.findUserWithBlocks(req.user.id);
         return user;
     }
+
+    // @Post('report')
+    // @UseGuards(AuthGuard('jwt'))
+    // async report(
+    //     @Request() req,
+    //     @Body('block') reportUser: number,
+    //     @Body('messages') messages: string,
+    //     @Body('image') image: string,
+    // ): Promise<any> {
+    //     const result = await this.usersService.removeBlock(req.user, reportUser);
+    //     if(!result)
+    //         throw new BadRequestException('This user already removed!');
+    //     return result;
+    // }
 
 }

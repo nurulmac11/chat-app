@@ -3,5 +3,6 @@ export enum TableNames {
     Message = 'messages',
     Favorites = 'favorite',
     Blocks = 'block',
-    Ban = 'ban'
+    Ban = 'ban',
+    Report = 'report'
 }
