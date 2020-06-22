@@ -1,10 +1,18 @@
 import React from 'react';
-import {Admin, Resource, ShowGuesser, ListGuesser} from 'react-admin';
+import {Admin, Resource, ShowGuesser, ListGuesser, fetchUtils} from 'react-admin';
 import crudProvider from '@fusionworks/ra-data-nest-crud';
 import {GuestCreate, GuestEdit} from './Users';
 import authProvider from './authProvider';
 
-const dataProvider = crudProvider('http://localhost:3000');
+const fetchJson = (url, options = {}) => {
+    if (!options.headers) {
+        options.headers = new Headers({ Authorization: 'Bearer ' + localStorage.accessToken });
+    }
+    options.headers.set('Authorization', 'Bearer ' + localStorage.accessToken);
+    return fetchUtils.fetchJson(url, options);
+}
+
+const dataProvider = crudProvider('http://localhost:3000', fetchJson);
 
 const App = () => (
     <Admin authProvider={authProvider} dataProvider={dataProvider}>

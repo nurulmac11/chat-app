@@ -29,6 +29,8 @@ export class UsersService extends TypeOrmCrudService<User> {
     // JWT METHODS
     async validate(username: string, password: string): Promise<any> {
         const user = await this.findByUsername(username);
+        if (!user)
+            return false;
         const pass = await bcrypt.compare(password, user.password);
         if (pass)
             return user;
@@ -81,6 +83,7 @@ export class UsersService extends TypeOrmCrudService<User> {
         clientSchema.id = user.id;
         clientSchema.username = user.username;
         clientSchema.email = user.email;
+        clientSchema.isAdmin = user.isAdmin;
         return clientSchema;
     }
 

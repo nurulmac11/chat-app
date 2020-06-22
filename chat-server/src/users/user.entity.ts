@@ -97,4 +97,7 @@ export class User extends BaseEntity {
 
     @Column({ default: true, name: 'is_active' })
     isActive: boolean;
+
+    @Column({ default: false, name: 'is_admin' })
+    isAdmin: boolean;
 }
