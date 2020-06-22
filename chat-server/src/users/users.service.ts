@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import {Favorites} from "./favorites.entity";
 import {Blocks} from "./blocks.entity";
 import {TypeOrmCrudService} from "@nestjsx/crud-typeorm";
+import {Reports} from "./reports.entity";
 
 @Injectable()
 export class UsersService extends TypeOrmCrudService<User> {
@@ -220,7 +221,7 @@ export class UsersService extends TypeOrmCrudService<User> {
     // BLOCK OPERATIONS
     async block(user: User, blockUserID: number, blockUsername: string): Promise<any> {
         let blockUser = undefined;
-        if(blockUsername)
+        if (blockUsername)
             blockUser = await this.findByAnon(blockUsername);
         else
             blockUser = await this.findUserById(blockUserID);
@@ -237,8 +238,8 @@ export class UsersService extends TypeOrmCrudService<User> {
     }
 
     async removeBlock(user: User, blockUserID: number, blockUsername): Promise<any> {
-        let blockUser = undefined;
-        if(blockUsername)
+        let blockUser;
+        if (blockUsername)
             blockUser = await this.findByAnon(blockUsername);
         else
             blockUser = await this.findUserById(blockUserID);
@@ -248,7 +249,7 @@ export class UsersService extends TypeOrmCrudService<User> {
                 .createQueryBuilder()
                 .delete()
                 .from(Blocks)
-                .where("user = :id and blocked = :id2", {id: user.id, id2: blockUserID})
+                .where("user = :id and blocked = :id2", {id: user.id, id2: blockUser.id})
                 .execute();
             return true;
         } catch (Exception) {
@@ -280,5 +281,35 @@ export class UsersService extends TypeOrmCrudService<User> {
         await this.usersRepository.save(user);
     }
 
+    // REPORT
+    async report(user: User, reportID: number, reportUser: string, messages: object): Promise<any> {
+        let reportedUser;
+        if (reportUser)
+            reportedUser = await this.findByAnon(reportUser);
+        else
+            reportedUser = await this.findUserById(reportID);
+
+        console.log(messages);
+        let msgData = '';
+        let imgData = '';
+        Object.entries(messages).forEach(([key, val]) => {
+            msgData += `${val.from.username} => ${val.to.username} \n`;
+            msgData += `${val.text} - ${val.time} \n`;
+            imgData += `${val.img}`;
+        });
+        const report = new Reports()
+        report.reporter = user;
+        report.user = reportedUser;
+        report.messages = msgData;
+        report.imgData = imgData;
+        report.ipAddress = reportedUser.ipAddress;
+        try {
+            await report.save();
+            return true;
+        } catch (Exception) {
+            console.log(Exception);
+            return false;
+        }
+    }
 
 }

@@ -55,6 +55,10 @@ export function block(payload) {
     return Axios.post(baseURL + '/users/block', payload, auth());
 }
 
+export function report(payload) {
+    return Axios.post(baseURL + '/users/report', payload, auth());
+}
+
 export function removeBlock(payload) {
     return Axios.post(baseURL + '/users/remove-block', payload, auth());
 }

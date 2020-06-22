@@ -105,6 +105,25 @@ export const removeBlock = ({commit}, payload) => {
     })
 }
 
+// eslint-disable-next-line no-unused-vars
+export const reportUser = ({commit}, payload) => {
+    return new Promise((resolve, reject) => {
+        let sendData = {};
+        if (payload.id !== payload.username)
+            sendData['reportID'] = payload.id;
+        else
+            sendData['reportUsername'] = payload.username;
+
+        sendData['messages'] = payload.messages;
+
+        api.report(sendData).then(response => {
+            resolve(response);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
 export const blocks = ({commit}) => {
     return new Promise((resolve, reject) => {
         api.getBlocks().then(response => {

@@ -13,7 +13,7 @@
                 </div>
                 <div class="user_info">
                     <span>Chat with {{ chattingWith.username | truncate(10, '...') }}</span>
-                    <p>{{ chattingWith.conversations }} Messages - {{ chattingWith.biography }}</p>
+                    <p v-if="!isAnonym">{{ chattingWith.conversations }} Messages - {{ chattingWith.biography }}</p>
                 </div>
             </div>
             <span id="action_menu_btn" @click.prevent="toggleActionMenu()"><font-awesome-icon icon="ellipsis-v"/></span>
@@ -47,6 +47,10 @@
                         v-if="isBlocked">
                         <font-awesome-icon icon="ban"/>
                         Unblock
+                    </li>
+                    <li v-on:click.stop="report(chattingWith)">
+                        <font-awesome-icon icon="flag"/>
+                        Report User
                     </li>
                 </ul>
             </div>
@@ -171,6 +175,11 @@
                     return result;
                 }
             },
+            isAnonym: {
+                get() {
+                    return this.$store.state.chattingWith.username === this.$store.state.chattingWith.id;
+                }
+            },
             ...mapGetters(['activeChatMessages', 'username', 'chattingWith', 'server', 'profile'])
         },
         mounted() {
@@ -245,7 +254,14 @@
                     Swal.fire('Fail', error.response.data.message, 'error');
                 });
             },
-
+            report(profile) {
+                profile.messages = this.activeChatMessages;
+                this.$store.dispatch('reportUser', profile).then(() => {
+                    Swal.fire('Successful', 'User reported.', 'success')
+                }).catch((error) => {
+                    Swal.fire('Fail', error.response.data.message, 'error');
+                });
+            },
             back() {
                 this.$router.go(-1);
             }

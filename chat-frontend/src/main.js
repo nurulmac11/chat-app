@@ -25,7 +25,8 @@ import {
     faArrowLeft,
     faTrash,
     faSearch,
-    faHeart
+    faHeart,
+    faFlag
 } from '@fortawesome/free-solid-svg-icons'
 import UserListPage from "./components/UserListPage";
 import SettingsPage from "./components/SettingsPage";
@@ -39,7 +40,7 @@ Vue.use(VueRouter);
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 library.add(faCogs, faUsers, faComments, faLocationArrow, faPaperclip,
     faBirthdayCake, faVenusMars, faUser, faUserCircle, faPlus, faBan,
-    faEllipsisV, faPhone, faVideo, faArrowLeft, faTrash, faSearch, faHeart);
+    faEllipsisV, faPhone, faVideo, faArrowLeft, faTrash, faSearch, faHeart, faFlag);
 
 var filter = function (text, length, clamp) {
     clamp = clamp || '...';

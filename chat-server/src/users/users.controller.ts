@@ -46,7 +46,7 @@ export class UsersController {
         @Body('age') age: number,
     ): Promise<any> {
         const result = await this.usersService.create(username, password, email, gender, age);
-        if(!result)
+        if (!result)
             throw new BadRequestException("This username has taken.");
         return result;
     }
@@ -80,7 +80,7 @@ export class UsersController {
 
     @Get('avatar/:avatar')
     avatar(@Param('avatar') image, @Res() res) {
-        return res.sendFile(image, { root: './uploads/avatar' });
+        return res.sendFile(image, {root: './uploads/avatar'});
     }
 
     @Get('re-login')
@@ -99,7 +99,7 @@ export class UsersController {
         @Body('password') password: string,
     ): Promise<any> {
         const result = await this.usersService.login(username, password);
-        if(!result)
+        if (!result)
             throw new BadRequestException('Invalid user or password!');
         await this.usersService.updateLastOnline(result.user_id)
         return result;
@@ -112,7 +112,7 @@ export class UsersController {
         @Body('favorite') favoriteUser: number,
     ): Promise<any> {
         const result = await this.usersService.addFavorite(req.user, favoriteUser);
-        if(!result)
+        if (!result)
             throw new BadRequestException('This user already in your favorites!');
         return result;
     }
@@ -124,7 +124,7 @@ export class UsersController {
         @Body('favorite') favoriteUser: number,
     ): Promise<any> {
         const result = await this.usersService.removeFavorite(req.user, favoriteUser);
-        if(!result)
+        if (!result)
             throw new BadRequestException('This user already removed!');
         return result;
     }
@@ -145,9 +145,8 @@ export class UsersController {
         @Body('blockID') blockUser: number,
         @Body('blockUsername') blockUsername: string,
     ): Promise<any> {
-        console.log(blockUser, blockUsername);
         const result = await this.usersService.block(req.user, blockUser, blockUsername);
-        if(!result)
+        if (!result)
             throw new BadRequestException('This user already blocked!');
         return result;
     }
@@ -160,7 +159,7 @@ export class UsersController {
         @Body('blockUsername') blockUsername: string,
     ): Promise<any> {
         const result = await this.usersService.removeBlock(req.user, blockUser, blockUsername);
-        if(!result)
+        if (!result)
             throw new BadRequestException('This user already removed!');
         return result;
     }
@@ -174,18 +173,18 @@ export class UsersController {
         return user;
     }
 
-    // @Post('report')
-    // @UseGuards(AuthGuard('jwt'))
-    // async report(
-    //     @Request() req,
-    //     @Body('block') reportUser: number,
-    //     @Body('messages') messages: string,
-    //     @Body('image') image: string,
-    // ): Promise<any> {
-    //     const result = await this.usersService.removeBlock(req.user, reportUser);
-    //     if(!result)
-    //         throw new BadRequestException('This user already removed!');
-    //     return result;
-    // }
+    @Post('report')
+    @UseGuards(AuthGuard('jwt'))
+    async report(
+        @Request() req,
+        @Body('reportID') reportID: number,
+        @Body('reportUsername') reportUser: string,
+        @Body('messages') messages: object,
+    ): Promise<any> {
+        const result = await this.usersService.report(req.user, reportID, reportUser, messages);
+        if (!result)
+            throw new BadRequestException('Something went wrong!');
+        return result;
+    }
 
 }

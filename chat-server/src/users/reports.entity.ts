@@ -18,6 +18,9 @@ export class Reports extends BaseEntity {
     @ManyToOne(type => User, user => user.reports)
     user: User;
 
+    @ManyToOne(type => User, user => user.reported)
+    reporter: User;
+
     @Column()
     messages: string;
 

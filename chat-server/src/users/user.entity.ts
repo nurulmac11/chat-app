@@ -97,6 +97,10 @@ export class User extends BaseEntity {
     @JoinTable()
     reports: Reports[];
 
+    @OneToMany(type => Reports, reports => reports.reporter)
+    @JoinTable()
+    reported: Reports[];
+
     @Column({ default: false })
     isOnline: boolean;
 
