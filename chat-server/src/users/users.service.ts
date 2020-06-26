@@ -335,9 +335,15 @@ export class UsersService extends TypeOrmCrudService<User> {
         }
 
         if(user.reset && secondsPassed > 10) {
-            delete user.reset;
+            const resetId = user.reset.id;
             user.reset = null;
             await user.save();
+            await getConnection()
+                .createQueryBuilder()
+                .delete()
+                .from(ForgotPassword)
+                .where("id = :id", { id: resetId })
+                .execute();
         } else if(user.reset) {
             return false;
         }

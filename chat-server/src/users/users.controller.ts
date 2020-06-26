@@ -16,11 +16,13 @@ import {UsersService} from "./users.service";
 import {AuthGuard} from '@nestjs/passport';
 import {FileInterceptor} from "@nestjs/platform-express";
 import {MailerService} from "@nestjs-modules/mailer";
+import {ConfigService} from "@nestjs/config";
 
 @Controller("users")
 export class UsersController {
     constructor(private readonly usersService: UsersService,
-                private readonly mailerService: MailerService) {
+                private readonly mailerService: MailerService,
+                private configService: ConfigService) {
     }
 
 
@@ -195,7 +197,7 @@ export class UsersController {
         @Body('email') email: string,
     ): Promise<any> {
         const result = await this.usersService.createResetPasswordRequest(email);
-        if(result) {
+        if (result) {
             console.log("Mail will be sent");
             this
                 .mailerService
@@ -204,7 +206,7 @@ export class UsersController {
                     from: 'nurullah201@gmail.com', // sender address
                     subject: 'Chatt - Reset password request', // Subject line
                     text: 'Your reset key: ' + result, // plaintext body
-                    html: 'Your reset key: ' + result, // HTML body content
+                    html: 'Your reset key: <a href="' + this.configService.get<string>('frontend') + '/users/reset/'+result+'">Click here to reset</a>', // HTML body content
                     template: 'forgot-password'
                 })
                 .then((success) => {
