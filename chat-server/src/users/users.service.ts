@@ -4,12 +4,14 @@ import {Brackets, createQueryBuilder, getConnection, Repository} from "typeorm";
 import {User} from "./user.entity";
 import {Message} from "../messages/messages.entity";
 import {JwtService} from './jwt/jwt.service';
+import { v4 as uuidv4 } from 'uuid';
 import {UserSchema} from "./jwt/user.schema";
 import * as bcrypt from 'bcrypt';
 import {Favorites} from "./favorites.entity";
 import {Blocks} from "./blocks.entity";
 import {TypeOrmCrudService} from "@nestjsx/crud-typeorm";
 import {Reports} from "./reports.entity";
+import {ForgotPassword} from "./forgot-password.entity";
 
 @Injectable()
 export class UsersService extends TypeOrmCrudService<User> {
@@ -206,9 +208,11 @@ export class UsersService extends TypeOrmCrudService<User> {
         user.email = email;
         user.gender = gender;
         user.age = age;
+        user.ipAddress = '';
         try {
             await user.save();
         } catch (Exception) {
+            console.log(Exception);
             return false;
         }
         return user;
@@ -289,7 +293,6 @@ export class UsersService extends TypeOrmCrudService<User> {
         else
             reportedUser = await this.findUserById(reportID);
 
-        console.log(messages);
         let msgData = '';
         let imgData = '';
         Object.entries(messages).forEach(([key, val]) => {
@@ -308,6 +311,46 @@ export class UsersService extends TypeOrmCrudService<User> {
             return true;
         } catch (Exception) {
             console.log(Exception);
+            return false;
+        }
+    }
+
+    async createResetPasswordRequest(email: string): Promise<any> {
+        let secondsPassed = 0;
+        const user = await this.usersRepository.findOne({
+            relations: ["reset"],
+            where: {
+                email: email,
+            }
+        });
+
+        if(!user)
+            return false;
+
+        if (user.reset) {
+            const currentDate = new Date();
+            const oldDate = new Date(user.reset.createdAt);
+            const diff = currentDate.getTime() - oldDate.getTime();
+            secondsPassed = diff / 1000;
+        }
+
+        if(user.reset && secondsPassed > 10) {
+            delete user.reset;
+            user.reset = null;
+            await user.save();
+        } else if(user.reset) {
+            return false;
+        }
+
+        const resetRequest = new ForgotPassword();
+        resetRequest.user = user;
+        const key = uuidv4();
+        resetRequest.key = key;
+        try {
+            await resetRequest.save();
+            return key
+        } catch (e) {
+            console.log(e);
             return false;
         }
     }

@@ -5,25 +5,23 @@ import {
     BaseEntity,
     JoinTable,
     Index,
-    ManyToOne
+    ManyToOne, OneToOne
 } from "typeorm";
 import { TableNames } from '../TableNames';
 import {User} from "./user.entity";
 import {Injectable} from "@nestjs/common";
 
 @Injectable()
-@Entity({name: TableNames.Blocks})
-@Index(["user", "blocked"], { unique: true })
-export class Blocks extends BaseEntity {
+@Entity({name: TableNames.Forgot})
+export class ForgotPassword extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(type => User, user => user.blocks)
+    @OneToOne(type => User, user => user.reset, { onDelete: 'CASCADE' })
     user: User;
 
-    @ManyToOne(type => User, blocked => blocked.blocked)
-    @JoinTable()
-    blocked: User;
+    @Column({unique: true})
+    key: string;
 
     @Column({type: "timestamp", default: () => "CURRENT_TIMESTAMP", name: "createdAt"})
     createdAt: string;

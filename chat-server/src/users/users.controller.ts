@@ -15,10 +15,12 @@ import {
 import {UsersService} from "./users.service";
 import {AuthGuard} from '@nestjs/passport';
 import {FileInterceptor} from "@nestjs/platform-express";
+import {MailerService} from "@nestjs-modules/mailer";
 
 @Controller("users")
 export class UsersController {
-    constructor(private readonly usersService: UsersService) {
+    constructor(private readonly usersService: UsersService,
+                private readonly mailerService: MailerService) {
     }
 
 
@@ -185,6 +187,36 @@ export class UsersController {
         if (!result)
             throw new BadRequestException('Something went wrong!');
         return result;
+    }
+
+    @Post('forgot-password')
+    async resetPassword(
+        @Request() req,
+        @Body('email') email: string,
+    ): Promise<any> {
+        const result = await this.usersService.createResetPasswordRequest(email);
+        if(result) {
+            console.log("Mail will be sent");
+            this
+                .mailerService
+                .sendMail({
+                    to: email, // list of receivers
+                    from: 'nurullah201@gmail.com', // sender address
+                    subject: 'Chatt - Reset password request', // Subject line
+                    text: 'Your reset key: ' + result, // plaintext body
+                    html: 'Your reset key: ' + result, // HTML body content
+                    template: 'forgot-password'
+                })
+                .then((success) => {
+                    console.log(success, "Mail sent.")
+                })
+                .catch((err) => {
+                    console.log(err, "Mail error")
+                });
+        } else {
+            console.log("Mail didn't sent.");
+        }
+        return true;
     }
 
 }

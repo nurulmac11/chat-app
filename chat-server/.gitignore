@@ -37,3 +37,4 @@ ormconfig.js
 .idea
 uploads/
 /uploads
+/src/MailConfig.ts

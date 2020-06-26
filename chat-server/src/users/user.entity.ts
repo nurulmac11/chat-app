@@ -7,7 +7,7 @@ import {
     JoinTable,
     BeforeInsert,
     Index,
-    OneToOne
+    OneToOne, JoinColumn
 } from "typeorm";
 import { TableNames } from '../TableNames';
 import { Message } from "../messages/messages.entity";
@@ -16,12 +16,14 @@ import { v4 as uuidv4 } from 'uuid';
 import {Favorites} from "./favorites.entity";
 import {Blocks} from "./blocks.entity";
 import {Reports} from "./reports.entity";
+import {ForgotPassword} from "./forgot-password.entity";
 
 @Entity({name: TableNames.User})
 export class User extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Index()
     @Column({unique: true})
     username: string;
 
@@ -100,6 +102,10 @@ export class User extends BaseEntity {
     @OneToMany(type => Reports, reports => reports.reporter)
     @JoinTable()
     reported: Reports[];
+
+    @OneToOne(type => ForgotPassword, forgot => forgot.user)
+    @JoinColumn()
+    reset: ForgotPassword;
 
     @Column({ default: false })
     isOnline: boolean;
