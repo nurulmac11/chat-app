@@ -2,21 +2,23 @@
     <form class="form-signin">
         <h1 class="h3 mb-3 font-weight-normal">Chat App System</h1>
 
-        <div class="form-group">
-            <label for="inputUsername" class="sr-only">Username</label>
-            <input type="text" id="inputUsername" v-model="username" class="form-control" placeholder="Username" required
-                   autofocus>
-        </div>
+        <div v-if="!forgot">
+            <div class="form-group">
+                <label for="inputUsername" class="sr-only">Username</label>
+                <input type="text" id="inputUsername" v-model="username" class="form-control" placeholder="Username" required
+                       autofocus>
+            </div>
 
-        <div class="form-group">
-            <label for="inputPassword" class="sr-only">Password</label>
-            <input type="password" id="inputPassword" v-model="password" v-on:keyup.enter.exact="loginMe"
-                   class="form-control" placeholder="Password" required>
+            <div class="form-group">
+                <label for="inputPassword" class="sr-only">Password</label>
+                <input type="password" id="inputPassword" v-model="password" v-on:keyup.enter.exact="loginMe"
+                       class="form-control" placeholder="Password" required>
+            </div>
         </div>
 
         <div v-if="register">
             <div class="form-group">
-                <label for="inputEmail" class="sr-only">Password</label>
+                <label for="inputEmail" class="sr-only">Email</label>
                 <input type="email" id="inputEmail" v-model="email"
                        class="form-control" placeholder="example@example.com" required>
             </div>
@@ -34,13 +36,25 @@
                 <label for="inputAge" class="sr-only">Age</label>
                 <input type="text" name="inputAge" id="inputAge" class="form-control" v-model="age" placeholder="Age">
             </div>
-
         </div>
 
-        <button class="btn btn-lg btn-primary btn-block" type="submit" @click.prevent="loginMe" v-if="!register">Sign in</button>
+        <div v-if="forgot">
+            <div class="form-group">
+                <label for="inputEmail" class="sr-only">Email</label>
+                <input type="email" id="inputForgotEmail" v-model="email"
+                       class="form-control" placeholder="example@example.com" required>
+            </div>
+        </div>
 
-        <button class="btn btn-lg btn-secondary btn-block" type="submit" @click.prevent="registerMe">Create Account</button>
-        <button class="btn btn-lg btn-danger btn-block" type="submit" @click.prevent="register = !register" v-if="register">Cancel</button>
+        <div v-if="!forgot">
+            <button class="btn btn-lg btn-primary btn-block" type="submit" @click.prevent="loginMe" v-if="!register">Sign in</button>
+            <button class="btn btn-lg btn-secondary btn-block" type="submit" @click.prevent="registerMe">Create Account</button>
+            <button class="btn btn-lg btn-danger btn-block" type="submit" @click.prevent="register = !register" v-if="register">Cancel</button>
+        </div>
+        <br/>
+        <a class="forgot text-warning" @click.prevent="forgotPassword" v-if="!forgot && !register">Forgot Password</a>
+        <button class="btn btn-lg btn-primary btn-block" type="submit" @click.prevent="forgotPassword" v-if="forgot">Send recovery mail</button>
+        <button class="btn btn-lg btn-danger btn-block" type="submit" @click.prevent="forgot = !forgot" v-if="forgot">Cancel</button>
         <p class="mt-5 mb-3 text-muted">&copy; 2020-2021</p>
     </form>
 </template>
@@ -55,6 +69,7 @@
             return {
                 password: '',
                 register: false,
+                forgot: false,
                 email: '',
                 gender: '',
                 age: undefined,
@@ -114,7 +129,19 @@
 
                     this.register = true;
                 }
-            }
+            },
+            forgotPassword() {
+                if(this.forgot) {
+                    this.$store.dispatch('resetPassword', {email: this.email}).then(() => {
+                        Swal.fire('Success', "A mail has been sent to you if it is correct.", 'success');
+                    }).catch(error => {
+                        console.log(error);
+                        Swal.fire('Fail', error.response.data.message, 'error');
+                    });
+                } else {
+                    this.forgot = true;
+                }
+            },
         }
     }
 </script>
@@ -175,6 +202,10 @@
 
     .form-control {
         margin-bottom: 10px;
+    }
+
+    .forgot {
+        cursor: pointer;
     }
 
 </style>

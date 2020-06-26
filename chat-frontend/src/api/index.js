@@ -59,6 +59,10 @@ export function report(payload) {
     return Axios.post(baseURL + '/users/report', payload, auth());
 }
 
+export function forgotPassword(mail) {
+    return Axios.post(baseURL + '/users/forgot-password', mail, auth());
+}
+
 export function removeBlock(payload) {
     return Axios.post(baseURL + '/users/remove-block', payload, auth());
 }

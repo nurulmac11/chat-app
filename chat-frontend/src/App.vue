@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="#" @click.prevent="home()">Chatt</a>
+            <a class="navbar-brand" href="#" @click.prevent="goTo('users')">Chatt</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -23,11 +23,12 @@
             <div class="row justify-content-center h-100">
                 <div class="col-md-12 col-xl-9 chat">
 
-
+                    <transition name="slide-fade" mode="out-in">
                     <router-view></router-view>
+                    </transition>
 
 
-                    <ul class="nav nav-pills nav-fill fixed-bottom" v-if="screen() !== 'chat'">
+                    <ul class="nav nav-pills nav-fill fixed-bottom" v-if="screen() !== 'chat' && screen() !== 'login'">
                         <li class="nav-item">
                             <a class="nav-link dark-nav" :class="{ active: screen() === 'chatUsers' }" href="#"
                                @click.prevent="goTo('chatUsers')">
@@ -104,11 +105,8 @@
                 this.$store.dispatch('logout');
                 this.$router.replace({name: 'login'});
             },
-            home() {
-                this.$router.replace({name: 'users'});
-            },
             goTo(screen) {
-                this.$router.replace({name: screen});
+                this.$router.push({name: screen});
             },
             screen() {
                 return this.$router.currentRoute.name;
@@ -118,6 +116,19 @@
 </script>
 
 <style>
+    /* Enter and leave animations can use different */
+    /* durations and timing functions.              */
+    .slide-fade-enter-active {
+        transition: all .3s ease;
+    }
+    .slide-fade-leave-active {
+        transition: all .2s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+    }
+    .slide-fade-enter, .slide-fade-leave-to
+        /* .slide-fade-leave-active below version 2.1.8 */ {
+        transform: translateX(10px);
+        opacity: 0;
+    }
     .dark-nav {
         color: #626262;
         background: rgba(0, 0, 0, 0.53) !important;
