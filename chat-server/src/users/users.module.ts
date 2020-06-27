@@ -12,12 +12,15 @@ import {WsJwtGuard} from "./jwt/WSjwt.strategy";
 import {MailerModule} from "@nestjs-modules/mailer";
 import {HandlebarsAdapter} from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
 import {MailConfig} from '../MailConfig';
+import {ForgotPassword} from "./forgot-password.entity";
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([
             User,
             Message,
+            Favorites,
+            ForgotPassword
         ]),
         MulterModule.register({
             dest: './uploads/avatar',
@@ -46,7 +49,7 @@ import {MailConfig} from '../MailConfig';
             }),
         }),
     ],
-    providers: [UsersService, JwtService, JwtStrategy, Favorites, WsJwtGuard],
+    providers: [UsersService, JwtService, JwtStrategy, Favorites, WsJwtGuard, ForgotPassword],
     controllers: [UsersController],
     exports: [JwtService, UsersService, JwtStrategy, WsJwtGuard]
 })

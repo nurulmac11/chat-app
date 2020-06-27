@@ -192,7 +192,7 @@ export class UsersController {
     }
 
     @Post('forgot-password')
-    async resetPassword(
+    async forgotPassword(
         @Request() req,
         @Body('email') email: string,
     ): Promise<any> {
@@ -206,7 +206,7 @@ export class UsersController {
                     from: 'nurullah201@gmail.com', // sender address
                     subject: 'Chatt - Reset password request', // Subject line
                     text: 'Your reset key: ' + result, // plaintext body
-                    html: 'Your reset key: <a href="' + this.configService.get<string>('frontend') + '/users/reset/'+result+'">Click here to reset</a>', // HTML body content
+                    html: 'Your reset key: <a href="' + this.configService.get<string>('frontend') + 'reset-password/'+result+'">Click here to reset</a>', // HTML body content
                     template: 'forgot-password'
                 })
                 .then((success) => {
@@ -217,6 +217,20 @@ export class UsersController {
                 });
         } else {
             console.log("Mail didn't sent.");
+        }
+        return true;
+    }
+
+    @Post('reset-password')
+    async resetPassword(
+        @Request() req,
+        @Body('key') key: string,
+        @Body('password') password: string,
+    ): Promise<any> {
+        console.log("request received");
+        const result = await this.usersService.resetPassword(key, password);
+        if (!result) {
+            throw new BadRequestException('Something went wrong!');
         }
         return true;
     }

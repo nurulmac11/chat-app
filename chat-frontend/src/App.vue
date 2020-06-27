@@ -81,24 +81,25 @@
             clearInterval(this.interval);
         },
         mounted() {
-            if (localStorage.accessToken) {
-                this.$store.dispatch('reLoginAction', localStorage.accessToken).then(() => {
-                    this.$store.dispatch('initSocket');
-                    this.$store.dispatch('randomUsers');
-                    this.$store.dispatch('newComingMessages');
-                    this.$store.dispatch('favorites');
-                    this.$store.dispatch('blocks');
-                    this.$router.replace({name: 'users'});
-                    this.socket.on('exception', function (msg) {
-                        Swal.fire('Fail', msg, 'error');
+            if (this.$router.currentRoute.name !== 'resetPassword')
+                if (localStorage.accessToken) {
+                    this.$store.dispatch('reLoginAction', localStorage.accessToken).then(() => {
+                        this.$store.dispatch('initSocket');
+                        this.$store.dispatch('randomUsers');
+                        this.$store.dispatch('newComingMessages');
+                        this.$store.dispatch('favorites');
+                        this.$store.dispatch('blocks');
+                        this.$router.replace({name: 'users'});
+                        this.socket.on('exception', function (msg) {
+                            Swal.fire('Fail', msg, 'error');
+                        });
+                    }).catch(error => {
+                        localStorage.accessToken = '';
+                        this.$router.replace({name: 'login'});
+                        console.log(error);
                     });
-                }).catch(error => {
-                    localStorage.accessToken = '';
+                } else if (!this.accessToken)
                     this.$router.replace({name: 'login'});
-                    console.log(error);
-                });
-            } else if (!this.accessToken)
-                this.$router.replace({name: 'login'});
         },
         methods: {
             logout() {

@@ -63,6 +63,10 @@ export function forgotPassword(mail) {
     return Axios.post(baseURL + '/users/forgot-password', mail, auth());
 }
 
+export function resetPassword(payload) {
+    return Axios.post(baseURL + '/users/reset-password', payload, auth());
+}
+
 export function removeBlock(payload) {
     return Axios.post(baseURL + '/users/remove-block', payload, auth());
 }

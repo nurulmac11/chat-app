@@ -32,6 +32,7 @@ import UserListPage from "./components/UserListPage";
 import SettingsPage from "./components/SettingsPage";
 import ChatPage from "./components/ChatPage";
 import UserProfile from "./components/UserProfile";
+import ResetPassword from "./components/ResetPassword";
 
 Vue.config.productionTip = false
 
@@ -59,9 +60,11 @@ const routes = [
     {path: '/chat-list', component: UserListPage, name: 'chatUsers', props: {mode: 'chatUsers'}},
     {path: '/settings', component: SettingsPage, name: 'settings'},
     {path: '/profile', component: UserProfile, name: 'profile'},
+    {path: '/reset-password/:key', component: ResetPassword, name: 'resetPassword', props: true},
 ]
 
 const router = new VueRouter({
+    mode: 'history',
     routes // short for `routes: routes`
 })
 

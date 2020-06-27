@@ -20,14 +20,16 @@ export class UsersService extends TypeOrmCrudService<User> {
         private usersRepository: Repository<User>,
         @InjectRepository(Message)
         private messagesRepository: Repository<Message>,
-        @Inject(forwardRef(() => Favorites))
-        private favoritesRepository: Repository<Favorites>,
+        @InjectRepository(ForgotPassword)
+        private forgotRepository: Repository<ForgotPassword>,
         private readonly jwtService: JwtService
     ) {
         super(usersRepository);
     }
 
     private logger: Logger = new Logger('UserService');
+
+    private resetPasswordTimeout = 60*10;
 
     // JWT METHODS
     async validate(username: string, password: string): Promise<any> {
@@ -334,7 +336,7 @@ export class UsersService extends TypeOrmCrudService<User> {
             secondsPassed = diff / 1000;
         }
 
-        if(user.reset && secondsPassed > 10) {
+        if(user.reset && secondsPassed > this.resetPasswordTimeout) {
             const resetId = user.reset.id;
             user.reset = null;
             await user.save();
@@ -359,6 +361,43 @@ export class UsersService extends TypeOrmCrudService<User> {
             console.log(e);
             return false;
         }
+    }
+
+    async resetPassword(token: string, password: string): Promise<any> {
+        let secondsPassed = 0;
+        const forgotPass = await this.forgotRepository.findOne({
+            relations: ["user"],
+            where: {
+                key: token,
+            }
+        });
+
+        if(!forgotPass)
+            return false;
+
+        const currentDate = new Date();
+        const oldDate = new Date(forgotPass.createdAt);
+        const diff = currentDate.getTime() - oldDate.getTime();
+        secondsPassed = diff / 1000;
+
+        if(secondsPassed < this.resetPasswordTimeout) {
+            const userId = forgotPass.user.id;
+            await createQueryBuilder()
+                .update(User)
+                .set({reset: null, password: await bcrypt.hash(password, 10)})
+                .where("id = :id", {id: userId})
+                .execute();
+            await getConnection()
+                .createQueryBuilder()
+                .delete()
+                .from(ForgotPassword)
+                .where("id = :id", { id: forgotPass.id })
+                .execute();
+        } else {
+            return false;
+        }
+
+        return true;
     }
 
 }

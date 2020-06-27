@@ -132,7 +132,7 @@
             },
             forgotPassword() {
                 if(this.forgot) {
-                    this.$store.dispatch('resetPassword', {email: this.email}).then(() => {
+                    this.$store.dispatch('forgotPassword', {email: this.email}).then(() => {
                         Swal.fire('Success', "A mail has been sent to you if it is correct.", 'success');
                     }).catch(error => {
                         console.log(error);

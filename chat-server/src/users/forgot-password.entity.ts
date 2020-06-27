@@ -3,9 +3,7 @@ import {
     Column,
     PrimaryGeneratedColumn,
     BaseEntity,
-    JoinTable,
-    Index,
-    ManyToOne, OneToOne
+    OneToOne
 } from "typeorm";
 import { TableNames } from '../TableNames';
 import {User} from "./user.entity";

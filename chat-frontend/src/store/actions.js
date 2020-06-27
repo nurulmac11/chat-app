@@ -125,9 +125,20 @@ export const reportUser = ({commit}, payload) => {
 }
 
 // eslint-disable-next-line no-unused-vars
-export const resetPassword = ({commit}, payload) => {
+export const forgotPassword = ({commit}, payload) => {
     return new Promise((resolve, reject) => {
         api.forgotPassword(payload).then(response => {
+            resolve(response);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
+// eslint-disable-next-line no-unused-vars
+export const resetPassword = ({commit}, payload) => {
+    return new Promise((resolve, reject) => {
+        api.resetPassword(payload).then(response => {
             resolve(response);
         }).catch(error => {
             reject(error);
