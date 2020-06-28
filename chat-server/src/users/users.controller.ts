@@ -41,10 +41,20 @@ export class UsersController {
         return userList;
     }
 
-    @Get("get-user/:user")
+    @Get("get/:user")
     @UseGuards(AuthGuard('jwt'))
     async getUser(@Param('user') userID): Promise<any> {
         return await this.usersService.findOneUser(userID);
+    }
+
+    @Post("search")
+    @UseGuards(AuthGuard('jwt'))
+    async searchUser(
+        @Body('keyword') keyword: string,
+    ): Promise<any> {
+        if (!(keyword && keyword.length > 3))
+            throw new BadRequestException("Search word must be longer than 3 letters.");
+        return await this.usersService.searchUser(keyword);
     }
 
     @Post('create')

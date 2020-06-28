@@ -65,7 +65,8 @@
                     <div class="msg_cotainer">
                         {{ message.text }}
                         <img :src="message.img" v-if="message.img" />
-                        <span class="msg_time">{{ message.time }}</span>
+
+                        <span class="msg_time"><time-ago :datetime="message.time" long></time-ago></span>
                     </div>
                 </div>
 
@@ -73,7 +74,7 @@
                     <div class="msg_cotainer_send">
                         {{ message.text }}
                         <img :src="message.img" v-if="message.img" />
-                        <span class="msg_time_send">{{ message.time }}</span>
+                        <span class="msg_time_send"><time-ago :datetime="message.time" long></time-ago></span>
                     </div>
                     <div class="img_cont_msg">
                         <Avatar :image-path="profile.ppUrl" :gender="profile.gender" classes="rounded-circle user_img_msg"/>
@@ -126,10 +127,12 @@
     import Avatar from "./Avatar";
     import Swal from "sweetalert2";
     import myUpload from 'vue-image-crop-upload';
+    import TimeAgo from 'vue2-timeago'
 
     export default {
         name: "Chat",
         components: {
+            TimeAgo,
             Avatar,
             'my-upload': myUpload,
         },
@@ -411,6 +414,8 @@
         color: rgba(255, 255, 255, 0.5);
         font-size: 10px;
         display: block ruby;
+        width: 100px;
+        height: 10px;
     }
 
     .msg_time_send {
@@ -420,6 +425,9 @@
         color: rgba(255, 255, 255, 0.5);
         font-size: 10px;
         display: block ruby;
+        width: 100px;
+        text-align: right;
+        height: 10px;
     }
 
     .msg_head {

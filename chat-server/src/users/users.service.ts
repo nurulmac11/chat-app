@@ -115,6 +115,14 @@ export class UsersService extends TypeOrmCrudService<User> {
             .getOne();
     }
 
+    async searchUser(keyword): Promise<any> {
+        return await createQueryBuilder('User')
+            .select(["User.id", "User.username", "User.gender", "User.age", "User.biography", "User.ppUrl",
+                "User.lastOnline", "User.conversations", "User.isOnline"])
+            .where("username LIKE :keyword OR biography LIKE :keyword ", {keyword: '%' + keyword + '%'})
+            .getMany();
+    }
+
     async findUserById(id: number): Promise<User> {
         return await this.usersRepository.findOne(id);
     }

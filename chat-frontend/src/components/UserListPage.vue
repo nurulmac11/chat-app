@@ -7,9 +7,9 @@
                         v-if="mode === 'users'"
                 >Refresh
                 </button>
-                <input type="text" placeholder="Search..." name="" class="form-control search" v-if="mode === 'users'">
+                <input type="text" placeholder="Search..." name="search-keyword" v-model="searchKeyword" class="form-control search" v-if="mode === 'users'">
                 <div class="input-group-prepend" v-if="mode === 'users'">
-                    <span class="input-group-text search_btn"><font-awesome-icon icon="search"/></span>
+                    <span class="input-group-text search_btn"><font-awesome-icon icon="search" @click.stop="search()"/></span>
                 </div>
             </div>
 
@@ -57,6 +57,7 @@
 <script>
     import {mapGetters} from "vuex";
     import TimeAgo from 'vue2-timeago'
+    import Swal from "sweetalert2";
     import Avatar from "./Avatar";
 
     export default {
@@ -79,7 +80,8 @@
         },
         data: () => {
             return {
-                showFavorites: false
+                showFavorites: false,
+                searchKeyword: ''
             }
         },
         computed: {
@@ -112,6 +114,12 @@
             showFavs() {
                 this.showFavorites = true;
                 this.$store.dispatch('favorites');
+            },
+            search() {
+                if (this.searchKeyword.length <= 3)
+                    Swal.fire('Fail', "Search keyword must be longer than 3 letters.", 'error');
+
+                this.$store.dispatch('searchUsers', this.searchKeyword);
             }
         }
     }

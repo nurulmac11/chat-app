@@ -28,8 +28,12 @@ export function userList() {
     return Axios.get(baseURL + '/users/random', auth());
 }
 
+export function searchUsers(keyword) {
+    return Axios.post(baseURL + '/users/search', {keyword: keyword}, auth());
+}
+
 export function getUser(userID) {
-    return Axios.get(baseURL + '/users/get-user/' + userID, auth());
+    return Axios.get(baseURL + '/users/get/' + userID, auth());
 }
 
 export function getNewMessages() {

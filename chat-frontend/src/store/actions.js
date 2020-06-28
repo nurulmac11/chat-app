@@ -168,6 +168,17 @@ export const randomUsers = ({commit}) => {
     })
 }
 
+export const searchUsers = ({commit}, keyword) => {
+    return new Promise((resolve, reject) => {
+        api.searchUsers(keyword).then(response => {
+            commit('setRandomUserList', response);
+            resolve(response);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
 export const getUser = ({commit, state}) => {
     if (state.chattingWith.id === state.chattingWith.username)
         return;
