@@ -2,7 +2,7 @@
     <div class="card mb-sm-3 mb-md-0 profile">
         <div class="header">
             <div class="avatar">
-                <Avatar :image-path="profile.ppUrl" classes="rounded-circle user_img" />
+                <Avatar :image-path="profile.ppUrl" classes="rounded-circle user_img" :gender="profile.gender" />
                 <br/>
             </div>
             <div class="name">

@@ -214,10 +214,15 @@ export class UsersService extends TypeOrmCrudService<User> {
         try {
             await user.save();
         } catch (Exception) {
-            console.log(Exception);
-            return false;
+            if (Exception.code === 'ER_DUP_ENTRY') {
+                if (Exception.sqlMessage.includes(email))
+                    return {result: false, msg: "This email used before."}
+                if (Exception.sqlMessage.includes(username))
+                    return {result: false, msg: "This username used before."}
+            }
+            return {result: false, msg: "Something went wrong."};
         }
-        return user;
+        return {result: true, msg: user};
     }
 
     async remove(id: number): Promise<void> {

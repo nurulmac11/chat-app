@@ -49,10 +49,23 @@ export class UsersController {
         @Body('gender') gender: string,
         @Body('age') age: number,
     ): Promise<any> {
+        let errors = ''
+        if (!(username && username.length > 3 && username.length < 30))
+            errors += 'Username must be between 3-30\n';
+
+        if (!this.alphaNumeric(username))
+            errors += 'Username must be alphanumeric.\n';
+
+        if (!(password && password.length == 32))
+            errors += 'Something wrong with your password';
+
+        if (errors)
+            throw new BadRequestException(errors);
+
         const result = await this.usersService.create(username, password, email, gender, age);
-        if (!result)
-            throw new BadRequestException("This username has taken.");
-        return result;
+        if (!result.result)
+            throw new BadRequestException(result.msg);
+        return result.msg;
     }
 
     @Post('update-bio')
@@ -235,4 +248,24 @@ export class UsersController {
         return true;
     }
 
+    // VALIDATION FUNCTIONS
+
+    validEmail(email) {
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    }
+
+    alphaNumeric(word) {
+        let code, i, len;
+
+        for (i = 0, len = word.length; i < len; i++) {
+            code = word.charCodeAt(i);
+            if (!(code > 47 && code < 58) && // numeric (0-9)
+                !(code > 64 && code < 91) && // upper alpha (A-Z)
+                !(code > 96 && code < 123)) { // lower alpha (a-z)
+                return false;
+            }
+        }
+        return true;
+    }
 }
