@@ -28,6 +28,10 @@ export function userList() {
     return Axios.get(baseURL + '/users/random', auth());
 }
 
+export function getUser(userID) {
+    return Axios.get(baseURL + '/users/get-user/' + userID, auth());
+}
+
 export function getNewMessages() {
     return Axios.get(baseURL + '/messages/news', auth());
 }

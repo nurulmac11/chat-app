@@ -185,6 +185,7 @@
         mounted() {
             const container = this.$refs.msgContainer;
             container.scrollTop = container.scrollHeight + 120;
+            this.$store.dispatch('getUser');
         },
         watch: {
             activeChatMessages: function () {

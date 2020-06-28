@@ -95,7 +95,9 @@ export class UsersService extends TypeOrmCrudService<User> {
     }
 
     async findRandomOnlineUsers(): Promise<any> {
-        const currentTime = Date.now()
+        // TODO get only recently online users
+        // TODO think better random
+        // const currentTime = Date.now()
         const lastUsers = await createQueryBuilder('User')
             .select(["User.id", "User.username", "User.gender", "User.age", "User.biography", "User.ppUrl",
                 "User.lastOnline", "User.conversations", "User.isOnline"])
@@ -103,6 +105,14 @@ export class UsersService extends TypeOrmCrudService<User> {
             .limit(10)
             .getMany();
         return lastUsers;
+    }
+
+    async findOneUser(userId): Promise<any> {
+        return await createQueryBuilder('User')
+            .select(["User.id", "User.username", "User.gender", "User.age", "User.biography", "User.ppUrl",
+                "User.lastOnline", "User.conversations", "User.isOnline"])
+            .where("id = :id", {id: userId})
+            .getOne();
     }
 
     async findUserById(id: number): Promise<User> {

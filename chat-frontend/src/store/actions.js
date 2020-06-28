@@ -168,6 +168,19 @@ export const randomUsers = ({commit}) => {
     })
 }
 
+export const getUser = ({commit, state}) => {
+    if (state.chattingWith.id === state.chattingWith.username)
+        return;
+    return new Promise((resolve, reject) => {
+        api.getUser(state.chattingWith.id).then(response => {
+            commit('setCurrentChat', response.data);
+            resolve(response);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
 
 export const newComingMessages = ({commit, state}) => {
     return new Promise((resolve, reject) => {

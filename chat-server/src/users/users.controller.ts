@@ -41,6 +41,12 @@ export class UsersController {
         return userList;
     }
 
+    @Get("get-user/:user")
+    @UseGuards(AuthGuard('jwt'))
+    async getUser(@Param('user') userID): Promise<any> {
+        return await this.usersService.findOneUser(userID);
+    }
+
     @Post('create')
     async createUser(
         @Body('username') username: string,
@@ -58,6 +64,15 @@ export class UsersController {
 
         if (!(password && password.length == 32))
             errors += 'Something wrong with your password';
+
+        if (!(email && this.validEmail(email)))
+            errors += 'Invalid email';
+
+        if (age <= 17)
+            errors += 'You must be older than 17';
+
+        if (gender.length !== 1)
+            errors += 'Are you trya hack?';
 
         if (errors)
             throw new BadRequestException(errors);
