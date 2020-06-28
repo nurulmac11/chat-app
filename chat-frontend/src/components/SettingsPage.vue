@@ -20,7 +20,7 @@
             <div class="name">
                 <h3 class="title">{{ profile.username }}</h3>
                 <p v-if="mode === 'view'">{{ newBio }}</p>
-                <input type="text" class="form-control" v-model="newBio" v-else/>
+                <input type="text" class="form-control" placeholder="Write a bio here" v-model="newBio" v-else/>
                 <div class="icons">
                     <div class="left">
                         <font-awesome-icon :icon="['fas', 'birthday-cake']"/>
@@ -34,7 +34,7 @@
                         <font-awesome-icon :icon="['fas', 'venus-mars']"/>
                         <br/>{{ profile.gender }}
                     </div>
-                    <div class="left edit" v-if="mode === 'view'" @click.prevent="mode = 'edit'">
+                    <div class="left edit" v-if="mode === 'view'" @click.prevent="editBio">
                         <font-awesome-icon :icon="['fas', 'cogs']"/>
                         <br/>Edit
                     </div>
@@ -98,6 +98,13 @@
             updateBio() {
                 this.mode = 'view';
                 this.$store.dispatch('updateBio', this.newBio);
+            },
+            editBio() {
+                if (this.mode === 'view') {
+                    this.mode = 'edit';
+                    if (!this.profile.biography)
+                        this.newBio = '';
+                }
             }
         }
     }

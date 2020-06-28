@@ -7,7 +7,8 @@
                         v-if="mode === 'users'"
                 >Refresh
                 </button>
-                <input type="text" placeholder="Search..." name="search-keyword" v-model="searchKeyword" class="form-control search" v-if="mode === 'users'">
+                <input type="text" v-on:keyup.enter.exact="search()" placeholder="Search..." name="search-keyword"
+                       v-model="searchKeyword" class="form-control search" v-if="mode === 'users'">
                 <div class="input-group-prepend" v-if="mode === 'users'">
                     <span class="input-group-text search_btn"><font-awesome-icon icon="search" @click.stop="search()"/></span>
                 </div>
@@ -16,11 +17,15 @@
             <ul class="nav nav-tabs nav-fill" v-if="mode === 'chatUsers'">
                 <li class="nav-item">
                     <a class="nav-link dark-nav" :class="{ active: !showFavorites }" @click.stop="showFavorites = false"
-                       href="#"><font-awesome-icon icon="comments"/></a>
+                       href="#">
+                        <font-awesome-icon icon="comments"/>
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link dark-nav" :class="{ active: showFavorites }"
-                       @click.stop="showFavs();" href="#"><font-awesome-icon icon="heart"/></a>
+                       @click.stop="showFavs();" href="#">
+                        <font-awesome-icon icon="heart"/>
+                    </a>
                 </li>
             </ul>
 
