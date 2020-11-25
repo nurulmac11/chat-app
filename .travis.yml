@@ -1,0 +1,8 @@
+lang: node
+before_install:
+  - cd chat-server
+  - rm -rf node_modules
+  - npm install
+script:
+  - npm run test
+  - npm run build
