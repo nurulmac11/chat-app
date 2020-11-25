@@ -1,4 +1,4 @@
-lang: node
+language: node
 before_install:
   - cd chat-server
   - rm -rf node_modules
