@@ -12,8 +12,16 @@
                 </ul>
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
+                        <a class="nav-link text-warning" href="#" tabindex="-1" @click.prevent="$i18n.locale = 'tr'"
+                           v-if="$i18n.locale === 'en'">Türkçe</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-warning" href="#" tabindex="-1" @click.prevent="$i18n.locale = 'en'"
+                           v-if="$i18n.locale === 'tr'">English</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link text-warning" href="#" tabindex="-1" @click.prevent="logout()"
-                           v-if="accessToken">Logout</a>
+                           v-if="accessToken">{{ $t('logout') }}</a>
                     </li>
                 </ul>
             </div>
@@ -24,7 +32,7 @@
                 <div class="col-md-12 col-xl-9 chat">
 
                     <transition name="slide-fade" mode="out-in">
-                    <router-view></router-view>
+                        <router-view></router-view>
                     </transition>
 
 
@@ -67,7 +75,7 @@
         components: {},
         data: () => {
             return {
-                interval: undefined
+                interval: undefined,
             }
         },
         computed: {
@@ -75,7 +83,7 @@
                 'randomUserList', 'currentChatUsers', 'msgNotify']),
         },
         created() {
-            this.interval = setInterval(api.updateLastOnline, 1000*60) // 60 sn
+            this.interval = setInterval(api.updateLastOnline, 1000 * 60) // 60 sn
         },
         destroyed() {
             clearInterval(this.interval);
@@ -122,18 +130,23 @@
     .slide-fade-enter-active {
         transition: all .3s ease;
     }
+
     .slide-fade-leave-active {
         transition: all .2s cubic-bezier(1.0, 0.5, 0.8, 1.0);
     }
+
     .slide-fade-enter, .slide-fade-leave-to
-        /* .slide-fade-leave-active below version 2.1.8 */ {
+        /* .slide-fade-leave-active below version 2.1.8 */
+    {
         transform: translateX(10px);
         opacity: 0;
     }
+
     .dark-nav {
         color: #626262;
         background: rgba(0, 0, 0, 0.53) !important;
     }
+
     .dark-nav.active {
         color: #ffc107 !important;
     }
@@ -145,6 +158,7 @@
     .chat {
         margin-top: 50px;
     }
+
     #app {
         font-family: Avenir, Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
@@ -191,8 +205,7 @@
     }
 
     .rainbow_border {
-        box-shadow:
-        0 0 0 1px #3300ff,
+        box-shadow: 0 0 0 1px #3300ff,
         0 0 0 2px #0004ff,
         0 0 0 3px #4cff00,
         0 0 0 4px #ffd900,

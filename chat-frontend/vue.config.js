@@ -4,4 +4,13 @@ module.exports = {
         port: 8080,
         public: 'localhost:8080',
     },
+
+    pluginOptions: {
+      i18n: {
+        locale: 'en',
+        fallbackLocale: 'en',
+        localeDir: 'locales',
+        enableInSFC: false
+      }
+    }
 };

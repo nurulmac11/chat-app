@@ -28,6 +28,8 @@ export class UsersController {
 
     private logger: Logger = new Logger('UsersController');
 
+    // todo add burc
+
     @Get()
     @UseGuards(AuthGuard('jwt'))
     getHello(): {} {
@@ -41,6 +43,7 @@ export class UsersController {
         return userList;
     }
 
+    // TODO fix for anon
     @Get("get/:user")
     @UseGuards(AuthGuard('jwt'))
     async getUser(@Param('user') userID): Promise<any> {
